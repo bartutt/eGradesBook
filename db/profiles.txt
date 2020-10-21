@@ -1,0 +1,8 @@
+maths
+history
+biology
+chemistry
+sport
+sciene
+english
+spanish
