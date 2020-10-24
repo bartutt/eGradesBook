@@ -96,7 +96,7 @@ if (!empty ($_POST) )
       <div class="modal-body">
         <table class="table table-striped table-sm">
           <tbody>
-              <?php $display_years = new School; $display_years->displayYears();?>
+              <?php $display_years = new School; $display_years->displayYears();$display_years->createTableYears()?>
           </tbody>
         </table>      
       </div>
