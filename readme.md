@@ -1,18 +1,25 @@
-# NEW VERSION BASED ON MySQL DB
-# ->BRANCH BASED ON MySQL
+### NEW VERSION BASED ON MySQL DB
+### ->BRANCH BASED ON MySQL
 # eGradesBook
-eGradesBook projected and created by Bartlomiej Witkowski.
+
+eGradesBook projected and created by BW.
 
 Web based school management system with basic functions.
 It was created as a learning process.
-It has own DB based on .txt files.
-
+During programming proccess I decided to use BOOTSTRAP frameworkn and some JS script to get design more flexible.
 Main language is a PHP.
 
-In main concept you can manage:
-- students
-- teachers
-- subjects
-- parents
-- timetable
-- calendar/events
+Features:
+- manage students
+- manage teachers
+- manage subjects
+- manage parents
+- manage timetable
+- manage calendar/events
+- manage school years
+- manage person status
+- attendance 
+- marks with weight and managable categories
+- managable lessons times
+- message box
+- notes aobut students
