@@ -31,7 +31,7 @@ public $errors = array();
 */ 
 public $success = array();
 
-
+public $conn;
 
 
 
@@ -114,13 +114,12 @@ public function createTableClasses(){
 
 
 public function createTableYears(){
-    //"ALTER TABLE classes ADD CONSTRAINT class_year UNIQUE (class_name, school_year)";
-       $this->connectDB();
+       
+    $this->connectDB();
    
        $sql ="CREATE TABLE years (
-            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             school_year VARCHAR(9) NOT NULL,
-            UNIQUE (school_year)
+            PRIMARY KEY (school_year)
            )";
        
        if ($this->conn->query($sql) === TRUE) {
