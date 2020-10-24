@@ -1,5 +1,7 @@
-# eSchool
-eSchool projected and created by Bartlomiej Witkowski.
+# NEW VERSION BASED ON MySQL DB
+# ->BRANCH BASED ON MySQL
+# eGradesBook
+eGradesBook projected and created by Bartlomiej Witkowski.
 
 Web based school management system with basic functions.
 It was created as a learning process.
