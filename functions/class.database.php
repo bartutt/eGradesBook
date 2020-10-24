@@ -17,6 +17,254 @@
 trait DataBase{
 
 /**    
+*	contain errors wchich came while processing
+*
+* @var array
+*/    
+
+public $errors = array();
+    
+/**    
+*	contain information what was done
+*
+* @var array
+*/ 
+public $success = array();
+
+
+
+
+
+/** 
+*   
+* Display errors
+*
+*/
+public function getErrors(){
+
+	foreach ($this->errors as $error) {
+        echo '
+        <div class = "container">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading">Error</h4><hr>' . $error .
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        </div>';
+		}          
+	return $this;
+
+}
+/** 
+*      
+* Display success if process went ok
+*
+*/           
+public function isSuccess(){
+	foreach ($this->success as $success) {
+        echo '
+        <div class = "container">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading">Perfect!</h4><hr>' . $success .
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        </div>';
+	}                 
+	return $this;
+}
+
+
+private function connectDB(){
+    $server = "127.0.0.1";
+    $user = "root";
+    $pass = "";
+    $dbname = "eschool";
+    
+    $this->conn = new mysqli($server, $user, $pass, $dbname);
+    
+    if ($this->conn->connect_error) {
+      die("Connection failed: " . $this->conn->connect_error);
+    }
+}
+
+
+public function createTableClasses(){
+ //"ALTER TABLE classes ADD CONSTRAINT class_year UNIQUE (class_name, school_year)";
+    $this->connectDB();
+
+    $sql ="CREATE TABLE classes (
+        id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        class_name VARCHAR(2) NOT NULL,
+        teacher_id VARCHAR(30) NOT NULL,
+        profile_id INT(5),
+        school_year VARCHAR(8)
+        )";
+    
+    if ($this->conn->query($sql) === TRUE) {
+      echo "Table classes created successfully";
+    } else {
+      echo "Error creating table: " . $this->conn->error;
+    }
+    
+    $this->conn->close();
+}
+
+
+public function createTableYears(){
+    //"ALTER TABLE classes ADD CONSTRAINT class_year UNIQUE (class_name, school_year)";
+       $this->connectDB();
+   
+       $sql ="CREATE TABLE years (
+            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            school_year VARCHAR(9) NOT NULL,
+            UNIQUE (school_year)
+           )";
+       
+       if ($this->conn->query($sql) === TRUE) {
+         $this->success[] = 'Table years created successfully';
+       } else {
+        $this->errors[] = 'Error creating table: ' . $this->conn->error;
+       }
+       
+       $this->conn->close();
+
+       return $this;
+}
+
+
+public function addClass($name, $year){
+
+    $this->connectDB();
+    
+    $stmt = $this->conn->prepare("INSERT INTO classes (class_name, school_year) VALUES (?, ?)");
+    
+    $stmt->bind_param("ss", $class_name, $school_year);
+    
+    $class_name = $name;
+    $school_year = $year;
+    if ( $stmt->execute() )
+        $this->success[] = $class_name . ' created successfully';       
+    else    
+        $this->errors[] = 'Something went wrong';
+    
+        $stmt->close();
+        $this->conn->close();
+  
+    return $this;
+}
+
+
+public function addYear($year) {
+
+    $this->checkYear($year);
+
+    if (empty ($this->errors)) {
+        $this->connectDB();
+    
+        $stmt = $this->conn->prepare("INSERT INTO years (school_year) VALUES (?)");
+    
+        $stmt->bind_param("s", $school_year);
+    
+        $school_year = $year;
+        if ( $stmt->execute() )
+            $this->success[] = $school_year . ' is added successfully';       
+        else    
+            $this->errors[] = 'Something went wrong';
+    
+            $stmt->close();
+            $this->conn->close();
+    } 
+    
+    return $this;
+
+}
+
+
+public function displayClasses($year){
+
+    $this->connectDB();
+
+    $sql = "SELECT * FROM classes where school_year = '$year' ";
+
+    $result = $this->conn->query($sql);
+
+        if ($result->num_rows > 0) {
+
+            while($row = $result->fetch_assoc()) {
+                 echo 
+                    "<tr>          
+                        <td>" . $row['class_name'] . "</td>                         
+                        <td>".  $row['teacher_id']. "</td>
+                        <td>".  $row['profile_id']. "</td>
+                        <td>" . $row['school_year'] . "</td>
+                        <td>" . $row['profile_id'] . "</td>
+                    </tr>";
+                }
+        }else 
+            $this->errors[] = '0 results';
+
+}
+
+
+public function displayYears(){
+
+    $this->connectDB();
+
+    $sql = "SELECT * FROM years";
+
+    $result = $this->conn->query($sql);
+
+    if ($result->num_rows > 0) {
+
+        while($row = $result->fetch_assoc()) {
+             echo 
+                "<tr>          
+                    <td>" . $row['school_year'] . "</td>                         
+                </tr>";
+            }
+    }else 
+        $this->error[] = '0 results';
+
+}
+
+
+public function displayYearsSelect(){
+
+    $this->connectDB();
+
+    $sql = "SELECT * FROM years";
+
+    $result = $this->conn->query($sql);
+
+        if ($result->num_rows > 0) {
+
+            while($row = $result->fetch_assoc()) {
+                 echo 
+                    '<option value = ' . $row['school_year'] .'>'         
+                         . $row['school_year'] .                       
+                    '</option>';
+                }
+        }else 
+            $this->error[] = '0 results';
+
+}
+
+
+
+
+
+
+
+
+
+
+#######################################################
+#######################################################
+#######################################################
+/**    
 *	this properties contain information sent via form
 *
 * 
@@ -34,20 +282,9 @@ private $housenr;
 
 
 
-/**    
-*	contain errors wchich came while processing
-*
-* @var array
-*/    
 
-public $errors = array();
 
-/**    
-*	contain information what was done
-*
-* @var array
-*/ 
-public $success = array();
+
 
 
 /**    
@@ -72,32 +309,10 @@ private function inputTrim($input){
 }
 
 
-/** 
-*   
-* Display errors
-*
-*/
-public function getErrors(){
-
-	foreach ($this->errors as $error) {
-		echo '<span class = "error" >'. $error .'<br></span>';
-		}          
-	return $this;
-
-}
 
 
-/** 
-*      
-* Display success if process went ok
-*
-*/           
-public function isSuccess(){
-	foreach ($this->success as $success) {
-		echo '<span class = "succes" >'. $success .'<br></span>';
-	}                 
-	return $this;
-}
+
+
 
 /*
 *
@@ -260,62 +475,6 @@ public function displaySubjects(){
 					</form >
 				</tr>";}
 	}
-
-
-/**
-* Display classes      
-* 
-* This function displays table with list of all classes
-* Session variables hold status of last sorting 
-* 
-* 
-*
-* @param $sort - type of sorting
-*/
-public function displayClasses ($sort){
-       
-    $this->setDirToArray ("./db/c_db/");
-    
-    $class_list = $this->dir_content;
-    
-        if (!empty ($sort) ) 
-            $_SESSION['class_sorted'] = $sort;
-        
-        if ($_SESSION['class_sorted'] == 1) 	
-            sort ($class_list);
-        
-        if ($_SESSION['class_sorted'] == 2) 	
-            rsort ($class_list);
-    
-        $count = count ($this->dir_content) -1;
-
-        for ($i = 0; $i <= $count; $i++){
-
-            $class_name = substr ($class_list[$i], 0, -4);	
-                $students_qty = count (file ( './db/c_db/' . $class_name . '.txt') ) -2;
-                   
-                    echo "						
-                        <tr>
-                            <td>" . $class_name . "</td>
-                            <td>".  $this->displayTeacher($class_name). "</td>
-                            <td>".  $this->displayProfile($class_name). "</td>
-                            <td>" . $students_qty  . "</td>
-                               
-                                <form action = class_edit.php method = post>
-                                <input name = c_name type = hidden value = $class_name>								
-                            
-                             <td><input class = button_details type = submit value = details></td>	
-                                </form>
-                                
-                                <form action = classes_overview.php method = post>
-                                <input name = c_name type = hidden value = $class_name>
-                                <input name = action type = hidden value = delete>
-                           
-                            <td><input class = button_details type = submit value = delete></td>
-                                </form>							
-                        </tr>";
-        }
-}	
 
 
 /**
@@ -1010,6 +1169,22 @@ public function changeProfile($class, $profile){
 
 
 
+/**
+*    
+* Checks school year validation
+*
+* @private function
+* @param $input - ..
+* 
+*/	
+private function checkYear($input){
+    $input = $this->inputTrim($input);
+    
+    if (!preg_match("/^[2]{1}[0]{1}[0-9]{2}\/[2]{1}[0]{1}[0-9]{2}$/", $input)) 		
+        $this->errors[] = 'Year is not valid';
+    else
+        $this->year = $input;
+}
 	
 /**
 *    

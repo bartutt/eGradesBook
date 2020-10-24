@@ -1,0 +1,42 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+.navbar{
+padding: 0px;
+box-shadow: 0 2px 4px 0 grey; 
+font-size: 18px;
+
+}
+.nav-link{
+  padding:20px;
+}
+.dropdown-item{
+border-left: 2px solid lightgreen;
+
+}
+.nav-item a:hover{
+  background-color: seagreen;
+  color: white;
+ 
+}
+.header{
+  border-left: 4px solid seagreen; 
+  padding-left: 20px;
+  border-bottom: 1px solid lightgrey;
+  width: 100%;
+
+}
+
+.button {
+	background-color:smokewhite;
+	padding: 5px 40px;
+	border: 1px solid lightgrey;
+	width:100%;
+  border-radius: 4px;
+}
+.button:hover {
+	background-color: seagreen;
+	color: white;

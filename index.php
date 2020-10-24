@@ -1,32 +1,47 @@
-<?php include 'actions/action.admin_dashboard.php'?>
-<?php include 'js/reload.js'?>
+<?php include './functions/class.school.php' ?>
+<!DOCTYPE html>
 
-<html>
-<head>
-<link rel="stylesheet" href="style.css">
-<title><?php include 'const_items/title.html'?></title>
-</head>
-<body onload="loadScroll()" onunload="saveScroll()">
-
-<center>
-<?php include 'const_items/topnav_admin.html'; include 'const_items/logo_text.html';?>
-<div class="header">Admin profil<br><br>Year <?php $display->displayYear(); ?></div>
+<html lang="en">
+<!-- head -->
+<?php include './div/head.html'?>
+<!-- head -->
+<body>
 
 
-
-	<table class="bottom_buttons">
-		<tr>
-			<td><button class = "button" form = "start" type = "submit">Start new year!</td>
-		</tr>
-	</table>
-		
-<?php include 'const_items/footer.html';?>
-
-	
+<!-- topnav -->
+<?php include './div/admin_topnav.html'?>
+<!-- topnav -->
 
 
-</center>
+
+<!-- header -->
+<div class="container" style="margin-top:30px">
+  <div class="row">
+  <!-- content -->
+  <div class = "col">
+    <div class = "header" ><h2>Dashboard</h2></div>
+  </div>
+  <!-- content -->
+  
+  </div>
+</div>
+<!-- header -->
+
+
+<!-- main content -->
+<div class="container" style="margin-top:30px">
+     
+        
+  </div>
+</div>
+<!-- main content -->
+
+
+
+<!-- Footer -->
+<?php include './div/footer.html'?>
+<!-- Footer -->
+
+
 </body>
 </html>
-
-
