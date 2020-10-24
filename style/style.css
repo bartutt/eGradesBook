@@ -8,18 +8,21 @@
 padding: 0px;
 box-shadow: 0 2px 4px 0 grey; 
 font-size: 18px;
-
+border-bottom: 2px solid seagreen;
 }
 .nav-link{
   padding:20px;
+  border: 2px solid transparent;
 }
 .dropdown-item{
-border-left: 2px solid lightgreen;
+border-left: 2px solid seagreen;
+border-bottom: 2px solid transparent;
 
 }
+
 .nav-item a:hover{
-  background-color: seagreen;
-  color: white;
+  /*background-color: seagreen;*/
+  border-bottom: 2px solid seagreen;
  
 }
 .header{
@@ -40,3 +43,4 @@ border-left: 2px solid lightgreen;
 .button:hover {
 	background-color: seagreen;
 	color: white;
+}
