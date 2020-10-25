@@ -6,18 +6,8 @@ require_once './functions/variables.php';
 
 class School{
 
-    public $database;
-
-    public function dataBase(){
-
-        $this->database = new DataBase;
-
-        return $this;
-    
-    }
-
-
-    use RandomPerson;
+use DataBase;
+use RandomPerson;
 
 
 
