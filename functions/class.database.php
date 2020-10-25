@@ -182,15 +182,17 @@ public function addYear($year) {
 
 }
 
+
 public function setCurrentYear($year) {
 
         $this->connectDB();
 
-        $stmt = $this->conn->prepare("UPDATE years (curr_year) VALUES (?)");
+        $stmt = $this->conn->prepare("UPDATE years SET curr_year = ? LIMIT 1");
     
         $stmt->bind_param("s", $curr_year);
-    
+
         $curr_year = $year;
+        $id = 1;
         if ( $stmt->execute() )
             $this->success[] = $curr_year . ' is set';       
         else    

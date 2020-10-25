@@ -44,14 +44,22 @@ if (!empty ($_POST) )
 	case 'add':
 		$add_year = new School;
 		$add_year->addYear($_POST['year'])->isSuccess()->getErrors();
-		break;
+    break;
+  
+  case 'set': 
+    $set_curr_year = new School;
+    $set_curr_year->setCurrentYear($_POST['year'])->isSuccess()->getErrors();
+    break;
 
 }
 ?>
 
 <!-- FORM  -->
 <form id = "add" action = "<?php $_SERVER['PHP_SELF']?>" method = "post" >
-	<input type = "hidden" name = "action" value = "add">
+  <input type = "hidden" name = "action" value = "add">
+</form >
+<form id = "select" action = "<?php $_SERVER['PHP_SELF']?>" method = "post" >
+  <input type = "hidden" name = "action" value = "set">
 </form >
 
 <!-- PHP BACKEND SECTION -->
@@ -63,60 +71,135 @@ if (!empty ($_POST) )
 <!-- main content -->
 <div class="container" style="margin-top:30px">
 <!-- header content -->
-<div class="row">
-    <div class = "header-content"><h5>Year manage</h5></div>
-</div>
-<!-- header content -->
 
-
-
-<!-- years management -->
-
-  <div class="form-group">
-    <label for="schoolYear">Add new year</label>
-    <input  type = "text" class="form-control" name = "year" form ="add" placeholder="2020/2021" required>
-  </div>
-  <div class="form-group"> 
-    <button class="button" form = "add" >add</button>
-  </div>
+<!-- years settings -->
+<div id="scroll_years">
+    <button style = " border-left: 4px solid rgb(216, 142, 4);" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#years" aria-expanded="true">
+      <h5>Year manage</h5>
+    </button>
+    
+  <div id="years" class="collapse" data-parent="#scroll_years">
  
-
- <!-- modal windows shows years -->
-<button type="button" class="button" data-toggle="modal" data-target=".years">Show years</button>
-<div class="modal fade years" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Years</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button> 
-      </div>
-        
-      <div class="modal-body">
-        <table class="table table-striped table-sm">
-          <tbody>
-              <?php $display_years = new School; $display_years->displayYears();$display_years->createTableYears()?>
-          </tbody>
-        </table>      
-      </div>
+    <div class="form-group">
+      <label for="schoolYear">Add new year</label>
+      <input  type = "text" class="form-control" name = "year" form = "add" placeholder = "2020/2021" required>
     </div>
+    
+    <div class="form-group"> 
+      <button class="button" form = "add" >add</button>
+    </div>
+    
+    <div class="form-group">
+      <label for="schoolYear">Set current year</label>
+      <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
+        <?php $display_years = new School; $display_years->displayYearsSelect();?>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <button class="button" form = "select" >set</button>
+    </div>
+  
   </div>
 </div>
-        
+<!-- years settings -->
 
-
-<div class="form-group">
-    <label for="schoolYear">Set current year</label>
-    <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
-      <?php $display_years = new School; $display_years->displayYearsSelect();?>
-    </select>
-
+<!-- lesson times settings -->
+<div id="lesson_times">
+    <button style = " border-left: 4px solid rgb(245, 66, 53);" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#lessons" aria-expanded="true">
+      <h5>Lesson times</h5>
+    </button>
+    
+  <div id="lessons" class="collapse" data-parent="#lesson_times">
+ 
+    <div class="form-group">
+      <label for="schoolYear">Add new year</label>
+      <input  type = "text" class="form-control" name = "year" form = "add" placeholder = "2020/2021" required>
+    </div>
+    
+    <div class="form-group"> 
+      <button class="button" form = "add" >add</button>
+    </div>
+    
+    <div class="form-group">
+      <label for="schoolYear">Set current year</label>
+      <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
+        <?php $display_years = new School; $display_years->displayYearsSelect();?>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <button class="button" form = "select" >set</button>
+    </div>
+  
   </div>
-  <div class="form-group">
-    <button class="button" form = "select" >set</button>
 </div>
-<!-- years management -->
+<!-- lesson times settings -->
+
+
+<!-- marks settings -->
+<div id="scroll_marks">
+    <button style = " border-left: 4px solid rgb(33, 103, 253)" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#marks" aria-expanded="true">
+      <h5>Marks</h5>
+    </button>
+    
+  <div id="marks" class="collapse" data-parent="#scroll_marks">
+ 
+    <div class="form-group">
+      <label for="schoolYear">Add new year</label>
+      <input  type = "text" class="form-control" name = "year" form = "add" placeholder = "2020/2021" required>
+    </div>
+    
+    <div class="form-group"> 
+      <button class="button" form = "add" >add</button>
+    </div>
+    
+    <div class="form-group">
+      <label for="schoolYear">Set current year</label>
+      <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
+        <?php $display_years = new School; $display_years->displayYearsSelect();?>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <button class="button" form = "select" >set</button>
+    </div>
+  
+  </div>
+</div>
+<!-- marks settings -->
+
+<!-- person status settings -->
+<div id="status_scroll">
+    <button style = " border-left: 4px solid seagreen" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#status" aria-expanded="true">
+      <h5>Person status</h5>
+    </button>
+    
+  <div id="status" class="collapse" data-parent="#status_scroll">
+ 
+    <div class="form-group">
+      <label for="schoolYear">Add new year</label>
+      <input  type = "text" class="form-control" name = "year" form = "add" placeholder = "2020/2021" required>
+    </div>
+    
+    <div class="form-group"> 
+      <button class="button" form = "add" >add</button>
+    </div>
+    
+    <div class="form-group">
+      <label for="schoolYear">Set current year</label>
+      <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
+        <?php $display_years = new School; $display_years->displayYearsSelect();?>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <button class="button" form = "select" >set</button>
+    </div>
+  
+  </div>
+</div>
+<!-- marks settings -->
 
 
 </div>
