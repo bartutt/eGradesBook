@@ -78,7 +78,7 @@
     <div class="form-group">
       <label for="schoolYear">Set current year</label>
       <select id = "schoolYear" class = "form-control" form = "set_year" name = "year" >
-       <?php $displayer = new Displayer; $displayer->yearsSelect();?>
+       <?php $displayer = new Displayer; $displayer->displayYearsSelect();?>
       </select>
     </div>
    
@@ -97,21 +97,9 @@
     </button>
     
   <div id="lessons" class="collapse" data-parent="#lesson_times">
- 
-    <div class="form-group">
-      <label for="schoolYear">Add new year</label>
-      <input  type = "text" class="form-control" name = "year" form = "add" placeholder = "2020/2021" required>
-    </div>
-    
-    <div class="form-group"> 
-      <button class="button" form = "add" >add</button>
-    </div>
     
     <div class="form-group">
-      <label for="schoolYear">Set current year</label>
-      <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
-      <?php  ?>
-      </select>
+      <?php $displayer = new Displayer; $displayer->displayLessonTimes();?>
     </div>
     
     <div class="form-group">

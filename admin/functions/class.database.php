@@ -1,4 +1,5 @@
 <?php
+require_once './functions/class.validator.php';
 
 /**
 * Database for school      
@@ -6,43 +7,62 @@
 * @author Bartlomiej Witkowski
 * 
 *
-*
-*
-* @private $errors
-* @private $succes
-* @private $dir_content
 */
 
 
 class DataBase{
-
-/**    
-*	contain errors wchich came while processing
-*
-* @var array
-*/    
-
-public $errors = array();
     
-/**    
-*	contain information what was done
-*
-* @var array
-*/ 
-public $success = array();
+    
+  /**    
+    *	contain errors wchich came while processing
+    *
+    * @var array
+    */    
 
-/**    
-*	connection to database
-*
-*/ 
-public $conn;
+        private $errors = array();
+    
+  /**    
+    *	contain information what was done
+    *
+    * @var array
+    */ 
+        private $success = array();
 
+
+  /**    
+    *	containts list of years
+    *
+    */ 
+        public $years = array();
+
+  /**    
+    *	containts list of years
+    *
+    */ 
+    public $lesson_times = array();
+
+
+
+  /**    
+    *	connection to database
+    *
+    */ 
+    private $conn;
+
+    private $pre_stmt;
+
+
+
+function __construct(){
+    
+    $this->getYears();
+    $this->getLessonTimes();
+
+}
 
 
 /** 
-*   
 * Display errors
-*
 */
 public function getErrors(){
 
@@ -60,10 +80,8 @@ public function getErrors(){
 	return $this;
 
 }
-/** 
-*      
+/**  
 * Display success if process went ok
-*
 */           
 public function isSuccess(){
 	foreach ($this->success as $success) {
@@ -80,12 +98,25 @@ public function isSuccess(){
 	return $this;
 }
 
+/** 
+*     
+* @param string $year 
+*/  
+public function addYear($year){
+   
+    $this->saveYear($year)->getErrors()->isSuccess();
 
+}
+
+
+/**   
+* Conntect to DB
+*/  
 private function connectDB(){
     $server = "127.0.0.1";
     $user = "root";
     $pass = "";
-    $dbname = "eschool";
+    $dbname = "egradesbook";
     
     $this->conn = new mysqli($server, $user, $pass, $dbname);
     
@@ -95,51 +126,92 @@ private function connectDB(){
 }
 
 
-public function createTableClasses(){
- //"ALTER TABLE classes ADD CONSTRAINT class_year UNIQUE (class_name, school_year)";
+/**   
+* prepared statement 
+*/ 
+private function preStmtInsert($table, $col, $value){
+
+    $this->connectDB();
+            
+        $this->pre_stmt = $this->conn->prepare("INSERT INTO $table ($col) VALUES (?)");
+         
+        $this->pre_stmt->bind_param("s", $value); 
+        
+            if ( $this->pre_stmt->execute() )
+                $this->success[] = $value . ' is added successfully';       
+            else    
+                $this->errors[] = $value . ' already added';
+    
+            $this->pre_stmt->close();
+            $this->conn->close();
+}
+
+
+/**   
+* save year to DB
+*
+* @param string $year 
+*/ 
+private function saveYear($year) {
+
+        $validation = new Validator;
+    
+        if ($validation->isValid($year, 'school_year') === true) {
+         
+            $this->preStmtInsert('years', 'years', $year);
+            
+        }
+        else $this->errors[] = 'Input is not valid!';
+    
+    return $this;
+
+}
+
+/**    
+* This function reads years list into array
+*
+*/  
+private function getYears(){
+
     $this->connectDB();
 
-    $sql ="CREATE TABLE classes (
-        id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        class_name VARCHAR(2) NOT NULL,
-        teacher_id VARCHAR(30) NOT NULL,
-        profile_id INT(5),
-        school_year VARCHAR(8)
-        )";
-    
-    if ($this->conn->query($sql) === TRUE) {
-      echo "Table classes created successfully";
-    } else {
-      echo "Error creating table: " . $this->conn->error;
+    $sql = "SELECT years FROM years";
+
+    $result = $this->conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+             $this->years[] = $row ['years'];
+        }
+
     }
-    
-    $this->conn->close();
 }
+/**    
+* This function reads lesson times list into array
+*
+*/  
+private function getLessonTimes(){
 
-
-public function createTableYears(){
-       
     $this->connectDB();
-   
-       $sql ="CREATE TABLE years (
-            curr_year VARCHAR(9) NOT NULL,
-            school_year VARCHAR(9) NOT NULL,
-            UNIQUE (school_year)
-           )";
-       
-       if ($this->conn->query($sql) === TRUE) {
-         $this->success[] = 'Table years created successfully';
-       } else {
-        $this->errors[] = 'Error creating table: ' . $this->conn->error;
-       }
-       
-       $this->conn->close();
 
-       return $this;
+    $sql = "SELECT time FROM lesson_times";
+
+    $result = $this->conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+             $this->lesson_times[] = $row ['time'];
+        }
+
+    }
 }
 
 
-public function addClass($name, $year){
+
+
+
+
+private function addClass($name, $year){
 
     $this->connectDB();
     
@@ -160,38 +232,11 @@ public function addClass($name, $year){
     return $this;
 }
 
-
-public function addYear($year) {
-
-    $this->checkYear($year);
-
-    if (empty ($this->errors)) {
-        $this->connectDB();
-    
-        $stmt = $this->conn->prepare("INSERT INTO years (school_year) VALUES (?)");
-    
-        $stmt->bind_param("s", $school_year);
-    
-        $school_year = $year;
-        if ( $stmt->execute() )
-            $this->success[] = $school_year . ' is added successfully';       
-        else    
-            $this->errors[] = 'Something went wrong';
-    
-            $stmt->close();
-            $this->conn->close();
-    } 
-    
-    return $this;
-
-}
-
-
-public function setCurrentYear($year) {
+private function setCurrentYear($year) {
 
         $this->connectDB();
 
-        $stmt = $this->conn->prepare("UPDATE years SET curr_year = ? LIMIT 1");
+        $stmt = $this->conn->prepare("UPDATE years SET current_year = ? LIMIT 1");
     
         $stmt->bind_param("s", $curr_year);
 
@@ -211,7 +256,7 @@ public function setCurrentYear($year) {
     
 
 
-public function displayClasses($year){
+private function displayClasses($year){
 
     $this->connectDB();
 
@@ -237,48 +282,6 @@ public function displayClasses($year){
 }
 
 
-public function displayYears(){
-
-    $this->connectDB();
-
-    $sql = "SELECT school_year FROM years";
-
-    $result = $this->conn->query($sql);
-
-    if ($result->num_rows > 0) {
-
-        while($row = $result->fetch_assoc()) {
-             echo 
-                "<tr>          
-                    <td>" . $row['school_year'] . "</td>                         
-                </tr>";
-            }
-    }else 
-        $this->error[] = '0 results';
-
-}
-
-
-public function displayYearsSelect(){
-
-    $this->connectDB();
-
-    $sql = "SELECT school_year FROM years";
-
-    $result = $this->conn->query($sql);
-
-        if ($result->num_rows > 0) {
-
-            while($row = $result->fetch_assoc()) {
-                 echo 
-                    '<option value = ' . $row['school_year'] .'>'         
-                         . $row['school_year'] .                       
-                    '</option>';
-                }
-        }else 
-            $this->error[] = '0 results';
-
-}
 
 
 
@@ -323,18 +326,7 @@ private $housenr;
 private $dir_content = array();
     
 
-/** 
-*   
-* This function removes whitespaces, dangerous chars etc..
-*
-*/
-private function inputTrim($input){
-        
-        $input = trim($input);
-        $input = stripslashes($input);
-        $input = htmlspecialchars($input);
-    return $input;
-}
+
 
 
 
@@ -1195,197 +1187,7 @@ public function changeProfile($class, $profile){
     return $this;
 }
 
-
-
-/**
-*    
-* Checks school year validation
-*
-* @private function
-* @param $input - ..
-* 
-*/	
-private function checkYear($input){
-    $input = $this->inputTrim($input);
-    
-    if (!preg_match("/^[2]{1}[0]{1}[0-9]{2}\/[2]{1}[0]{1}[0-9]{2}$/", $input)) 		
-        $this->errors[] = 'Year is not valid';
-    else
-        $this->year = $input;
-}
 	
-/**
-*    
-* Checks name validation
-*
-* @private function
-* @param $name - ..
-* 
-*/
-private function checkName($name){
-		$name = $this->inputTrim($name);
-		
-		if (!preg_match("/^[a-zA-Z]+$/", $name)) 		
-			$this->errors[] = "Name contains wrong characters<br>";
-		else
-			$this->name = $name;
-	}
-/**
-*    
-* Checks surname validation
-*
-* @private function
-* @param $surname - ..
-* 
-*/	
-private function checkSurname($surname){
-		$surname = $this->inputTrim($surname);		
-			
-			if (!preg_match("/^[a-zA-Z-']+$/", $surname)) 	
-				$this->errors[] = "Surname contains wrong characters<br>";
-			else
-				$this->surname = $surname;
-			
-	}
-/**
-*    
-* Checks ID validation
-*
-* @private function
-* @param $id - ..
-* 
-*/	
-private function checkId($id){
-		$id = $this->inputTrim($id);
-		
-		if (!preg_match("/^[0-9]{6}$/", $id)) 		
-			$this->errors[] = "ID is not valid<br>";
-		else
-			$this->id = $id;
-	
-	}
-/**
-*    
-* Checks ID supervisor validation
-*
-* @private function
-* @param $id_supervisor - ..
-* 
-*/	
-private function checkIdSpr($id_supervisor){
-		$id_supervisor = $this->inputTrim($id_supervisor);
-		
-		if (!preg_match("/^[0-9]{6}$/", $id_supervisor)) 		
-			$this->errors[] = "ID is not valid<br>";
-		else
-			$this->id_supervisor = $id_supervisor;
-	
-	}
-/**
-*    
-* Checks telephone validation
-*
-* @private function
-* @param $tel - ..
-* 
-*/	
-private function checkTel($tel){
-		$tel = $this->inputTrim($tel);
-		
-		if (!preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{2}$/", $tel)) 		
-			$this->errors[] = "Telephone number is not valid<br>";
-		else
-			$this->tel = $tel;
-	}
-/**
-*    
-* Checks email validation
-*
-* @private function
-* @param $email - ..
-* 
-*/	
-private function checkEmail($email){
-		$email = $this->inputTrim($email);
-		
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) 
-			$this->errors[] = "E-mail address is not valid<br>";	
-		else
-			$this->email = $email;
-	}
-/**
-*    
-* Checks city validation
-*
-* @private function
-* @param $city - ..
-* 
-*/	
-private function checkCity($city){
-		$city = $this->inputTrim($city);
-		
-		if (!preg_match("/^[a-zA-Z-' ]+$/", $city)) 	
-			$this->errors[] = "City contains wrong characters<br>";
-		else
-			$this->city = $city;
-	}
-/**
-*    
-* Checks post code validation
-*
-* @private function
-* @param $code - ..
-* 
-*/	
-private function checkCode($code){
-		$code = $this->inputTrim($code);
-		
-		if (!preg_match("/^[0-9]{4}$/", $code)) 		
-			$this->errors[] = "Wrong city code<br>";
-		else
-			$this->code = $code;
-	}
-/**
-*    
-* Checks street validation
-*
-* @private function
-* @param $street - ..
-* 
-*/	
-private function checkStreet($street){
-		$street = $this->inputTrim($street);
-		
-		if (!preg_match("/^[a-zA-Z-' ]+$/", $street)) 	
-			$this->errors[] = "Street contains wrong characters<br>";
-		else
-			$this->street = $street;
-	}
-/**
-*    
-* Checks house nr validation
-*
-* @private function
-* @param $hosuenr - ..
-* 
-*/	
-private function checkHouseNr($housenr){
-		$housenr = $this->inputTrim($housenr);
-		
-		
-		if (($housenr==0) || (strlen($housenr)>3) || (!preg_match("/^[0-9]/", $housenr) ))			
-				$this->errors[] = "Wrong house nr<br>";
-			else
-				$this->housenr = $housenr;
-	}
-
-    
-
-
-	
-
-	
-
 
 
 

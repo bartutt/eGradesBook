@@ -3,34 +3,31 @@ require_once './functions/class.database.php';
 require_once './functions/class.random_person.php';
 require_once './functions/variables.php';
 
-class Controller{
+class Controller {
 
+    private $database;
 
-    private function addYear(){
+    function __construct() {
 
-        $add_year = new DataBase;
-		$add_year->addYear($_POST['year'])->isSuccess()->getErrors();
+        $this->database = new DataBase;
 
     }
+ 
+    public function handleRequest ($action, $value) {
 
-	
-
-    
-    
-    
-    private function handleRequest ($action) {
-
-        switch ( $_POST['action'] ){
-            case 'add':
-                $this->addYear();
+        switch ($action) {
+         
+            case 'add_year':
+                $this->database->addYear($value);
                 break;
 
+            case 'set_year':  
 
+                break;
+            }
 
     }
 
+}// EOC
 
-
-
-}
 ?>
