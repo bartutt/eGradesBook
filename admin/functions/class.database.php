@@ -31,13 +31,13 @@ public $errors = array();
 */ 
 public $success = array();
 
+/**    
+*	connection to database
+*
+*/ 
 public $conn;
 
-function __construct(){
 
-    $this->displayYears();
-
-}
 
 /** 
 *   
@@ -122,8 +122,9 @@ public function createTableYears(){
     $this->connectDB();
    
        $sql ="CREATE TABLE years (
+            curr_year VARCHAR(9) NOT NULL,
             school_year VARCHAR(9) NOT NULL,
-            PRIMARY KEY (school_year)
+            UNIQUE (school_year)
            )";
        
        if ($this->conn->query($sql) === TRUE) {
@@ -186,6 +187,30 @@ public function addYear($year) {
 }
 
 
+public function setCurrentYear($year) {
+
+        $this->connectDB();
+
+        $stmt = $this->conn->prepare("UPDATE years SET curr_year = ? LIMIT 1");
+    
+        $stmt->bind_param("s", $curr_year);
+
+        $curr_year = $year;
+        $id = 1;
+        if ( $stmt->execute() )
+            $this->success[] = $curr_year . ' is set';       
+        else    
+            $this->errors[] = 'Something went wrong';
+    
+            $stmt->close();
+            $this->conn->close();
+    
+    
+    return $this;
+} 
+    
+
+
 public function displayClasses($year){
 
     $this->connectDB();
@@ -212,11 +237,11 @@ public function displayClasses($year){
 }
 
 
-private function displayYears(){
+public function displayYears(){
 
     $this->connectDB();
 
-    $sql = "SELECT * FROM years";
+    $sql = "SELECT school_year FROM years";
 
     $result = $this->conn->query($sql);
 
@@ -238,7 +263,7 @@ public function displayYearsSelect(){
 
     $this->connectDB();
 
-    $sql = "SELECT * FROM years";
+    $sql = "SELECT school_year FROM years";
 
     $result = $this->conn->query($sql);
 

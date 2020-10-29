@@ -8,12 +8,17 @@ class School{
 
     public $database;
 
-    public function dataBase(){
+    function __construct(){
 
         $this->database = new DataBase;
 
         return $this;
     
+    }
+    function display(){
+
+        return $this->database;
+
     }
 
 

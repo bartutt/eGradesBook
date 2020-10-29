@@ -36,25 +36,14 @@
 <!-- header -->
 
 
-<!-- PHP BACKEND SECTION -->
-<?php 
-if (!empty ($_POST) )
-	switch ( $_POST['action'] ){
 
-	case 'add':
-		$add_year = new School;
-		$add_year->addYear($_POST['year'])->isSuccess()->getErrors();
-		break;
 
-}
-?>
 
-<!-- FORM  -->
+<!-- FORMS  -->
 <form id = "add" action = "<?php $_SERVER['PHP_SELF']?>" method = "post" >
 	<input type = "hidden" name = "action" value = "add">
 </form >
 
-<!-- PHP BACKEND SECTION -->
 
 
 
@@ -76,8 +65,7 @@ if (!empty ($_POST) )
           <tbody>
               <?php 
               $display_years = new School(); 
-              $display_years->dataBase(); 
-              $display_years->database->displayYears();
+              $display_years->display();
               ?>
           </tbody>
         </table>
