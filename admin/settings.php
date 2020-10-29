@@ -1,7 +1,7 @@
 <?php 
-
   session_start();
-  require_once './functions/class.school.php';
+  require_once './functions/class.controller.php';
+  require_once './functions/class.displayer.php';
 
 ?>
 
@@ -36,41 +36,28 @@
 <!-- header -->
 
 
-<!-- PHP BACKEND SECTION -->
-<?php 
-if (!empty ($_POST) )
-	switch ( $_POST['action'] ){
+<!-- FORMS  -->
+<form id = "add_year" action = "<?php $_SERVER['PHP_SELF']?>" method = "post" >
+  <input type = "hidden" name = "action" value = "add_year">
+</form >
 
-	case 'add':
-		$add_year = new School;
-		$add_year->addYear($_POST['year'])->isSuccess()->getErrors();
-    break;
-  
-  case 'set': 
-    $set_curr_year = new School;
-    $set_curr_year->setCurrentYear($_POST['year'])->isSuccess()->getErrors();
-    break;
+<form id = "set_year" action = "<?php $_SERVER['PHP_SELF']?>" method = "post" >
+  <input type = "hidden" name = "action" value = "set_year">
+</form >
+<!-- FORMS  -->
 
-}
+
+<!-- CONTROLLER -->
+<?php
+  $controller = new Controller();
+ 
+  if (!empty ($_POST))
+    $controller->handleRequest ($_POST['action'], $_POST['year']);
 ?>
-
-<!-- FORM  -->
-<form id = "add" action = "<?php $_SERVER['PHP_SELF']?>" method = "post" >
-  <input type = "hidden" name = "action" value = "add">
-</form >
-<form id = "select" action = "<?php $_SERVER['PHP_SELF']?>" method = "post" >
-  <input type = "hidden" name = "action" value = "set">
-</form >
-
-<!-- PHP BACKEND SECTION -->
-
-
-
-
+<!-- CONTROLLER -->
 
 <!-- main content -->
 <div class="container" style="margin-top:30px">
-<!-- header content -->
 
 <!-- years settings -->
 <div id="scroll_years">
@@ -80,26 +67,25 @@ if (!empty ($_POST) )
     
   <div id="years" class="collapse" data-parent="#scroll_years">
  
-    <div class="form-group">
+  <div class="form-group">
       <label for="schoolYear">Add new year</label>
-      <input  type = "text" class="form-control" name = "year" form = "add" placeholder = "2020/2021" required>
+      <input type = "text" class="form-control" name = "year" form = "add_year" placeholder = "2020/2021" required>
     </div>
     
     <div class="form-group"> 
-      <button class="button" form = "add" >add</button>
+      <button class="button" form = "add_year" >add</button>
     </div>
-    
     <div class="form-group">
       <label for="schoolYear">Set current year</label>
-      <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
-        <?php $display_years = new School; $display_years->displayYearsSelect();?>
+      <select id = "schoolYear" class = "form-control" form = "set_year" name = "year" >
+       <?php $displayer = new Displayer; $displayer->yearsSelect();?>
       </select>
     </div>
-    
+   
     <div class="form-group">
-      <button class="button" form = "select" >set</button>
+      <button class="button" form = "set_year" >set</button>
     </div>
-  
+
   </div>
 </div>
 <!-- years settings -->
@@ -124,7 +110,7 @@ if (!empty ($_POST) )
     <div class="form-group">
       <label for="schoolYear">Set current year</label>
       <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
-        <?php $display_years = new School; $display_years->displayYearsSelect();?>
+      <?php  ?>
       </select>
     </div>
     
@@ -157,7 +143,7 @@ if (!empty ($_POST) )
     <div class="form-group">
       <label for="schoolYear">Set current year</label>
       <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
-        <?php $display_years = new School; $display_years->displayYearsSelect();?>
+      <?php ?>
       </select>
     </div>
     
@@ -189,7 +175,7 @@ if (!empty ($_POST) )
     <div class="form-group">
       <label for="schoolYear">Set current year</label>
       <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
-        <?php $display_years = new School; $display_years->displayYearsSelect();?>
+      <?php  ?>
       </select>
     </div>
     
