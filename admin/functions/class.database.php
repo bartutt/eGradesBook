@@ -33,81 +33,112 @@ class DataBase{
     *	containts list of years
     *
     */ 
-        public $years = array();
+        private $years = array();
 
   /**    
     *	containts list of years
     *
     */ 
-    public $lesson_times = array();
+        private $lesson_times = array();
 
-
+  /**    
+    *	containts list of years
+    *
+    */ 
+        private $marks_cat = array();
 
   /**    
     *	connection to database
     *
     */ 
-    private $conn;
+        private $conn;
 
-    private $pre_stmt;
-
-
-
-function __construct(){
-    
-    $this->getYears();
-    $this->getLessonTimes();
-
-}
+        private $pre_stmt;
 
 
+
+//PUBLIC METHODS
 /** 
-* Display errors
+* return years list
+*/
+public function getMarksCat(){
+    
+    $this->readMarksCat();
+    
+    return $this->marks_cat;
+}
+/** 
+* return years list
+*/
+public function getYears(){
+    
+    $this->readYears();
+    
+    return $this->years;
+}
+/** 
+* return lesson times list
+*/
+public function getLessonTimes(){
+    
+    $this->readLessonTimes();
+    
+    return $this->lesson_times;
+}
+/** 
+* return errors
 */
 public function getErrors(){
 
-	foreach ($this->errors as $error) {
-        echo '
-        <div class = "container">
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <h4 class="alert-heading">Error</h4><hr>' . $error .
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        </div>';
-		}          
-	return $this;
+    return $this->errors;
 
 }
-/**  
-* Display success if process went ok
-*/           
-public function isSuccess(){
-	foreach ($this->success as $success) {
-        echo '
-        <div class = "container">
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <h4 class="alert-heading">Perfect!</h4><hr>' . $success .
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        </div>';
-	}                 
-	return $this;
+/** 
+* return success
+*/
+public function getSuccess(){
+
+    return $this->success;
+
 }
+
+
+
 
 /** 
 *     
-* @param string $year 
+* @param year 
 */  
 public function addYear($year){
    
-    $this->saveYear($year)->getErrors()->isSuccess();
+    $this->saveYear($year);
+
+}
+/** 
+*     
+* @param year 
+*/  
+public function setYear($year){
+   
+    $this->setCurrentYear($year);
+
+}
+/** 
+*     
+* @param old_value 
+* @param new_value 
+*/  
+public function setLessonTime($old_value, $new_value){
+   
+    $this->saveNewLessonTime($old_value, $new_value);
 
 }
 
+
+
+
+
+//PRIVATE METHODS 
 
 /**   
 * Conntect to DB
@@ -124,12 +155,14 @@ private function connectDB(){
       die("Connection failed: " . $this->conn->connect_error);
     }
 }
-
-
 /**   
-* prepared statement 
+* prepared statement for insert
+*
+* @param table - name of the table
+* @param col - column where value be inserted
+* @param value - this will be inserted
 */ 
-private function preStmtInsert($table, $col, $value){
+private function insert($table, $col, $value){
 
     $this->connectDB();
             
@@ -137,20 +170,73 @@ private function preStmtInsert($table, $col, $value){
          
         $this->pre_stmt->bind_param("s", $value); 
         
-            if ( $this->pre_stmt->execute() )
-                $this->success[] = $value . ' is added successfully';       
-            else    
-                $this->errors[] = $value . ' already added';
+        if ( $this->pre_stmt->execute() )
+            return true;      
+        else         
+            return false; 
     
             $this->pre_stmt->close();
             $this->conn->close();
 }
+/**   
+* prepared statement for choosed rows
+*
+* @param table - name of the table
+* @param col - column which be updated
+* @param value - this will be inserted
+* @param limit - number of rows
+*/ 
+private function updateRows($table, $col, $value, $limit){
 
+    $this->connectDB();
+            
+        $this->pre_stmt = $this->conn->prepare("UPDATE $table SET $col = ? $limit");
+         
+        $this->pre_stmt->bind_param("s", $value); 
+        
+            if ( $this->pre_stmt->execute() )
+                return true;      
+            else         
+                return false; 
+    
+            $this->pre_stmt->close();
+            $this->conn->close();
+}
+/**   
+* prepared statement for update WHERE
+*
+* @param table - name of the table
+* @param col - column which be updated
+* @param value - new value for insert
+* @param old_value - value of searched aim
+* @param where - name for searched column
+*/ 
+private function updateWhere(
+    $table = '', 
+    $col = '', 
+    $value = '', 
+    $old_value = '', 
+    $where = ''
+    ) {
 
+    $this->connectDB();
+            
+        $this->pre_stmt = $this->conn->prepare("UPDATE $table SET $col = ? WHERE $where = ?");
+        
+        $this->pre_stmt->bind_param("ss", $value, $old_value); 
+
+            if ( $this->pre_stmt->execute() )
+                return true;      
+            else         
+                return false; 
+    
+            $this->pre_stmt->close();
+            $this->conn->close();
+}
 /**   
 * save year to DB
 *
-* @param string $year 
+* @param string year 
 */ 
 private function saveYear($year) {
 
@@ -158,20 +244,22 @@ private function saveYear($year) {
     
         if ($validation->isValid($year, 'school_year') === true) {
          
-            $this->preStmtInsert('years', 'years', $year);
+            if ($this->insert('years', 'years', $year) === true)
+                $this->success[] = $year . ' is saved'; 
+            else
+                $this->errors[] = $year . ' can not be saved';
             
         }
-        else $this->errors[] = 'Input is not valid!';
+        else $this->errors[] = 'Year is not valid!';
     
     return $this;
 
 }
-
 /**    
 * This function reads years list into array
 *
 */  
-private function getYears(){
+private function readYears(){
 
     $this->connectDB();
 
@@ -190,7 +278,7 @@ private function getYears(){
 * This function reads lesson times list into array
 *
 */  
-private function getLessonTimes(){
+private function readLessonTimes(){
 
     $this->connectDB();
 
@@ -205,6 +293,59 @@ private function getLessonTimes(){
 
     }
 }
+/**    
+* This function reads marks categories
+*
+*/  
+private function readMarksCat(){
+
+    $this->connectDB();
+
+    $sql = "SELECT type FROM marks_cat";
+
+    $result = $this->conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+             $this->marks_cat[] = $row ['type'];
+        }
+
+    }
+}
+
+
+/**
+*     
+* @param string year
+*/ 
+private function setCurrentYear($year) {
+    
+    if ($this->updateRows('years', 'current_year', $year, 'LIMIT 1') === true)
+        $this->success[] = $year . ' is set as current year'; 
+    else
+        $this->errors[] = $year . ' can not be set';
+
+    return $this;
+} 
+/**
+*     
+* 
+*/ 
+private function saveNewLessonTime($old_value, $new_value) {
+    
+    $validation = new Validator;
+
+    if ($validation->isValid ($new_value, 'lesson_time') === true){
+        
+        if ($this->updateWhere('lesson_times', 'time', $new_value , $old_value, 'time') === true)
+            $this->success[] = $old_value . ' is changed to '. $new_value; 
+        else
+            $this->errors[] = $new_value . ' can not be set';
+    }else $this->errors[] = $new_value . ' is not valid!';
+
+    return $this;
+} 
+
 
 
 
@@ -232,28 +373,6 @@ private function addClass($name, $year){
     return $this;
 }
 
-private function setCurrentYear($year) {
-
-        $this->connectDB();
-
-        $stmt = $this->conn->prepare("UPDATE years SET current_year = ? LIMIT 1");
-    
-        $stmt->bind_param("s", $curr_year);
-
-        $curr_year = $year;
-        $id = 1;
-        if ( $stmt->execute() )
-            $this->success[] = $curr_year . ' is set';       
-        else    
-            $this->errors[] = 'Something went wrong';
-    
-            $stmt->close();
-            $this->conn->close();
-    
-    
-    return $this;
-} 
-    
 
 
 private function displayClasses($year){
