@@ -2,6 +2,7 @@ body{
   overflow-y: scroll;
 }
 .footer {
+  margin-top: 50px;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -11,7 +12,6 @@ body{
 padding: 0px;
 box-shadow: 0 2px 4px 0 grey; 
 font-size: 18px;
-border-bottom: 2px solid seagreen;
 }
 .nav-link{
   padding:20px;
@@ -46,14 +46,17 @@ border-bottom: 2px solid transparent;
   margin-top: 10px;
 }
 
-
 .button {
-	padding: 5px 40px;
+  margin-top:2px;
+	padding: 6px;
 	border: 1px solid lightgrey;
 	width:100%;
   border-radius: 4px;
+  background-color: white;
+  border-left: 4px solid lightgrey;
 }
 .button:hover {
-	background-color: seagreen;
-	color: white;
+  border-left: 4px solid seagreen;
+  background-color: whitesmoke;
+  
 }
