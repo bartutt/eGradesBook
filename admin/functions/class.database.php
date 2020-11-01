@@ -63,7 +63,9 @@ class DataBase{
 */
 public function getMarksCat(){
     
-    $this->readMarksCat();
+    $this->connectDB();
+
+    $this->readTable('marks_cat', 'type');
     
     return $this->marks_cat;
 }
@@ -72,7 +74,9 @@ public function getMarksCat(){
 */
 public function getYears(){
     
-    $this->readYears();
+    $this->connectDB();
+
+    $this->readTable('years', 'years');
     
     return $this->years;
 }
@@ -81,7 +85,9 @@ public function getYears(){
 */
 public function getLessonTimes(){
     
-    $this->readLessonTimes();
+    $this->connectDB();
+
+    $this->readTable('lesson_times', 'time');
     
     return $this->lesson_times;
 }
@@ -101,13 +107,7 @@ public function getSuccess(){
     return $this->success;
 
 }
-
-
-
-
-
 /**   
-* save year to DB
 *
 * @param string year 
 */ 
@@ -128,7 +128,6 @@ public function addYear($year) {
     return $this;
 
 }
-
 /**
 *     
 * @param string year
@@ -144,7 +143,6 @@ public function setYear($year) {
 } 
 /**
 *     
-* 
 */ 
 public function setLessonTime($old_value, $new_value) {
     
@@ -160,10 +158,8 @@ public function setLessonTime($old_value, $new_value) {
 
     return $this;
 } 
-
 /**
 *     
-* 
 */ 
 public function setMarkCat($old_value, $new_value) {
     
@@ -179,7 +175,9 @@ public function setMarkCat($old_value, $new_value) {
 
     return $this;
 } 
-
+/**
+*     
+*/ 
 public function addMarkCat($value) {
     
     $validation = new Validator;
@@ -200,7 +198,7 @@ public function addMarkCat($value) {
 //PRIVATE METHODS 
 
 /**   
-* Conntect to DB
+* Connect to DB
 */  
 private function connectDB(){
     $server = "127.0.0.1";
@@ -292,65 +290,27 @@ private function updateWhere(
             $this->pre_stmt->close();
             $this->conn->close();
 }
-
 /**    
-* This function reads years list into array
+* This function reads content of choseed column
 *
-*/  
-private function readYears(){
+* @param table - name of the table
+* @param col - name of column 
+*/ 
+private function readTable($table, $col){
 
-    $this->connectDB();
-
-    $sql = "SELECT years FROM years";
+    $sql = "SELECT $col FROM $table";
 
     $result = $this->conn->query($sql);
 
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
-             $this->years[] = $row ['years'];
+             $this->$table[] = $row [$col];
         }
 
     }
+
+
 }
-/**    
-* This function reads lesson times list into array
-*
-*/  
-private function readLessonTimes(){
-
-    $this->connectDB();
-
-    $sql = "SELECT time FROM lesson_times";
-
-    $result = $this->conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-             $this->lesson_times[] = $row ['time'];
-        }
-
-    }
-}
-/**    
-* This function reads marks categories
-*
-*/  
-private function readMarksCat(){
-
-    $this->connectDB();
-
-    $sql = "SELECT type FROM marks_cat";
-
-    $result = $this->conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-             $this->marks_cat[] = $row ['type'];
-        }
-
-    }
-}
-
 
 
 
