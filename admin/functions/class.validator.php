@@ -9,13 +9,6 @@
 */
 
 class Validator{
-  /** 
-    *   
-    * contains errors which came while processing
-    *
-    * @var array   
-    */
-    public $errors = array();
 
   /** 
     *   
@@ -25,7 +18,8 @@ class Validator{
     */
     private $regex = array(
 		'school_year' => "/^[2]{1}[0]{1}[0-9]{2}\/[2]{1}[0]{1}[0-9]{2}$/",
-		'lesson_time' => "/^[0-1]{1}[0-9]{1}\.[0-6]{2}-[0-1]{1}[0-9]{1}\.[0-6]{2}$/"
+		'lesson_time' => "/^[0-1]{1}[0-9]{1}\.[0-6]{2}-[0-1]{1}[0-9]{1}\.[0-6]{2}$/",
+		'marks_cat' => "/^[a-z- ]+$/"
     
     );
 
