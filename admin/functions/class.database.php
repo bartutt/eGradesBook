@@ -105,36 +105,95 @@ public function getSuccess(){
 
 
 
-/** 
-*     
-* @param year 
-*/  
-public function addYear($year){
-   
-    $this->saveYear($year);
 
-}
-/** 
-*     
-* @param year 
-*/  
-public function setYear($year){
-   
-    $this->setCurrentYear($year);
+/**   
+* save year to DB
+*
+* @param string year 
+*/ 
+public function addYear($year) {
 
-}
-/** 
-*     
-* @param old_value 
-* @param new_value 
-*/  
-public function setLessonTime($old_value, $new_value){
-   
-    $this->saveNewLessonTime($old_value, $new_value);
+    $validation = new Validator;
+
+    if ($validation->isValid($year, 'school_year') === true) {
+     
+        if ($this->insert('years', 'years', $year) === true)
+            $this->success[] = $year . ' is saved'; 
+        else
+            $this->errors[] = $year . ' can not be saved';
+        
+    }
+    else $this->errors[] = 'Year is not valid!';
+
+    return $this;
 
 }
 
+/**
+*     
+* @param string year
+*/ 
+public function setYear($year) {
+    
+    if ($this->updateRows('years', 'current_year', $year, 'LIMIT 1') === true)
+        $this->success[] = $year . ' is set as current year'; 
+    else
+        $this->errors[] = $year . ' can not be set';
 
+    return $this;
+} 
+/**
+*     
+* 
+*/ 
+public function setLessonTime($old_value, $new_value) {
+    
+    $validation = new Validator;
+
+    if ($validation->isValid ($new_value, 'lesson_time') === true){
+        
+        if ($this->updateWhere('lesson_times', 'time', $new_value , $old_value, 'time') === true)
+            $this->success[] = $old_value . ' is changed to '. $new_value; 
+        else
+            $this->errors[] = $new_value . ' can not be set';
+    }else $this->errors[] = $new_value . ' is not valid!';
+
+    return $this;
+} 
+
+/**
+*     
+* 
+*/ 
+public function setMarkCat($old_value, $new_value) {
+    
+    $validation = new Validator;
+
+    if ($validation->isValid ($new_value, 'marks_cat') === true){
+        
+        if ($this->updateWhere('marks_cat', 'type', $new_value , $old_value, 'type') === true)
+            $this->success[] = $old_value . ' is changed to '. $new_value; 
+        else
+            $this->errors[] = $new_value . ' can not be set';
+    }else $this->errors[] = $new_value . ' is not valid!';
+
+    return $this;
+} 
+
+public function addMarkCat($value) {
+    
+    $validation = new Validator;
+
+    if ($validation->isValid ($value, 'marks_cat') === true){
+        
+        if ($this->insert('marks_cat', 'type', $value) === true)
+            $this->success[] = $value . ' is added.'; 
+        else
+            $this->errors[] = $value . ' can not be add';
+    }else $this->errors[] = $value . ' is not valid!';
+
+    return $this;
+} 
 
 
 
@@ -233,28 +292,7 @@ private function updateWhere(
             $this->pre_stmt->close();
             $this->conn->close();
 }
-/**   
-* save year to DB
-*
-* @param string year 
-*/ 
-private function saveYear($year) {
 
-        $validation = new Validator;
-    
-        if ($validation->isValid($year, 'school_year') === true) {
-         
-            if ($this->insert('years', 'years', $year) === true)
-                $this->success[] = $year . ' is saved'; 
-            else
-                $this->errors[] = $year . ' can not be saved';
-            
-        }
-        else $this->errors[] = 'Year is not valid!';
-    
-    return $this;
-
-}
 /**    
 * This function reads years list into array
 *
@@ -314,37 +352,6 @@ private function readMarksCat(){
 }
 
 
-/**
-*     
-* @param string year
-*/ 
-private function setCurrentYear($year) {
-    
-    if ($this->updateRows('years', 'current_year', $year, 'LIMIT 1') === true)
-        $this->success[] = $year . ' is set as current year'; 
-    else
-        $this->errors[] = $year . ' can not be set';
-
-    return $this;
-} 
-/**
-*     
-* 
-*/ 
-private function saveNewLessonTime($old_value, $new_value) {
-    
-    $validation = new Validator;
-
-    if ($validation->isValid ($new_value, 'lesson_time') === true){
-        
-        if ($this->updateWhere('lesson_times', 'time', $new_value , $old_value, 'time') === true)
-            $this->success[] = $old_value . ' is changed to '. $new_value; 
-        else
-            $this->errors[] = $new_value . ' can not be set';
-    }else $this->errors[] = $new_value . ' is not valid!';
-
-    return $this;
-} 
 
 
 

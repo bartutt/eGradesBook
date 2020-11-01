@@ -104,16 +104,16 @@ class Displayer{
             echo '
             <form action = "settings.php" method = "post">
                 <div class="col-12">
-                  <button class="button" data-toggle="modal" data-target="#lesson'. $i .'">
+                  <button class="button" data-toggle="modal" data-target="#mark'. $i .'">
                     ' . $marks_cat .'
                   </button>
   
-                  <div class="modal fade" id="lesson' . $i . '" tabindex="-1" role="dialog" aria-labelledby="lesson' .$i . '" aria-hidden="true">
+                  <div class="modal fade" id="mark' . $i . '" tabindex="-1" role="dialog" aria-labelledby="mark' .$i . '" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                       <div class="modal-content">
                             
                         <div class="modal-header">
-                          <h5 class="modal-title" id="lesson' . $i . '">New time</h5>
+                          <h5 class="modal-title" id="mark' . $i . '">Edit</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -122,7 +122,7 @@ class Displayer{
                         <div class="modal-body">          
                           <div class="form-group">
                             <input type = "text" class="form-control" name = "value" placeholder = "' . $marks_cat . '" required>
-                              <input type = "hidden" name = "action" value = "set_lesson_time">
+                              <input type = "hidden" name = "action" value = "set_mark_cat">
                               <input name = "old_value" type = "hidden" value = "' . $marks_cat . '">
                           </div>
                         </div>
