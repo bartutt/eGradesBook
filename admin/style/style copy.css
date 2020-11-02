@@ -1,11 +1,14 @@
 body{
+  overflow-y: auto;
   padding-bottom: 70px;
-  overflow-y: scroll;
+  min-height: 150%;
 }
-.collapsing {
-  
-          transition: 1s ease;
+
+html {
+    scroll-behavior: smooth;
+    height: 100%;
 }
+
 .footer {
   position: fixed;
   bottom: 0;
@@ -13,6 +16,7 @@ body{
   text-align: center;
 }
 
+}
 .navbar{
 padding: 0px;
 box-shadow: 0 2px 4px 0 grey; 
