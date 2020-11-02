@@ -11,6 +11,7 @@
 
 <!-- head -->
 <?php include './div/head.html'?>
+
 <!-- head -->
 <body>
 
@@ -24,14 +25,14 @@
 <!-- header -->
 <div class="container" style="margin-top:30px">
    
-<!-- content -->
+  <!-- content -->
   <div class="row">
-    <div class = "header"><h2>Settings</h2></div>
+    <div class = "header"><h2 class="display-4">Settings</h2></div>
   </div>
   <div class="row">
     <small class="text-muted">Here you can add new year, change lesson times, manage person status, marks categories or change current year.</small>
   </div>
-<!-- content -->
+  <!-- content -->
  
 </div>
 <!-- header -->
@@ -45,6 +46,7 @@
   $controller->htmlForm('add_year');
   $controller->htmlForm('set_year');
   $controller->htmlForm('add_mark_cat');
+  $controller->htmlForm('add_role_status');
 
   echo $controller->getForms();
 
@@ -66,12 +68,11 @@
 
 
 <!-- years settings -->
-  <div id="scroll_years">
-      <button style = "border-left: 4px solid rgb(216, 142, 4);" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#years" aria-expanded="true">
-        <h5>Year manage</h5>
-      </button>
+    <button aria-controls="years" style = "border-left: 4px solid rgb(216, 142, 4);" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#years" aria-expanded="false">
+      <h5>Year manage</h5>
+    </button>
     
-    <div id="years" class="collapse" data-parent="#scroll_years">  
+    <div id="years" class="collapse">  
       <div class="row">
         <div class="col-sm-6">
           <p class="lead">Add new year</p>
@@ -87,37 +88,31 @@
         </div>
       </div>
     </div>
-  </div>
 <!-- years settings -->
 
 
 
 <!-- lesson times settings -->
-  <div id="lesson_times">   
-      <button style = "border-left: 4px solid rgb(245, 66, 53);" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#lessons" aria-expanded="true">
+    <button aria-controls="lessons" style = "border-left: 4px solid rgb(245, 66, 53);" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#lessons" aria-expanded="false">
       <h5>Lesson times</h5>
       </button>  
-    <div id="lessons" class="collapse" data-parent="#lesson_times">
+    <div id="lessons" class="collapse">
         <p class="lead">Current lesson times:</p>
       <div class="form-group">
-        <?php $displayer->displayLessonTimesEdit();?>
+      <?php $displayer->displayContentAsButton('getLessonTimes', '$lesson', 'lesson', 'set_lesson_time');?>
       </div>
     </div>
-  </div>
 <!-- lesson times settings -->
 
-
 <!-- marks settings -->
-  <div id="scroll_marks">
-    <button style = " border-left: 4px solid #4285F4" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#marks" aria-expanded="true">
+    <button aria-controls="marks" style = " border-left: 4px solid #4285F4" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#marks" aria-expanded="false">
       <h5>Assessment</h5>
     </button>
-  
-    <div id="marks" class="collapse" data-parent="#scroll_marks">
+    <div id="marks" class="collapse">
       <div class="row">
         <div class="col-sm-6">
           <p class="lead">Edit existing categories</p>
-          <?php $displayer->displayMarksCat();?> 
+          <?php $displayer->displayContentAsButton('getMarksCat', '$marks', 'mark', 'set_mark_cat');?> 
         </div>
 
         <div class="col-sm-6">
@@ -127,51 +122,47 @@
         </div>
       </div>
     </div>
-  </div>
+ 
 <!-- marks settings -->
 
+
 <!-- person status settings -->
-<div id="status_scroll">
-    <button style = " border-left: 4px solid seagreen" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#status" aria-expanded="true">
+    <button aria-controls="status" style = " border-left: 4px solid seagreen" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#status" aria-expanded="false">
       <h5>Person status</h5>
     </button>
     
-  <div id="status" class="collapse" data-parent="#status_scroll">
- 
-    <div class="form-group">
-      <label for="schoolYear">Add new year</label>
-      <input  type = "text" class="form-control" name = "year" form = "add" placeholder = "2020/2021" required>
-    </div>
-    
-    <div class="form-group"> 
-      <button class="button" form = "add" >add</button>
-    </div>
-    
-    <div class="form-group">
-      <label for="schoolYear">Set current year</label>
-      <select id = "schoolYear" class = "form-control" form = "select" name = "year" >
-      <?php  ?>
-      </select>
-    </div>
-    
-    <div class="form-group">
-      <button class="button" form = "select" >set</button>
-    </div>
-  
-  </div>
-</div>
-<!-- marks settings -->
+      <div id="status" class="collapse">
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="lead">Available statuses/roles</p>
+            <?php $displayer->displayContentAsButton('getRoleStatus', '$status', 'status', 'set_role_status');?> 
+          </div>
+
+          <div class="col-sm-6">
+            <p class="lead">Add new category</p>
+            <input type = "text" class="form-control" name = "value" form = "add_role_status" placeholder = "category" required>
+            <button class="button" form = "add_role_status" >add</button>
+          </div>
+        </div>
+      </div>
+  <!-- marks settings -->
 
 
 </div>
 <!-- main content -->
 
 
-
 <!-- Footer -->
 <?php include './div/footer.html'?>
 <!-- Footer -->
+<script>
+  $('.collapse').on('shown.bs.collapse', function(e) {
+    var $col = $(this).closest('.collapse');
+    $('html,body').animate({
+      scrollTop: $col.offset().top -100
+    }, 500);
+  });
 
-
+   </script>
 </body>
 </html>
