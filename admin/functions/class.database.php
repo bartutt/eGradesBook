@@ -46,6 +46,12 @@ class DataBase{
     *
     */ 
         private $marks_cat = array();
+    
+    /**    
+    *	containts list of roles/status
+    *
+    */ 
+    private $role_status = array();
 
   /**    
     *	connection to database
@@ -58,8 +64,20 @@ class DataBase{
 
 
 //PUBLIC METHODS
+
 /** 
-* return years list
+* return status/role
+*/
+public function getRoleStatus(){
+    
+    $this->connectDB();
+
+    $this->readTable('role_status', 'role_status');
+    
+    return $this->role_status;
+}
+/** 
+* return marks categories
 */
 public function getMarksCat(){
     
@@ -178,6 +196,23 @@ public function setMarkCat($old_value, $new_value) {
 /**
 *     
 */ 
+public function setRoleStatus($old_value, $new_value) {
+    
+    $validation = new Validator;
+
+    if ($validation->isValid ($new_value, 'role_status') === true){
+        
+        if ($this->updateWhere('role_status', 'role_status', $new_value , $old_value, 'role_status') === true)
+            $this->success[] = $old_value . ' is changed to '. $new_value; 
+        else
+            $this->errors[] = $new_value . ' can not be set';
+    }else $this->errors[] = $new_value . ' is not valid!';
+
+    return $this;
+} 
+/**
+*     
+*/ 
 public function addMarkCat($value) {
     
     $validation = new Validator;
@@ -192,7 +227,23 @@ public function addMarkCat($value) {
 
     return $this;
 } 
+/**
+*     
+*/ 
+public function addRoleStatus($value) {
+    
+    $validation = new Validator;
 
+    if ($validation->isValid ($value, 'role_status') === true){
+        
+        if ($this->insert('role_status', 'role_status', $value) === true)
+            $this->success[] = $value . ' is added.'; 
+        else
+            $this->errors[] = $value . ' can not be add';
+    }else $this->errors[] = $value . ' is not valid!';
+
+    return $this;
+} 
 
 
 //PRIVATE METHODS 
