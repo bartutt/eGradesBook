@@ -59,6 +59,16 @@ class Controller {
                 $this->database->addMarkCat($value);
                 $this->result();
                 break;
+
+            case 'set_role_status':  
+                $this->database->setRoleStatus($old_value, $value);
+                $this->result();
+                break;
+
+            case 'add_role_status':  
+                $this->database->addRoleStatus($value);
+                $this->result();
+                break;
             }
 
     }
