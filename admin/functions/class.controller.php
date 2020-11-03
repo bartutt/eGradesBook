@@ -69,7 +69,14 @@ class Controller {
                 $this->database->addRoleStatus($value);
                 $this->result();
                 break;
+
+            case 'add_student':  
+                $this->database->addStudent($value);
+                $this->result();
+                break;
             }
+
+
 
     }
 

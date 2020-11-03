@@ -13,7 +13,7 @@
 <?php include './div/head.html'?>
 
 <!-- head -->
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 
 <!-- topnav -->
@@ -64,7 +64,7 @@
 
 
 <!-- main content -->
-<div class="container" style="margin-top:30px">
+<div class="container">
 
 
 <!-- years settings -->
@@ -155,14 +155,8 @@
 <!-- Footer -->
 <?php include './div/footer.html'?>
 <!-- Footer -->
-<script>
-  $('.collapse').on('shown.bs.collapse', function(e) {
-    var $col = $(this).closest('.collapse');
-    $('html,body').animate({
-      scrollTop: $col.offset().top -100
-    }, 500);
-  });
 
-   </script>
+<script src="js/collapse.js"></script>
+
 </body>
 </html>

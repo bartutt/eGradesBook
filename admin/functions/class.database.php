@@ -51,7 +51,14 @@ class DataBase{
     *	containts list of roles/status
     *
     */ 
-    private $role_status = array();
+        private $role_status = array();
+    
+    /**    
+    *	containts person info
+    *
+    */ 
+        private $person = array();
+        private $personData = array();
 
   /**    
     *	connection to database
@@ -65,6 +72,17 @@ class DataBase{
 
 //PUBLIC METHODS
 
+/** 
+* return person
+*/
+public function getStudents(){
+    
+    $this->connectDB();
+
+    $this->readPersons('2');
+    
+    return $this->personData;
+}
 /** 
 * return status/role
 */
@@ -243,8 +261,25 @@ public function addRoleStatus($value) {
     }else $this->errors[] = $value . ' is not valid!';
 
     return $this;
-} 
+}
+/**
+*     
+*/ 
+public function addStudent($value) {
+    
+    //$validation = new Validator;
 
+    //if ($validation->isValid ($value, 'role_status') === true){
+        if ($this->insertPerson($value) === true)
+            $this->success[] = $value[1] .' '. $value[2]  .' is added to database'; 
+        else
+            $this->errors[] = $value[1] .' '. $value[2] .' can not be add';
+    
+    
+            //}else $this->errors[] = $value . ' is not valid!';
+
+    return $this;
+} 
 
 //PRIVATE METHODS 
 
@@ -286,6 +321,58 @@ private function insert($table, $col, $value){
             $this->pre_stmt->close();
             $this->conn->close();
 }
+
+/**   
+* prepared statement for insert person
+*
+* @param value - array with person info
+*/ 
+private function insertPerson($value){
+
+        $this->connectDB();
+            
+        $this->pre_stmt = $this->conn->prepare("INSERT INTO PERSON 
+        (   id,
+            name,
+            surname,
+            role_status,
+            gender,
+            tel,
+            birth_date,
+            e_mail,
+            city,
+            code,
+            street,
+            house_nr,
+            password
+
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
+         
+        $this->pre_stmt->bind_param("sssssssssssss", 
+            $value[0], 
+            $value[1], 
+            $value[2], 
+            $value[3],
+            $value[4],
+            $value[5], 
+            $value[6], 
+            $value[7], 
+            $value[8],
+            $value[9],
+            $value[10],
+            $value[11],
+            $value[12]); 
+
+        if ( $this->pre_stmt->execute() )
+            return true;      
+        else         
+            return false; 
+    
+            $this->pre_stmt->close();
+            $this->conn->close();
+}
+
+
 /**   
 * prepared statement for choosed rows
 *
@@ -349,17 +436,21 @@ private function updateWhere(
 */ 
 private function readTable($table, $col){
 
-    $sql = "SELECT $col FROM $table";
+    $sql = "SELECT $col FROM $table ";
+    
+    $this->pre_stmt = $this->conn->prepare($sql);
+    
+    if (!$this->pre_stmt->execute() )
+        $this->errors[] = 'Something went wrong';
+        
+        $result = $this->pre_stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
 
-    $result = $this->conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
              $this->$table[] = $row [$col];
-        }
-
-    }
-
+            }
+    
+    $this->pre_stmt->close();
+    $this->conn->close();
 
 }
 
@@ -393,28 +484,36 @@ private function addClass($name, $year){
 
 
 
-private function displayClasses($year){
+private function readPersons($role_status){
 
-    $this->connectDB();
-
-    $sql = "SELECT * FROM classes where school_year = '$year' ";
-
-    $result = $this->conn->query($sql);
-
-        if ($result->num_rows > 0) {
-
-            while($row = $result->fetch_assoc()) {
-                 echo 
-                    "<tr>          
-                        <td>" . $row['class_name'] . "</td>                         
-                        <td>".  $row['teacher_id']. "</td>
-                        <td>".  $row['profile_id']. "</td>
-                        <td>" . $row['school_year'] . "</td>
-                        <td>" . $row['profile_id'] . "</td>
-                    </tr>";
-                }
-        }else 
-            $this->errors[] = '0 results';
+    $sql = "SELECT * FROM person WHERE role_status = ? ";
+    
+    $this->pre_stmt = $this->conn->prepare($sql); 
+    
+    $this->pre_stmt->bind_param("i", $role_status);
+    
+    if (!$this->pre_stmt->execute() )
+        $this->errors[] = 'Something went wrong';
+        
+        $result = $this->pre_stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $this->person['id'] = $row['id'];
+                $this->person['name'] = $row['name'];
+                $this->person['surname'] = $row['surname'];
+                $this->person['role_status'] = $row['role_status'];
+                $this->person['gender'] = $row['gender'];
+                $this->person['tel'] = $row['tel'];
+                $this->person['birth_date'] = $row['birth_date'];
+                $this->person['e_mail'] = $row['e_mail'];
+                $this->person['city'] = $row['city'];
+                $this->person['code'] = $row['code'];
+                $this->person['street'] = $row['street'];
+                $this->person['house_nr'] = $row['house_nr'];
+                $this->personData[] = $this->person;
+    }
+       
+    $this->pre_stmt->close();
+    $this->conn->close();
 
 }
 

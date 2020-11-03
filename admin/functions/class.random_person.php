@@ -2,7 +2,7 @@
 /*	THIS CLASS CREATING A RANDOM PERSON DETAILS*/
 
 
-trait RandomPerson{
+class RandomPerson{
 
 	public $random_name;
 	public $random_surname;

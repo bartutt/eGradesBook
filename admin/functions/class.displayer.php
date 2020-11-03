@@ -53,7 +53,27 @@ class Displayer{
     
     
     }
+  public function displayStudents() {
 
+      echo '<table class="table table-striped">';
+      echo '<thead class = "thead-light"><th>name</th><th>surname</th><th>birth date</th><th>ID</th></thead>';
+      echo '<tbody>';
+      foreach ($this->database->getStudents() as $student){
+        echo '<tr>
+                <td>' . $student['name'] . '</td>
+                <td>' . $student['surname'] . '</td>
+                <td>' . $student['birth_date'] . '</td>
+                <td>' . $student['id'] . '</td>';
+
+
+        echo '</tr>';
+      }
+      echo '</tbody>';
+      echo '</table>';
+        
+
+
+    }
   public function displayContentAsButton($source, $as, $id, $action_value){
     $i = 1;
     foreach ($this->database->$source() as $as){
@@ -95,7 +115,7 @@ class Displayer{
         </form>';
       $i++;
     }
-  }
+    }
 
 
 
