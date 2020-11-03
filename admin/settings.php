@@ -23,7 +23,7 @@
 
 
 <!-- header -->
-<div class="container" style="margin-top:30px">
+<div class="container">
    
   <!-- content -->
   <div class="row">

@@ -1,21 +1,54 @@
 body{
   overflow-y: scroll;
 }
+
+footer {
+  padding: 10px;
+  text-align: center;
+}
+.container{
+  margin-bottom: 30px;
+}
+
+button:focus {
+  outline: inherit;
+}
+
+.table-sm tr:hover{
+  background-color: seashell;
+  transition: 1s ease;
+}
+.table-sm td:hover{
+  cursor: pointer;
+}
+
+.table-sm td, tr{
+    padding: 0;
+    margin: 0;
+    border-spacing:0px;
+}
+
+}
 .collapsing {
           transition: 1s ease;
 }
-footer {
-  height: 40px;
-  text-align: center;
+.table-button{
+  width: 100%;
+  text-align: left;
+  border:none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  outline: inherit;
+  font: inherit;
+  padding:10px;
 }
 
-.container{
-  margin-bottom: 10px;
-}
 .navbar{
 padding: 0px;
 box-shadow: 0 2px 4px 0 grey; 
 font-size: 18px;
+margin-bottom: 15px;
 }
 .nav-link{
   padding:20px;
@@ -26,6 +59,7 @@ border-left: 2px solid seagreen;
 border-bottom: 2px solid transparent;
 
 }
+
 
 .nav-item a:hover{
   /*background-color: seagreen;*/

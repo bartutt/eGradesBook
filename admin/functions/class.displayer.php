@@ -11,7 +11,9 @@ class Displayer{
     }
  
      
-  public function displayErrors(){
+  
+  
+public function displayErrors(){
      if (!empty ($this->database->getErrors() ) )
       foreach ($this->database->getErrors() as $error) {
             echo '
@@ -25,9 +27,12 @@ class Displayer{
             </div>';
         }          
     
-    }
+}
 
-  public function displaySuccess(){
+  
+  
+  
+public function displaySuccess(){
       if (!empty ($this->database->getSuccess() ) )
        foreach ($this->database->getSuccess() as $success) {
              echo '
@@ -41,9 +46,12 @@ class Displayer{
              </div>';
          }          
      
-    }
+}
     
-  public function displayYearsSelect() {
+  
+  
+  
+public function displayYearsSelect() {
 
             foreach ($this->database->getYears() as $year)
                 echo 
@@ -52,29 +60,73 @@ class Displayer{
                 '</option>';
     
     
-    }
-  public function displayStudents() {
+}
+  
+  
+  
+public function displayStudents() {
 
-      echo '<table class="table table-striped">';
+      echo '<table class="table table-sm">';
       echo '<thead class = "thead-light"><th>name</th><th>surname</th><th>birth date</th><th>ID</th></thead>';
       echo '<tbody>';
       foreach ($this->database->getStudents() as $student){
         echo '<tr>
-                <td>' . $student['name'] . '</td>
-                <td>' . $student['surname'] . '</td>
-                <td>' . $student['birth_date'] . '</td>
-                <td>' . $student['id'] . '</td>';
+                <form action = "details.php" method = "post">
+                <td><button type = "submit" class="table-button">' . $student['name'] . '</button></td>
+                <td><button type = "submit" class="table-button">' . $student['surname'] . '</button></td>
+                <td><button type = "submit" class="table-button">' . $student['birth_date'] . '</button></td>
+                <td><button type = "submit" class="table-button">' . $student['id'] . '</button></td>
+                <input type = "hidden" name = "id" value = "'.$student['id'].'">
+                </form>';
 
 
         echo '</tr>';
       }
       echo '</tbody>';
       echo '</table>';
+  
+}
+  
+  
+  
+public function displayStudentDetails($id) {
+      echo $id;
+      echo '<table class="buttons">';
+      echo '<thead class = "thead-light"><th>name</th><th>surname</th><th>birth date</th><th>ID</th></thead>';
+      echo '<tbody>';
+      $person = $this->database->getPersonDetails($id);
+        echo '<tr>
+                
+                <td><button form = "details" type = "submit" class="table-button">' . $person['id'] . '</button></td>
+                <td><button form = "details" type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
+                <td><button form = "details" type = "submit" class="table-button">' . $person['gender'] . '</button></td>
+                <td><button form = "details" type = "submit" class="table-button">' . $person['tel'] . '</button></td>
+                <td><button form = "details" type = "submit" class="table-button">' . $person['e_mail'] . '</button></td>
+                <td><button form = "details" type = "submit" class="table-button">' . $person['city'] . '</button></td>
+                <td><button form = "details" type = "submit" class="table-button">' . $person['code'] . '</button></td>
+                <td><button form = "details" type = "submit" class="table-button">' . $person['street'] . '</button></td>
+                <td><button form = "details" type = "submit" class="table-button">' . $person['house_nr'] . '</button></td>
+                ';
+
+
+      echo '</tr>';
+      echo '</tbody>';
+      echo '</table>';
         
 
+}
+ 
 
-    }
-  public function displayContentAsButton($source, $as, $id, $action_value){
+
+public function displayStudentName($id) {
+ 
+  $person = $this->database->getPersonDetails($id);
+    echo $person['name'] . ' '. $person['surname'];
+
+}
+  
+
+public function displayContentAsButton($source, $as, $id, $action_value){
     $i = 1;
     foreach ($this->database->$source() as $as){
         echo '
@@ -119,6 +171,8 @@ class Displayer{
 
 
 
+
+  
 
   }// end of class
 ?>

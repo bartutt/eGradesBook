@@ -23,14 +23,11 @@
 
 
 <!-- header -->
-<div class="container" style="margin-top:30px">
+<div class="container" >
    
   <!-- content -->
   <div class="row">
     <div class = "header"><h2 class="display-4">Students</h2></div>
-  </div>
-  <div class="row">
-    <small class="text-muted">Here you can find overview over all students, add and edit existing student.</small>
   </div>
   <!-- content -->
  
@@ -63,18 +60,10 @@
 
 <!-- main content -->
 <div class="container">
-
-
-<!-- add student -->
-    <button aria-controls="years" style = "border-left: 4px solid rgb(216, 142, 4);" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#years" aria-expanded="false">
-      <h5>Students admission</h5>
-    </button>
-    
-    <div id="years" class="collapse">  
-      <div class="row">
-        <div class="col 12">
-          <p class="lead">New student:</p>
-          <table class = "table" >
+  <div class="row">
+    <div class="col 12">
+      <p class="lead">New student:</p>
+        <table class = "table" >
           <tr >
 		          <td >ID number</td >
 		          <td ><input class = "form-control" form ="add_student"  type = "text" name = "student[]" value = "<?php echo rand(10000000000,99999999999); ?>" required></td >
@@ -132,70 +121,9 @@
 	          <tr >
 		          <td colspan = 2 ><button form ="add_student" class = "button"  type = "submit" >Add new student</buton></td >
 	          </tr >
-          </table >
-        </div>
-      </div>
+        </table >
     </div>
-<!-- add student -->
-
-
-
-<!-- lesson times settings -->
-    <button aria-controls="lessons" style = "border-left: 4px solid rgb(245, 66, 53);" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#lessons" aria-expanded="false">
-      <h5>Overview</h5>
-      </button>  
-    <div id="lessons" class="collapse">
-        <p class="lead">Students overview</p>
-      <div class="form-group">
-        <?php $displayer->displayStudents();?>
-      </div>
-    </div>
-<!-- lesson times settings -->
-
-<!-- marks settings -->
-    <button aria-controls="marks" style = " border-left: 4px solid #4285F4" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#marks" aria-expanded="false">
-      <h5>Assessment</h5>
-    </button>
-    <div id="marks" class="collapse">
-      <div class="row">
-        <div class="col-sm-6">
-          <p class="lead">Edit existing categories</p>
-          <?php $displayer->displayContentAsButton('getMarksCat', '$marks', 'mark', 'set_mark_cat');?> 
-        </div>
-
-        <div class="col-sm-6">
-          <p class="lead">Add new category</p>
-          <input type = "text" class="form-control" name = "value" form = "add_mark_cat" placeholder = "category" required>
-          <button class="button" form = "add_mark_cat" >add</button>
-        </div>
-      </div>
-    </div>
- 
-<!-- marks settings -->
-
-
-<!-- person status settings -->
-    <button aria-controls="status" style = " border-left: 4px solid seagreen" class="list-group-item list-group-item-action" data-toggle="collapse" data-target="#status" aria-expanded="false">
-      <h5>Person status</h5>
-    </button>
-    
-      <div id="status" class="collapse">
-        <div class="row">
-          <div class="col-sm-6">
-            <p class="lead">Available statuses/roles</p>
-            <?php $displayer->displayContentAsButton('getRoleStatus', '$status', 'status', 'set_role_status');?> 
-          </div>
-
-          <div class="col-sm-6">
-            <p class="lead">Add new category</p>
-            <input type = "text" class="form-control" name = "value" form = "add_role_status" placeholder = "category" required>
-            <button class="button" form = "add_role_status" >add</button>
-          </div>
-        </div>
-      </div>
-  <!-- marks settings -->
-
-
+  </div>
 </div>
 <!-- main content -->
 

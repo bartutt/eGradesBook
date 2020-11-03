@@ -73,13 +73,25 @@ class DataBase{
 //PUBLIC METHODS
 
 /** 
-* return person
+* return student details
+*/
+public function getPersonDetails($id){
+
+    $this->connectDB();
+
+    $this->readPersons('id', $id);
+    
+    return $this->person;
+}
+
+/** 
+* return students
 */
 public function getStudents(){
     
     $this->connectDB();
 
-    $this->readPersons('2');
+    $this->readPersons('role_status','2');
     
     return $this->personData;
 }
@@ -484,13 +496,13 @@ private function addClass($name, $year){
 
 
 
-private function readPersons($role_status){
+private function readPersons($where, $value){
 
-    $sql = "SELECT * FROM person WHERE role_status = ? ";
+    $sql = "SELECT * FROM person WHERE $where = ? ";
     
     $this->pre_stmt = $this->conn->prepare($sql); 
     
-    $this->pre_stmt->bind_param("i", $role_status);
+    $this->pre_stmt->bind_param("i", $value);
     
     if (!$this->pre_stmt->execute() )
         $this->errors[] = 'Something went wrong';
