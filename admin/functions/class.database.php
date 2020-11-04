@@ -87,11 +87,11 @@ public function getPersonDetails($id){
 /** 
 * return students
 */
-public function getStudents(){
+public function getPersons($role_status){
     
     $this->connectDB();
 
-    $this->readPersons('role_status','2');
+    $this->readPersons('role_status',$role_status);
     
     return $this->personData;
 }
@@ -277,18 +277,49 @@ public function addRoleStatus($value) {
 /**
 *     
 */ 
-public function addStudent($value) {
+public function addPerson($value) {
     
-    //$validation = new Validator;
+    $validation = new Validator;
 
-    //if ($validation->isValid ($value, 'role_status') === true){
+    if ($validation->isValid ($value[0], 'id')!== true)
+        $this->errors[] ='ID ' .  $value[0] . ' is not valid.';
+
+    if ($validation->isValid ($value[1], 'char_space')!== true)
+        $this->errors[] ='Name ' .  $value[1] . ' is not valid.';
+
+    if ($validation->isValid ($value[2], 'char_space')!== true)
+        $this->errors[] ='Surname ' .  $value[2] . ' is not valid.';
+
+    if ($validation->isValid ($value[5], 'tel')!== true)
+        $this->errors[] = 'Tel ' .  $value[5] . ' is not valid.';
+
+    if ($validation->isValid ($value[6], 'birth_date')!== true)
+        $this->errors[] ='Birth date ' .  $value[6] . ' is not valid.';		
+
+    if ($validation->isValid ($value[8], 'char_space')!== true)
+        $this->errors[] = 'City ' . $value[8] . ' is not valid.';
+
+    if ($validation->isValid ($value[9], 'code')!== true)
+        $this->errors[] = 'Code ' . $value[9] . ' is not valid.';
+
+    if ($validation->isValid ($value[10], 'char_space')!== true)
+        $this->errors[] = 'Street ' . $value[10] . ' is not valid.';
+
+    if ($validation->isValid ($value[11], 'house_nr')!== true)
+        $this->errors[] = 'Nr ' . $value[11] . ' is not valid.';
+
+    if (!filter_var($value[7], FILTER_VALIDATE_EMAIL))
+        $this->errors[] = "E-mail address is not valid<br>";	
+    
+    if (empty ($this->errors)) {
         if ($this->insertPerson($value) === true)
             $this->success[] = $value[1] .' '. $value[2]  .' is added to database'; 
         else
             $this->errors[] = $value[1] .' '. $value[2] .' can not be add';
+    }     
+        
     
     
-            //}else $this->errors[] = $value . ' is not valid!';
 
     return $this;
 } 
@@ -360,7 +391,7 @@ private function insertPerson($value){
 
         ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
          
-        $this->pre_stmt->bind_param("sssssssssssss", 
+        $this->pre_stmt->bind_param("issssssssisss", 
             $value[0], 
             $value[1], 
             $value[2], 
@@ -502,7 +533,7 @@ private function readPersons($where, $value){
     
     $this->pre_stmt = $this->conn->prepare($sql); 
     
-    $this->pre_stmt->bind_param("i", $value);
+    $this->pre_stmt->bind_param("s", $value);
     
     if (!$this->pre_stmt->execute() )
         $this->errors[] = 'Something went wrong';

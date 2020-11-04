@@ -9,6 +9,7 @@ class Controller {
     function __construct($database) {
 
         $this->database = $database;
+        
 
     }
 
@@ -29,7 +30,6 @@ class Controller {
     }
 
 
- 
     
     public function handleRequest ($action, $old_value, $value) {
 
@@ -70,8 +70,8 @@ class Controller {
                 $this->result();
                 break;
 
-            case 'add_student':  
-                $this->database->addStudent($value);
+            case 'add_person':
+                $this->database->addPerson($value);
                 $this->result();
                 break;
             }

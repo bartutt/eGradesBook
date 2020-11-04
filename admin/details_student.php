@@ -5,7 +5,12 @@
   require_once './functions/class.database.php';
   require_once './functions/class.random_person.php';
 
+  $database = new DataBase();
+  $controller = new Controller ($database);
+  $displayer = new Displayer ($database);
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +32,11 @@
    
   <!-- content -->
   <div class="row">
-    <div class = "header"><h2 class="display-4">Students</h2></div>
+    <div class = "header">
+      <h2 class="display-4">
+        <?php $displayer->displayStudentName($_POST['id']);?>
+      </h2>
+    </div>
   </div>
   <!-- content -->
  
@@ -35,35 +44,12 @@
 <!-- header -->
 
 
-<!-- CONTROLLER -->
-<?php
-  $database = new DataBase();
-  $controller = new Controller ($database);
-  $student = new RandomPerson;
-
-  $controller->htmlForm('details');
-  
-
-  echo $controller->getForms();
-
-  $displayer = new Displayer ($database);
-
-
-  if (!empty ($_POST)){
-    $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['student']);
-    $displayer->displayErrors();
-    $displayer->displaySuccess();
-  }
-?>
-<!-- CONTROLLER -->
-
-
 <!-- main content -->
 <div class="container">
   <div class="row">
     <div class="col 12">  
-        <p class="lead">Overview</p>
-          <?php $displayer->displayPersons('student');?>
+        <p class="lead">Details</p>
+          <?php $displayer->displayStudentDetails($_POST['id']);?>
     </div> 
   </div>
 </div>

@@ -14,42 +14,41 @@ class Displayer{
   
   
 public function displayErrors(){
-     if (!empty ($this->database->getErrors() ) )
-      foreach ($this->database->getErrors() as $error) {
-            echo '
-            <div class = "container">
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <h4 class="alert-heading">Error</h4><hr>' . $error .
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            </div>';
-        }          
-    
+  
+  if (!empty ($this->database->getErrors() ) ){
+    echo '<div class = "container">';
+    echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+    echo '<h4 class="alert-heading">Error</h4>';
+    echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
+    echo '<span aria-hidden="true">&times;</span>';
+    echo '</button>';    
+      foreach ($this->database->getErrors() as $error)
+          echo '<hr>' . $error;            
+    echo '<br></div></div>';
+  }
 }
 
-  
-  
+
+
   
 public function displaySuccess(){
-      if (!empty ($this->database->getSuccess() ) )
-       foreach ($this->database->getSuccess() as $success) {
-             echo '
-             <div class = "container">
-             <div class="alert alert-success alert-dismissible fade show" role="alert">
-             <h4 class="alert-heading">Success!</h4><hr>' . $success .
-                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                 <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             </div>';
-         }          
+  if (!empty ($this->database->getSuccess() ) ){
+
+    echo '<div class = "container">';
+    echo '<div class="alert alert-success alert-dismissible fade show" role="alert">';
+    echo '<h4 class="alert-heading">Success</h4>';
+    echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
+    echo '<span aria-hidden="true">&times;</span>';
+    echo '</button>';    
+      foreach ($this->database->getSuccess() as $success)
+          echo '<hr>' . $success;            
+    echo '<br></div></div>';
+  }     
      
 }
-    
-  
-  
+
+
+
   
 public function displayYearsSelect() {
 
@@ -61,22 +60,32 @@ public function displayYearsSelect() {
     
     
 }
+
+public function displayRoleStatusSelect() {
+
+  foreach ($this->database->getRoleStatus() as $role_status)
+      echo 
+      '<option value = '. $role_status .'>'         
+           . $role_status .                       
+      '</option>';
+
+
+}
   
   
-  
-public function displayStudents() {
+public function displayPersons($role_status) {
 
       echo '<table class="table table-sm">';
       echo '<thead class = "thead-light"><th>name</th><th>surname</th><th>birth date</th><th>ID</th></thead>';
       echo '<tbody>';
-      foreach ($this->database->getStudents() as $student){
+      foreach ($this->database->getPersons($role_status) as $person){
         echo '<tr>
-                <form action = "details.php" method = "post">
-                <td><button type = "submit" class="table-button">' . $student['name'] . '</button></td>
-                <td><button type = "submit" class="table-button">' . $student['surname'] . '</button></td>
-                <td><button type = "submit" class="table-button">' . $student['birth_date'] . '</button></td>
-                <td><button type = "submit" class="table-button">' . $student['id'] . '</button></td>
-                <input type = "hidden" name = "id" value = "'.$student['id'].'">
+                <form action = "details_student.php" method = "post">
+                <td><button type = "submit" class="table-button">' . $person['name'] . '</button></td>
+                <td><button type = "submit" class="table-button">' . $person['surname'] . '</button></td>
+                <td><button type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
+                <td><button type = "submit" class="table-button">' . $person['id'] . '</button></td>
+                <input type = "hidden" name = "id" value = "'.$person['id'].'">
                 </form>';
 
 
@@ -90,26 +99,45 @@ public function displayStudents() {
   
   
 public function displayStudentDetails($id) {
-      echo $id;
-      echo '<table class="buttons">';
-      echo '<thead class = "thead-light"><th>name</th><th>surname</th><th>birth date</th><th>ID</th></thead>';
+
+      echo '<table class="table">';
       echo '<tbody>';
       $person = $this->database->getPersonDetails($id);
-        echo '<tr>
-                
-                <td><button form = "details" type = "submit" class="table-button">' . $person['id'] . '</button></td>
-                <td><button form = "details" type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
-                <td><button form = "details" type = "submit" class="table-button">' . $person['gender'] . '</button></td>
-                <td><button form = "details" type = "submit" class="table-button">' . $person['tel'] . '</button></td>
-                <td><button form = "details" type = "submit" class="table-button">' . $person['e_mail'] . '</button></td>
-                <td><button form = "details" type = "submit" class="table-button">' . $person['city'] . '</button></td>
-                <td><button form = "details" type = "submit" class="table-button">' . $person['code'] . '</button></td>
-                <td><button form = "details" type = "submit" class="table-button">' . $person['street'] . '</button></td>
-                <td><button form = "details" type = "submit" class="table-button">' . $person['house_nr'] . '</button></td>
-                ';
+        echo '<tr> 
+                <th scope="row">id</th>     
+                <td>' . $person['id'] . '</td>
+              </tr>
+              <tr>
+                <th scope="row">birth date</th> 
+                <td>' . $person['birth_date'] . '</td>
+              </tr>
+              <th scope="row">gender</th> 
+                <td>' . $person['gender'] . '</td>
+              <tr>
+                <th scope="row">tel</th> 
+                <td>' . $person['tel'] . '</td>
+              </tr >
+              <tr>
+                <th scope="row">e-mail</th>   
+                <td>' . $person['e_mail'] . '</td>
+              </tr >           
+              <tr>
+                <th scope="row">city</th> 
+                <td>' . $person['city'] . '</td>
+              </tr >
+              <tr>
+                <th scope="row">post code</th>     
+                <td>' . $person['code'] . '</td>
+              </tr >
+              <tr>
+                <th scope="row">street</th> 
+                <td>' . $person['street'] . '</td>
+              </tr >            
+              <tr>
+                <th scope="row">house</th>
+                <td>' . $person['house_nr'] . '</td>
+              </tr >';
 
-
-      echo '</tr>';
       echo '</tbody>';
       echo '</table>';
         

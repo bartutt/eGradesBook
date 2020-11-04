@@ -45,8 +45,7 @@ CREATE TABLE `marks_cat` (
 );
 
 CREATE TABLE `role_status` (
-  `id` int(3) PRIMARY KEY AUTO_INCREMENT,
-  `role_status` varchar(30) NOT NULL
+  `role_status` varchar(30) NOT NULL UNIQUE
 );
 
 CREATE TABLE `classes` (
@@ -125,7 +124,6 @@ CREATE TABLE `message` (
   `time` timestamp
 );
 
-ALTER TABLE `person` ADD FOREIGN KEY (`role_status`) REFERENCES `role_status` (`id`);
 
 ALTER TABLE `classes` ADD FOREIGN KEY (`id_teacher`) REFERENCES `person` (`id`);
 
