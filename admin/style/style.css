@@ -9,14 +9,18 @@ footer {
 .container{
   margin-bottom: 30px;
 }
+.display-4{
+  font-size: 2.5rem;
+}
 
 button:focus {
   outline: inherit;
 }
 
 .table-sm tr:hover{
-  background-color: seashell;
-  transition: 1s ease;
+  background-color: whitesmoke;
+  transition: 0.7s ease;
+  
 }
 .table-sm td:hover{
   cursor: pointer;
@@ -28,7 +32,6 @@ button:focus {
     border-spacing:0px;
 }
 
-}
 .collapsing {
           transition: 1s ease;
 }
@@ -60,7 +63,6 @@ border-bottom: 2px solid transparent;
 
 }
 
-
 .nav-item a:hover{
   /*background-color: seagreen;*/
   border-bottom: 2px solid seagreen;
@@ -73,13 +75,7 @@ border-bottom: 2px solid transparent;
   width: 100%;
 
 }
-.header-content{
-  border-left: 4px solid rgb(216, 142, 4);
-  padding-left: 20px;
-  border-bottom: 1px solid lightgrey;
-  width: 100%;
 
-}
 .list-group-item{
   margin-top: 10px;
   box-shadow: 0 2px 4px 0 lightgrey; 
