@@ -32,8 +32,10 @@
    
   <!-- content -->
   <div class="row">
-    <div class = "header"><h2 class="display-4">
-      <?php $displayer->displayStudentName($_POST['id']);?></h2>
+    <div class = "header">
+      <h2 class="display-4">
+        <?php $displayer->displayStudentName($_POST['id']);?>
+      </h2>
     </div>
   </div>
   <!-- content -->
