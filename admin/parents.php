@@ -27,7 +27,7 @@
    
   <!-- content -->
   <div class="row">
-    <div class = "header"><h2 class="display-4">Teachers</h2></div>
+    <div class = "header"><h2 class="display-4">Parents</h2></div>
   </div>
   <!-- content -->
  
@@ -63,7 +63,7 @@
   <div class="row">
     <div class="col 12">  
         <p class="lead">Overview</p>
-          <?php $displayer->displayPersons('teacher');?>
+          <?php $displayer->displayPersons('parent');?>
     </div> 
   </div>
 </div>
