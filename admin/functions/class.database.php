@@ -34,6 +34,8 @@ class DataBase{
     *
     */ 
         private $years = array();
+ 
+        private $current_year = array();
 
   /**    
     *	containts list of years
@@ -41,11 +43,9 @@ class DataBase{
     */ 
         private $lesson_times = array();
 
-  /**    
-    *	containts list of years
-    *
-    */ 
-        private $marks_cat = array();
+        private $category_name = array();
+
+        private $subjects = array();
     
     /**    
     *	containts list of roles/status
@@ -58,7 +58,8 @@ class DataBase{
     *
     */ 
         private $person = array();
-        private $personData = array();
+        private $notes = array();
+        private $marks = array();
 
   /**    
     *	connection to database
@@ -72,16 +73,73 @@ class DataBase{
 
 //PUBLIC METHODS
 
-/** 
-* return student details
-*/
-public function getPersonDetails($id){
+
+public function getMarks($subject_id = null, $student_id = null, $semester = null){
+    
+    $this->$subject_id = null;
+
+    $this->connectDB();
+    $this->readTableWhereAndAnd(
+        'marks', 'id_student', 'id_subject', 'cat_id', $student_id, $subject_id, $semester, $subject_id);
+
+        if ($this->$subject_id !== null)
+            return $this->$subject_id;
+        else 
+            return false;
+
+}
+
+public function getNotes($student_id){
 
     $this->connectDB();
 
-    $this->readPersons('id', $id);
+    $this->readTableWhere('notes', 'id_student', $student_id);
+
+    return $this->notes;
+
+}
+
+public function getSubjects(){
+
+    unset($this->subjects);
+
+    $this->connectDB();
+
+    $this->readTable('subjects', 'id_subject');
+
+    return $this->subjects;
+
+}
+
+public function getCategoryName($id){
+
+    unset($this->category_name);
     
-    return $this->person;
+    $this->connectDB();
+
+    $this->readColumnWhere('marks_cat', 'type', 'id', $id, 'category_name');
+
+    return $this->category_name[0]['type'];
+
+}
+
+
+
+
+
+/** 
+* return person details
+*
+* @param type - i.e student, teacher etc
+* @param id 
+*/
+public function getPersonDetails($type, $id){
+
+    $this->connectDB();
+
+    $this->readTableWhere('person', 'id', $id, $type);
+
+    return $this->$type;
 }
 
 /** 
@@ -91,9 +149,9 @@ public function getPersons($role_status){
     
     $this->connectDB();
 
-    $this->readPersons('role_status',$role_status);
+    $this->readTableWhere('person', 'role_status', $role_status);
     
-    return $this->personData;
+    return $this->person;
 }
 /** 
 * return status/role
@@ -117,6 +175,21 @@ public function getMarksCat(){
     
     return $this->marks_cat;
 }
+
+/** 
+* return current year
+*/
+public function getCurrentYear(){
+
+    $this->current_year = null;
+    
+    $this->connectDB();
+
+    $this->readTable('years', 'current_year', 'current_year');
+    
+    return $this->current_year[0];
+}
+
 /** 
 * return years list
 */
@@ -476,8 +549,12 @@ private function updateWhere(
 *
 * @param table - name of the table
 * @param col - name of column 
+* @param var - name of variable which will holds info
 */ 
-private function readTable($table, $col){
+private function readTable($table, $col, $var = null){
+
+    if (empty ($var)) 
+        $var = $table;
 
     $sql = "SELECT $col FROM $table ";
     
@@ -489,7 +566,106 @@ private function readTable($table, $col){
         $result = $this->pre_stmt->get_result();
             while ($row = $result->fetch_assoc()) {
 
-             $this->$table[] = $row [$col];
+             $this->$var[] = $row [$col];
+            }
+    
+    $this->pre_stmt->close();
+    $this->conn->close();
+
+}
+
+/**    
+* This function reads content of choseed column WHERE
+*
+* @param table - name of the table
+* @param col - name of column 
+* @param where - type of search
+* @param value - value for search
+*/ 
+private function readColumnWhere($table, $col, $where, $value, $var = null){
+    
+    if (empty ($var)) 
+        $var = $table;
+
+    $sql = "SELECT $col FROM $table WHERE $where = ?";
+    
+    $this->pre_stmt = $this->conn->prepare($sql);
+    
+    $this->pre_stmt->bind_param("s", $value);
+
+    if (!$this->pre_stmt->execute() )
+        $this->errors[] = 'Something went wrong';
+        
+        $result = $this->pre_stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+
+             $this->$var[] = $row;
+            }
+    
+    $this->pre_stmt->close();
+    $this->conn->close();
+
+}
+
+/**    
+* This function reads all content of table WHERE
+*
+* @param table - name of the table
+* @param where - type of search
+* @param value - value for search
+* @param var - name of variable which will holds info
+*/ 
+private function readTableWhere($table, $where, $value, $var = null){
+
+    if (empty ($var)) 
+        $var = $table;
+    
+    $sql = "SELECT * FROM $table WHERE $where = ?";
+    
+    $this->pre_stmt = $this->conn->prepare($sql);
+    
+    $this->pre_stmt->bind_param("s", $value);
+
+    if (!$this->pre_stmt->execute() )
+        $this->errors[] = 'Something went wrong';
+        
+        $result = $this->pre_stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+
+             $this->$var[] = $row;
+            }
+    
+    $this->pre_stmt->close();
+    $this->conn->close();
+
+}
+
+/**    
+* This function reads all content of table WHERE AND
+*
+* @param table - name of the table
+* @param where - type of search
+* @param value - value for search
+* @param var - name of variable which will holds info
+*/ 
+private function readTableWhereAnd($table, $where, $where2, $value, $value2, $var = null){
+
+    if (empty ($var)) 
+        $var = $table;
+    
+    $sql = "SELECT * FROM $table WHERE $where = ? AND $where2 = ?";
+    
+    $this->pre_stmt = $this->conn->prepare($sql);
+    
+    $this->pre_stmt->bind_param("ss", $value, $value2);
+
+    if (!$this->pre_stmt->execute() )
+        $this->errors[] = 'Something went wrong';
+        
+        $result = $this->pre_stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+
+             $this->$var[] = $row;
             }
     
     $this->pre_stmt->close();
@@ -498,10 +674,38 @@ private function readTable($table, $col){
 }
 
 
+/**    
+* This function reads all content of table WHERE AND AND
+*
+* @param table - name of the table
+* @param where - type of search
+* @param value - value for search
+* @param var - name of variable which will holds info
+*/ 
+private function readTableWhereAndAnd($table, $where, $where2, $where3, $value, $value2, $value3, $var = null){
 
+    if (empty ($var)) 
+        $var = $table;
+    
+    $sql = "SELECT * FROM $table WHERE $where = ? AND $where2 = ? AND $where3 = ?";
+    
+    $this->pre_stmt = $this->conn->prepare($sql);
+    
+    $this->pre_stmt->bind_param("sss", $value, $value2, $value3);
 
+    if (!$this->pre_stmt->execute() )
+        $this->errors[] = 'Something went wrong';
+        
+        $result = $this->pre_stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
 
+             $this->$var[] = $row;
+            }
+    
+    $this->pre_stmt->close();
+    $this->conn->close();
 
+}
 
 
 private function addClass($name, $year){
@@ -524,42 +728,6 @@ private function addClass($name, $year){
   
     return $this;
 }
-
-
-
-private function readPersons($where, $value){
-
-    $sql = "SELECT * FROM person WHERE $where = ? ";
-    
-    $this->pre_stmt = $this->conn->prepare($sql); 
-    
-    $this->pre_stmt->bind_param("s", $value);
-    
-    if (!$this->pre_stmt->execute() )
-        $this->errors[] = 'Something went wrong';
-        
-        $result = $this->pre_stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $this->person['id'] = $row['id'];
-                $this->person['name'] = $row['name'];
-                $this->person['surname'] = $row['surname'];
-                $this->person['role_status'] = $row['role_status'];
-                $this->person['gender'] = $row['gender'];
-                $this->person['tel'] = $row['tel'];
-                $this->person['birth_date'] = $row['birth_date'];
-                $this->person['e_mail'] = $row['e_mail'];
-                $this->person['city'] = $row['city'];
-                $this->person['code'] = $row['code'];
-                $this->person['street'] = $row['street'];
-                $this->person['house_nr'] = $row['house_nr'];
-                $this->personData[] = $this->person;
-    }
-       
-    $this->pre_stmt->close();
-    $this->conn->close();
-
-}
-
 
 
 
