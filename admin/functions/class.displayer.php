@@ -9,6 +9,10 @@ class Displayer{
      */
     private $mark_color = array();
 
+    private $person = array();
+
+    private $marks = array();
+
 
     function __construct($database) {
 
@@ -16,13 +20,6 @@ class Displayer{
 
     }
 
- 
-    private function getPersonDetails($type, $id){
-
-      return $this->$type = $this->database->getPersonDetails($type, $id);
-
-    
-    }
     
     private function setColor($mark){
       if ($mark == 1) 
@@ -80,8 +77,6 @@ public function displayErrors(){
 }
 
 
-
-  
 public function displaySuccess(){
   if (!empty ($this->database->getSuccess() ) ){
 
@@ -97,8 +92,6 @@ public function displaySuccess(){
   }     
      
 }
-
-
 
   
 public function displayYearsSelect() {
@@ -149,26 +142,26 @@ public function displayPersons($role_status) {
 }
   
 
-public function displayNotes($student_id) {
+public function displayNotes($student_id, $year) {
 
  
   echo '<table class="table table-sm">';
-  echo '<tr>';
   echo '<thead><th>#</th><th>teacher</th><th>content</th><th>date</th></thead>';
   echo '<tbody>';
-  foreach ($this->database->getNotes($student_id) as $note){
-    echo '
+  foreach ($this->database->getNotes($student_id) as $note)
+    if ($this->getContentByYear($note['date'], $year) === true ){
+      echo '
             <form action = "" method = "post">
             <tr> 
                 <th scope="row">Note</th>   
-                <td><button type = "submit" class="table-button">'.$this->displayPersonName('teacher', $note['id_teacher']).'</button></td> 
+                <td><button type = "submit" class="table-button">'.  $note['teacher'].'</button></td> 
                 <td><button type = "submit" class="table-button">' . $note['description'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $note['date'] . '</button></td>
             </tr>      
             </form>';
-    echo '</tr>';
-
+      echo '</tr>';
   }
+  
   echo '</tbody>';
   echo '</table>';
 
@@ -176,17 +169,26 @@ public function displayNotes($student_id) {
 
 
 
-
-public function displayStudentMarks($student_id, $year) {
+public function displayStudentMarks($student_id, $school_year) {
   
+
   echo '<div class = "row">
         <div class = "col-6">
         <table class="table">   
         <thead><th>subject</th><th>first semester</th><th>#</th></thead>     
-        <tbody>';
+        <tbody>';   
     
-        foreach ($this->database->getSubjects() as $subject)
-          $this->displaySemesterMarks($year, $subject, $student_id, '1');
+            foreach ($this->database->getSubjects() as $subject){
+              
+              $this->marks = $this->database->getMarks($subject, $student_id, '1', $school_year);
+
+              echo '<tr><th scope="row">'.$subject.'</th>';
+              
+              $this->displayMarks();
+
+              echo '</tr>';
+            }
+        
 
   echo '</tbody>
         </table>
@@ -195,9 +197,18 @@ public function displayStudentMarks($student_id, $year) {
         <table class="table">
         <thead><th>second semester</th><th>#</th><th>final</th></thead>  
         <tbody>';
-        foreach ($this->database->getSubjects() as $subject)
-          $this->displaySemesterMarks($year, $subject, $student_id, '2');
+        
+        foreach ($this->database->getSubjects() as $subject){
+        
+          echo '<tr>';
 
+          $this->marks = $this->database->getMarks($subject, $student_id, '2', $school_year);
+        
+          $this->displayMarks();
+
+          echo '</tr>';
+        }
+  
   echo '</tbody>
         </table>
         </div>
@@ -206,81 +217,69 @@ public function displayStudentMarks($student_id, $year) {
 
 
 
-public function displaySemesterMarks($year, $subject_id, $student_id, $semester) {
-  
-if ($semester !== '2')
-  echo '<tr><th scope="row">'.$subject_id.'</th>';
+
+
+public function displayMarks() {
+
   
   echo '<td>';
+    if (is_array($this->marks))
+        foreach ($this->marks as $mark) {
+              $this->setColor($mark['mark']);
 
-  if ($this->database->getMarks($subject_id, $student_id, $semester) !== false)
-
-    foreach ($this->database->getMarks($subject_id, $student_id, $semester) as $mark) {
-    
-      if ($this->getContentByYear($mark['date'], $year) === true ) {
-
-        $this->setColor($mark['mark']);
-
-          echo '<a data-toggle="tooltip" data-html="true" title="
-            Teacher: '.$this->displayPersonName('teacher', $mark['id_teacher']).'<br>
-            Description: '.$mark['description'].'<br>
-            Weight: '.$mark['weight'].'<br>
-            Date: '.$mark['date'].'<br>
-            Category: '.$this->database->getCategoryName($mark['cat_id']).'<br>      
-            " class="badge '.$this->mark_color.'">' .$mark['mark']. '</a>';
-        }
-  }
-    else echo '-';
-
-  echo '</td>';
-  echo '<td></td>';
- 
-  if ($semester == '2')
+             echo '<a data-toggle="tooltip" data-html="true" title="
+                  Teacher: '.$mark['teacher'].'<br>
+                  Description: '.$mark['description'].'<br>
+                  Weight: '.$mark['weight'].'<br>
+                  Date: '.$mark['date'].'<br>
+                  Category: '.$mark['cat'].'<br>      
+                  " class="badge '.$this->mark_color.'">' .$mark['mark']. '</a>';
+     
+                }else echo '-';
+    echo '</td>';
     echo '<td></td>';
 
-  echo '</tr>';
-
+  
 }
 
 
 
-
-public function displayPersonDetails($person, $id) {
+public function displayPersonDetails($id) {
       
       echo '<table class="table">';
         echo '<tr> 
                 <th scope="row">id</th>     
-                <td>' . $this->$person[0]['id'] . '</td>
+                <td>' . $this->person['id'] . '</td>
               </tr>
               <tr>
                 <th scope="row">birth date</th> 
-                <td>' . $this->$person[0]['birth_date'] . '</td>
+                <td>' . $this->person['birth_date'] . '</td>
               </tr>
               <th scope="row">gender</th> 
-                <td>' . $this->$person[0]['gender'] . '</td>
+                <td>' . $this->person['gender'] . '</td>
               <tr>
                 <th scope="row">tel</th> 
-                <td>' . $this->$person[0]['tel'] . '</td>
+                <td>' . $this->person['tel'] . '</td>
               </tr >
               <tr>
                 <th scope="row">e-mail</th>   
-                <td>' . $this->$person[0]['e_mail'] . '</td>
+                <td>' . $this->person['e_mail'] . '</td>
               </tr >           
               <tr>
                 <th scope="row">city</th> 
-                <td>' . $this->$person[0]['city'] . '</td>
+                <td>' . $this->person['city'] . '</td>
               </tr >
               <tr>
                 <th scope="row">post code</th>     
-                <td>' . $this->$person[0]['code'] . '</td>
+                <td>' . $this->person['code'] . '</td>
               </tr >
               <tr>
                 <th scope="row">street</th> 
-                <td>' . $this->$person[0]['street'] . '</td>
+                <td>' . $this->person['street'] . '</td>
               </tr >            
               <tr>
                 <th scope="row">house</th>
-                <td>' . $this->$person[0]['house_nr'] . '</td>
+                <td>' . $this->person['house_nr'] . '</td>
               </tr >';
       echo '</table>';
         
@@ -288,11 +287,11 @@ public function displayPersonDetails($person, $id) {
 }
  
 
-public function displayPersonName($type, $id) {
+public function displayPersonName($id) {
     
-    $this->getPersonDetails($type, $id);
+    $this->person = $this->database->getPersonDetails($id);
 
-    return $this->$type[0]['name'] . ' '. $this->$type[0]['surname'];
+    return $this->person['name'] . ' '. $this->person['surname'];
 
 }
   
