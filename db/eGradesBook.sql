@@ -7,7 +7,7 @@ CREATE TABLE `person` (
   `id` bigint(11) PRIMARY KEY,
   `name` varchar(20) NOT NULL,
   `surname` varchar(20) NOT NULL,
-  `role_status` varchar(11) NOT NULL,
+  `role_status` int(3) NOT NULL,
   `gender` ENUM ('male', 'female', 'other') NOT NULL,
   `tel` varchar(14) NOT NULL,
   `birth_date` date NOT NULL,
@@ -25,6 +25,7 @@ CREATE TABLE `profiles` (
 );
 
 CREATE TABLE `subjects` (
+  `id` int(3) PRIMARY KEY AUTO_INCREMENT,
   `id_subject` varchar(20) UNIQUE NOT NULL
 );
 
@@ -44,6 +45,7 @@ CREATE TABLE `marks_cat` (
 );
 
 CREATE TABLE `role_status` (
+  `id` int(3) PRIMARY KEY AUTO_INCREMENT,
   `role_status` varchar(30) UNIQUE NOT NULL
 );
 
@@ -59,7 +61,7 @@ CREATE TABLE `marks` (
   `id` int(10) PRIMARY KEY AUTO_INCREMENT,
   `id_student` bigint(11) NOT NULL,
   `id_teacher` bigint(11) NOT NULL,
-  `id_subject` varchar(20) NOT NULL,
+  `id_subject` int(3) NOT NULL,
   `mark` ENUM ('1', '2', '3', '4', '5', '6') NOT NULL,
   `cat_id` int NOT NULL,
   `weight` ENUM ('1', '2', '3', '4', '5') NOT NULL,
@@ -70,7 +72,7 @@ CREATE TABLE `marks` (
 CREATE TABLE `attendance` (
   `id` int(10) PRIMARY KEY AUTO_INCREMENT,
   `id_student` bigint(11) NOT NULL,
-  `id_subject` varchar(20) NOT NULL,
+  `id_subject` int(3) NOT NULL,
   `type` ENUM ('present', 'absent', 'late', 'execused', 'unexecused'),
   `lesson_time_id` int(3) NOT NULL,
   `date` date NOT NULL
@@ -93,7 +95,7 @@ CREATE TABLE `notes` (
 
 CREATE TABLE `class_subject` (
   `id_class` int(3) NOT NULL,
-  `id_subject` varchar(20) NOT NULL,
+  `id_subject` int(3) NOT NULL,
   `id_teacher` bigint(11) NOT NULL,
   `id_lesson_time` int(3) NOT NULL,
   `week_day` ENUM ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL
@@ -106,7 +108,7 @@ CREATE TABLE `student_class` (
 
 CREATE TABLE `teacher_subject` (
   `id_teacher` bigint(11) NOT NULL,
-  `id_subject` varchar(20) NOT NULL
+  `id_subject` int(3) NOT NULL
 );
 
 CREATE TABLE `supervisor_student` (
@@ -123,7 +125,7 @@ CREATE TABLE `message` (
   `time` timestamp
 );
 
-ALTER TABLE `person` ADD FOREIGN KEY (`role_status`) REFERENCES `role_status` (`role_status`);
+ALTER TABLE `person` ADD FOREIGN KEY (`role_status`) REFERENCES `role_status` (`id`);
 
 ALTER TABLE `classes` ADD FOREIGN KEY (`id_teacher`) REFERENCES `person` (`id`);
 
@@ -135,13 +137,13 @@ ALTER TABLE `marks` ADD FOREIGN KEY (`id_student`) REFERENCES `person` (`id`);
 
 ALTER TABLE `marks` ADD FOREIGN KEY (`id_teacher`) REFERENCES `person` (`id`);
 
-ALTER TABLE `marks` ADD FOREIGN KEY (`id_subject`) REFERENCES `subjects` (`id_subject`);
+ALTER TABLE `marks` ADD FOREIGN KEY (`id_subject`) REFERENCES `subjects` (`id`);
 
 ALTER TABLE `marks` ADD FOREIGN KEY (`cat_id`) REFERENCES `marks_cat` (`id`);
 
 ALTER TABLE `attendance` ADD FOREIGN KEY (`id_student`) REFERENCES `person` (`id`);
 
-ALTER TABLE `attendance` ADD FOREIGN KEY (`id_subject`) REFERENCES `subjects` (`id_subject`);
+ALTER TABLE `attendance` ADD FOREIGN KEY (`id_subject`) REFERENCES `subjects` (`id`);
 
 ALTER TABLE `attendance` ADD FOREIGN KEY (`lesson_time_id`) REFERENCES `lesson_times` (`id`);
 
@@ -153,7 +155,7 @@ ALTER TABLE `notes` ADD FOREIGN KEY (`id_teacher`) REFERENCES `person` (`id`);
 
 ALTER TABLE `class_subject` ADD FOREIGN KEY (`id_class`) REFERENCES `classes` (`id`);
 
-ALTER TABLE `class_subject` ADD FOREIGN KEY (`id_subject`) REFERENCES `subjects` (`id_subject`);
+ALTER TABLE `class_subject` ADD FOREIGN KEY (`id_subject`) REFERENCES `subjects` (`id`);
 
 ALTER TABLE `class_subject` ADD FOREIGN KEY (`id_teacher`) REFERENCES `person` (`id`);
 
@@ -165,7 +167,7 @@ ALTER TABLE `student_class` ADD FOREIGN KEY (`id_class`) REFERENCES `classes` (`
 
 ALTER TABLE `teacher_subject` ADD FOREIGN KEY (`id_teacher`) REFERENCES `person` (`id`);
 
-ALTER TABLE `teacher_subject` ADD FOREIGN KEY (`id_subject`) REFERENCES `subjects` (`id_subject`);
+ALTER TABLE `teacher_subject` ADD FOREIGN KEY (`id_subject`) REFERENCES `subjects` (`id`);
 
 ALTER TABLE `supervisor_student` ADD FOREIGN KEY (`id_student`) REFERENCES `person` (`id`);
 
