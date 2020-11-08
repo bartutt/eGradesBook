@@ -189,7 +189,7 @@ public function getRoleStatus(){
     
     $this->connectDB();
 
-    $this->readTable('role_status', 'role_status');
+    $this->readTable('role_status', '*');
     
     return $this->role_status;
 }
@@ -609,7 +609,7 @@ private function readTable($table, $col, $var = null){
         $result = $this->pre_stmt->get_result();
             while ($row = $result->fetch_assoc()) {
 
-             $this->$var[] = $row [$col];
+             $this->$var[] = $row;
             }
     
     $this->pre_stmt->close();

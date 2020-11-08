@@ -110,8 +110,8 @@ public function displayRoleStatusSelect() {
 
   foreach ($this->database->getRoleStatus() as $role_status)
       echo 
-      '<option value = '. $role_status .'>'         
-           . $role_status .                       
+      '<option value = '. $role_status['id'] .'>'         
+           . $role_status['role_status'] .                       
       '</option>';
 
 
