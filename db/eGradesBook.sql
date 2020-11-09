@@ -7,7 +7,7 @@ CREATE TABLE `person` (
   `id` bigint(11) PRIMARY KEY,
   `name` varchar(20) NOT NULL,
   `surname` varchar(20) NOT NULL,
-  `role_status` int(3) NOT NULL,
+  `role_status_id` int(3) NOT NULL,
   `gender` ENUM ('male', 'female', 'other') NOT NULL,
   `tel` varchar(14) NOT NULL,
   `birth_date` date NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE `profiles` (
 
 CREATE TABLE `subjects` (
   `id` int(3) PRIMARY KEY AUTO_INCREMENT,
-  `id_subject` varchar(20) UNIQUE NOT NULL
+  `name` varchar(20) UNIQUE NOT NULL
 );
 
 CREATE TABLE `lesson_times` (
@@ -41,12 +41,12 @@ CREATE TABLE `years` (
 
 CREATE TABLE `marks_cat` (
   `id` int(3) PRIMARY KEY AUTO_INCREMENT,
-  `type` varchar(40) NOT NULL
+  `name` varchar(40) NOT NULL
 );
 
 CREATE TABLE `role_status` (
   `id` int(3) PRIMARY KEY AUTO_INCREMENT,
-  `role_status` varchar(30) UNIQUE NOT NULL
+  `name` varchar(30) UNIQUE NOT NULL
 );
 
 CREATE TABLE `classes` (
@@ -125,7 +125,7 @@ CREATE TABLE `message` (
   `time` timestamp
 );
 
-ALTER TABLE `person` ADD FOREIGN KEY (`role_status`) REFERENCES `role_status` (`id`);
+ALTER TABLE `person` ADD FOREIGN KEY (`role_status_id`) REFERENCES `role_status` (`id`);
 
 ALTER TABLE `classes` ADD FOREIGN KEY (`id_teacher`) REFERENCES `person` (`id`);
 
@@ -176,6 +176,5 @@ ALTER TABLE `supervisor_student` ADD FOREIGN KEY (`id_supervisor`) REFERENCES `p
 ALTER TABLE `message` ADD FOREIGN KEY (`sender`) REFERENCES `person` (`id`);
 
 ALTER TABLE `message` ADD FOREIGN KEY (`receiver`) REFERENCES `person` (`id`);
-
 
 ALTER TABLE classes ADD CONSTRAINT class_year UNIQUE(name, years);
