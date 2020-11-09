@@ -76,27 +76,24 @@ class DataBase{
 //PUBLIC METHODS
 
 
-public function getMarks($subject_id, $student_id, $sem, $school_year) {
+public function getMarks($subject, $student_id, $sem, $school_year) {
     
     $this->setQuery(
-        "
-        SELECT 
-            CONCAT(person.name, ' ', person.surname) AS teacher, marks.id_subject, marks.mark, marks_cat.type AS cat, marks.weight, marks.description, marks.date 
+            "SELECT 
+            CONCAT(person.name, ' ', person.surname) AS teacher, marks.mark, marks_cat.name AS cat, marks.weight, marks.description, marks.date, subjects.name 
             FROM marks 
             INNER JOIN person ON id_teacher = person.id 
             INNER JOIN marks_cat ON cat_id = marks_cat.id
-    
-            WHERE id_student = ? AND id_subject = ? AND date BETWEEN ? AND ?"
+            INNER JOIN subjects ON id_subject = subjects.id
+            WHERE id_student = ? AND subjects.name = ? AND date BETWEEN ? AND ?"
     );
     
-    $this->$subject_id = null; // reset first semester
-
-    $this->connectDB();
+    $this->$subject = null; // reset first semester
 
     $year = explode('/', $school_year);
 
     $values[] = $student_id;
-    $values[] = $subject_id;
+    $values[] = $subject;
     if ($sem == '1') {
         $values[] = $year[0].'-09-01';
         $values[] = $year[0].'-12-31';
@@ -106,28 +103,27 @@ public function getMarks($subject_id, $student_id, $sem, $school_year) {
         $values[] = $year[1].'-06-31';
     }
 
-
-    $this->getContent($values, $subject_id);
-
-            return $this->$subject_id;
-
-
+    $this->getContent($values, $subject);
+            
+        return $this->$subject;
 
 }
 
-public function getNotes($student_id){
+
+public function getNotes($student_id, $school_year){
     
     $this->setQuery(
-        "
-        SELECT CONCAT(person.name, ' ', person.surname) AS teacher, notes.description, notes.date
+        "SELECT CONCAT(person.name, ' ', person.surname) AS teacher, notes.description, notes.date, notes.id
         FROM notes 
         INNER JOIN person ON id_teacher = person.id
-        WHERE id_student = ?"
+        WHERE id_student = ? AND date BETWEEN ? AND ?"
     );
-    
-    $this->connectDB();
+
+    $year = explode('/', $school_year);
 
     $values[] =  $student_id;
+    $values[] = $year[0].'-09-01';
+    $values[] = $year[1].'-06-31';
 
     $this->getContent($values, 'notes');
 
@@ -141,7 +137,7 @@ public function getSubjects(){
 
     $this->connectDB();
 
-    $this->readTable('subjects', 'id_subject');
+    $this->readTable('subjects', 'name');
 
     return $this->subjects;
 
@@ -158,7 +154,6 @@ public function getPersonDetails($id){
 
     $this->setQuery("SELECT * FROM person WHERE id = ?");
 
-    $this->connectDB();
     $values[] = $id;
 
     $this->getContent($values, 'person');
@@ -172,9 +167,24 @@ public function getPersonDetails($id){
 
 public function getPersons($role_status){
     
-    $this->setQuery("SELECT * FROM person WHERE role_status = ?");
+    $this->setQuery("SELECT 
+    person.id,
+    person.name,
+    person.surname, 
+    person.gender,
+    person.tel,
+    person.birth_date,
+    person.e_mail,
+    person.city,
+    person.code,
+    person.street,
+    person.house_nr,
+    role_status.name AS role_status
+    FROM person
+    INNER JOIN role_status ON role_status_id = role_status.id
+    WHERE role_status.name = ?;
+    ");
 
-    $this->connectDB();
 
     $values[] = $role_status;
 
@@ -200,7 +210,7 @@ public function getMarksCat(){
     
     $this->connectDB();
 
-    $this->readTable('marks_cat', 'type');
+    $this->readTable('marks_cat', 'name');
     
     return $this->marks_cat;
 }
@@ -209,14 +219,12 @@ public function getMarksCat(){
 * return current year
 */
 public function getCurrentYear(){
-
-    $this->current_year = null;
     
     $this->connectDB();
 
     $this->readTable('years', 'current_year', 'current_year');
-    
-    return $this->current_year[0];
+
+    return $this->current_year[0]['current_year'];
 }
 
 /** 
@@ -263,11 +271,15 @@ public function getSuccess(){
 */ 
 public function addYear($year) {
 
+    $this->setQuery("INSERT INTO years (years) VALUES (?)");
+
+    $values[] = $year;
+
     $validation = new Validator;
 
     if ($validation->isValid($year, 'school_year') === true) {
      
-        if ($this->insert('years', 'years', $year) === true)
+        if ($this->setContent($values) === true)
             $this->success[] = $year . ' is saved'; 
         else
             $this->errors[] = $year . ' can not be saved';
@@ -283,8 +295,12 @@ public function addYear($year) {
 * @param string year
 */ 
 public function setYear($year) {
+
+    $this->setQuery("UPDATE years SET current_year = ? LIMIT 1");
+
+    $values[] = $year;
     
-    if ($this->updateRows('years', 'current_year', $year, 'LIMIT 1') === true)
+    if ($this->setContent($values) === true)
         $this->success[] = $year . ' is set as current year'; 
     else
         $this->errors[] = $year . ' can not be set';
@@ -295,12 +311,18 @@ public function setYear($year) {
 *     
 */ 
 public function setLessonTime($old_value, $new_value) {
-    
+    $this->setQuery("UPDATE lesson_times SET time = ? WHERE time = ?");
+
+    $this->connectDB();
+
+    $values[] = $new_value;
+    $values[] = $old_value;
+
     $validation = new Validator;
 
     if ($validation->isValid ($new_value, 'lesson_time') === true){
         
-        if ($this->updateWhere('lesson_times', 'time', $new_value , $old_value, 'time') === true)
+        if ($this->setContent($values) === true)
             $this->success[] = $old_value . ' is changed to '. $new_value; 
         else
             $this->errors[] = $new_value . ' can not be set';
@@ -312,12 +334,19 @@ public function setLessonTime($old_value, $new_value) {
 *     
 */ 
 public function setMarkCat($old_value, $new_value) {
+
+    $this->setQuery("UPDATE marks_cat SET name = ? WHERE name = ?");
+
+    $this->connectDB();
+
+    $values[] = $new_value;
+    $values[] = $old_value;
     
     $validation = new Validator;
 
     if ($validation->isValid ($new_value, 'marks_cat') === true){
         
-        if ($this->updateWhere('marks_cat', 'type', $new_value , $old_value, 'type') === true)
+        if ($this->setContent($values) === true)
             $this->success[] = $old_value . ' is changed to '. $new_value; 
         else
             $this->errors[] = $new_value . ' can not be set';
@@ -330,11 +359,18 @@ public function setMarkCat($old_value, $new_value) {
 */ 
 public function setRoleStatus($old_value, $new_value) {
     
+    $this->setQuery("UPDATE role_status SET name = ? WHERE name = ?");
+
+    $this->connectDB();
+
+    $values[] = $new_value;
+    $values[] = $old_value;
+
     $validation = new Validator;
 
     if ($validation->isValid ($new_value, 'role_status') === true){
         
-        if ($this->updateWhere('role_status', 'role_status', $new_value , $old_value, 'role_status') === true)
+        if ($this->setContent($values) === true)
             $this->success[] = $old_value . ' is changed to '. $new_value; 
         else
             $this->errors[] = $new_value . ' can not be set';
@@ -347,11 +383,15 @@ public function setRoleStatus($old_value, $new_value) {
 */ 
 public function addMarkCat($value) {
     
+    $this->setQuery("INSERT INTO marks_cat (name) VALUES (?)");
+
+    $values[] = $value;
+
     $validation = new Validator;
 
     if ($validation->isValid ($value, 'marks_cat') === true){
         
-        if ($this->insert('marks_cat', 'type', $value) === true)
+        if ($this->setContent($values) === true)
             $this->success[] = $value . ' is added.'; 
         else
             $this->errors[] = $value . ' can not be add';
@@ -363,12 +403,16 @@ public function addMarkCat($value) {
 *     
 */ 
 public function addRoleStatus($value) {
+
+    $this->setQuery("INSERT INTO role_status (name) VALUES (?)");
+
+    $values[] = $value;
     
     $validation = new Validator;
 
     if ($validation->isValid ($value, 'role_status') === true){
         
-        if ($this->insert('role_status', 'role_status', $value) === true)
+        if ($this->setContent($values) === true)
             $this->success[] = $value . ' is added.'; 
         else
             $this->errors[] = $value . ' can not be add';
@@ -428,6 +472,7 @@ public function addPerson($value) {
 
 
 
+
 //PRIVATE METHODS 
 
 /**   
@@ -458,30 +503,6 @@ private function setQuery($query){
 
 
 /**   
-* prepared statement for insert
-*
-* @param table - name of the table
-* @param col - column where value be inserted
-* @param value - this will be inserted
-*/ 
-private function insert($table, $col, $value){
-
-    $this->connectDB();
-            
-        $this->pre_stmt = $this->conn->prepare("INSERT INTO $table ($col) VALUES (?)");
-         
-        $this->pre_stmt->bind_param("s", $value); 
-        
-        if ( $this->pre_stmt->execute() )
-            return true;      
-        else         
-            return false; 
-    
-            $this->pre_stmt->close();
-            $this->conn->close();
-}
-
-/**   
 * prepared statement for insert person
 *
 * @param value - array with person info
@@ -494,7 +515,7 @@ private function insertPerson($value){
         (   id,
             name,
             surname,
-            role_status,
+            role_status_id,
             gender,
             tel,
             birth_date,
@@ -532,61 +553,6 @@ private function insertPerson($value){
 }
 
 
-/**   
-* prepared statement for choosed rows
-*
-* @param table - name of the table
-* @param col - column which be updated
-* @param value - this will be inserted
-* @param limit - number of rows
-*/ 
-private function updateRows($table, $col, $value, $limit){
-
-    $this->connectDB();
-            
-        $this->pre_stmt = $this->conn->prepare("UPDATE $table SET $col = ? $limit");
-         
-        $this->pre_stmt->bind_param("s", $value); 
-        
-            if ( $this->pre_stmt->execute() )
-                return true;      
-            else         
-                return false; 
-    
-            $this->pre_stmt->close();
-            $this->conn->close();
-}
-/**   
-* prepared statement for update WHERE
-*
-* @param table - name of the table
-* @param col - column which be updated
-* @param value - new value for insert
-* @param old_value - value of searched aim
-* @param where - name for searched column
-*/ 
-private function updateWhere(
-    $table = '', 
-    $col = '', 
-    $value = '', 
-    $old_value = '', 
-    $where = ''
-    ) {
-
-    $this->connectDB();
-            
-        $this->pre_stmt = $this->conn->prepare("UPDATE $table SET $col = ? WHERE $where = ?");
-        
-        $this->pre_stmt->bind_param("ss", $value, $old_value); 
-
-            if ( $this->pre_stmt->execute() )
-                return true;      
-            else         
-                return false; 
-    
-            $this->pre_stmt->close();
-            $this->conn->close();
-}
 /**    
 * This function 
 *
@@ -613,8 +579,7 @@ private function readTable($table, $col, $var = null){
             }
     
     $this->pre_stmt->close();
-    $this->conn->close();
-
+    
 }
 
 
@@ -625,6 +590,8 @@ private function readTable($table, $col, $var = null){
 * @param var 
 */ 
 private function getContent($values, $var = null){
+
+    $this->connectDB();
 
     $types = str_repeat('s', count($values));
 
@@ -651,9 +618,44 @@ private function getContent($values, $var = null){
             }
     
     $this->pre_stmt->close();
-    $this->conn->close();
+    
 
 }
 
+
+/**    
+* This function
+*
+* @param values - array
+* @param var 
+*/ 
+private function setContent($values, $var = null){
+
+    $this->connectDB();
+
+    $types = str_repeat('s', count($values));
+
+    $bind_values = [];
+
+    $bind_values[] = $types;
+
+    $sql = $this->query;
+
+    $this->pre_stmt = $this->conn->prepare($sql);
+
+    foreach ($values as $key => $value)
+            $bind_values[] = & $values[$key];
+    
+    call_user_func_array(array($this->pre_stmt, 'bind_param'), $bind_values);
+    
+        if ( $this->pre_stmt->execute() )
+            return true;      
+        else         
+            return false; 
+
+            $this->pre_stmt->close();
+    
+
+}
  // EOF   
 }

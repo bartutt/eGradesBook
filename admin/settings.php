@@ -99,7 +99,7 @@
     <div id="lessons" class="collapse">
         <p class="lead">Current lesson times:</p>
       <div class="form-group">
-      <?php $displayer->displayContentAsButton('getLessonTimes', '$lesson', 'lesson', 'set_lesson_time');?>
+      <?php $displayer->displayContentAsButton('getLessonTimes', '$lesson', 'time', 'lesson', 'set_lesson_time');?>
       </div>
     </div>
 <!-- lesson times settings -->
@@ -112,7 +112,7 @@
       <div class="row">
         <div class="col-sm-6">
           <p class="lead">Edit existing categories</p>
-          <?php $displayer->displayContentAsButton('getMarksCat', '$marks', 'mark', 'set_mark_cat');?> 
+          <?php $displayer->displayContentAsButton('getMarksCat', '$marks', 'name', 'mark', 'set_mark_cat');?> 
         </div>
 
         <div class="col-sm-6">
@@ -135,7 +135,7 @@
         <div class="row">
           <div class="col-sm-6">
             <p class="lead">Available statuses/roles</p>
-            <?php $displayer->displayContentAsButton('getRoleStatus', '$status', 'status', 'set_role_status');?> 
+            <?php $displayer->displayContentAsButton('getRoleStatus', '$status', 'name', 'status', 'set_role_status');?> 
           </div>
 
           <div class="col-sm-6">

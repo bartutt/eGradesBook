@@ -45,20 +45,29 @@ class Displayer{
       return $this->mark_color;
 
     }
+    private function displayDetails($id, $note_details){
 
-    private function getContentByYear($date, $date2){
+      echo '<div class="modal fade" id="'. $id . '" tabindex="-1" role="dialog" aria-labelledby="'. $id . '" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="'. $id . '">'.$note_details['teacher'].' '.$note_details['date'].':</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+          '.$note_details['description'].'
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="button" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>';
 
-      $this->$date2 = explode('/', $date2);
-
-      $this->$date = explode('-', $date);
-
-        if( ($this->$date[0] == $this->$date2[0]) || ($this->$date[0] == $this->$date2[1]) )
-          return true;
-        else 
-          return false;
 
     }
-
 
 
 public function displayErrors(){
@@ -98,8 +107,8 @@ public function displayYearsSelect() {
 
             foreach ($this->database->getYears() as $year)
                 echo 
-                '<option value = ' . $year .'>'         
-                     . $year .                       
+                '<option value = ' . $year['years'] .'>'         
+                     . $year['years'] .                       
                 '</option>';
     
     
@@ -111,7 +120,7 @@ public function displayRoleStatusSelect() {
   foreach ($this->database->getRoleStatus() as $role_status)
       echo 
       '<option value = '. $role_status['id'] .'>'         
-           . $role_status['role_status'] .                       
+           . $role_status['name'] .                       
       '</option>';
 
 
@@ -125,7 +134,7 @@ public function displayPersons($role_status) {
       echo '<tbody>';
       foreach ($this->database->getPersons($role_status) as $person){
         echo '<tr>
-                <form action = "details_student.php" method = "post">
+                <form action = "details_'.$role_status.'.php" method = "post">
                 <td><button type = "submit" class="table-button">' . $person['name'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['surname'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
@@ -142,26 +151,26 @@ public function displayPersons($role_status) {
 }
   
 
-public function displayNotes($student_id, $year) {
+
+
+public function displayNotes($student_id, $school_year) {
 
  
   echo '<table class="table table-sm">';
   echo '<thead><th>#</th><th>teacher</th><th>content</th><th>date</th></thead>';
   echo '<tbody>';
-  foreach ($this->database->getNotes($student_id) as $note)
-    if ($this->getContentByYear($note['date'], $year) === true ){
+  foreach ($this->database->getNotes($student_id, $school_year) as $note){
       echo '
-            <form action = "" method = "post">
             <tr> 
                 <th scope="row">Note</th>   
-                <td><button type = "submit" class="table-button">'.  $note['teacher'].'</button></td> 
-                <td><button type = "submit" class="table-button">' . $note['description'] . '</button></td>
-                <td><button type = "submit" class="table-button">' . $note['date'] . '</button></td>
-            </tr>      
-            </form>';
-      echo '</tr>';
-  }
-  
+                <td><button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button">'.  $note['teacher'].'</button></td> 
+                <td><button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button"><p class = "truncate">' . $note['description'] . '</p></button></td>
+                <td><button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button">' . $note['date'] . '</button></td>
+            </tr>';
+
+      $this->displayDetails('note' . $note['id'], $note);
+      }
+
   echo '</tbody>';
   echo '</table>';
 
@@ -175,35 +184,35 @@ public function displayStudentMarks($student_id, $school_year) {
   echo '<div class = "row">
         <div class = "col-6">
         <table class="table">   
-        <thead><th>subject</th><th>first semester</th><th>#</th></thead>     
+        <thead><th>subject</th><th>first semester</th><th>gpa</th><th>#</th></thead>     
         <tbody>';   
     
             foreach ($this->database->getSubjects() as $subject){
-              
-              $this->marks = $this->database->getMarks($subject, $student_id, '1', $school_year);
 
-              echo '<tr><th scope="row">'.$subject.'</th>';
-              
+              $this->marks = $this->database->getMarks($subject['name'], $student_id, '1', $school_year);
+
+              echo '<tr><th scope="row">'.$subject['name'].'</th>';
+            
+
               $this->displayMarks();
 
               echo '</tr>';
             }
-        
-
   echo '</tbody>
         </table>
         </div>';
   echo '<div class = "col-6">
         <table class="table">
-        <thead><th>second semester</th><th>#</th><th>final</th></thead>  
+        <thead><th>second semester</th><th>gpa</th><th>#</th><th>final</th></thead>  
         <tbody>';
         
         foreach ($this->database->getSubjects() as $subject){
         
           echo '<tr>';
 
-          $this->marks = $this->database->getMarks($subject, $student_id, '2', $school_year);
+          $this->marks = $this->database->getMarks($subject['name'], $student_id, '2', $school_year);
         
+
           $this->displayMarks();
 
           echo '</tr>';
@@ -221,12 +230,12 @@ public function displayStudentMarks($student_id, $school_year) {
 
 public function displayMarks() {
 
-  
   echo '<td>';
     if (is_array($this->marks))
         foreach ($this->marks as $mark) {
               $this->setColor($mark['mark']);
-
+              $sum[] = $mark['mark'] * $mark['weight'];
+              $sum_weight[] = $mark['weight'];
              echo '<a data-toggle="tooltip" data-html="true" title="
                   Teacher: '.$mark['teacher'].'<br>
                   Description: '.$mark['description'].'<br>
@@ -234,10 +243,22 @@ public function displayMarks() {
                   Date: '.$mark['date'].'<br>
                   Category: '.$mark['cat'].'<br>      
                   " class="badge '.$this->mark_color.'">' .$mark['mark']. '</a>';
-     
+          
                 }else echo '-';
     echo '</td>';
-    echo '<td></td>';
+    echo '<td>'; 
+    
+      if (!empty($sum))
+        echo '<a class="badge '.$this->mark_color.'">'.number_format(array_sum($sum)/array_sum($sum_weight), 2, '.', '').'</a>';
+      
+    echo '</td>';
+    echo '<td>'; 
+    
+    if (!empty($sum))
+      echo '<a class="badge bg-dark text-white">'.round(array_sum($sum)/array_sum($sum_weight)).'</a>';
+    
+  echo '</td>';
+
 
   
 }
@@ -297,7 +318,7 @@ public function displayPersonName($id) {
   
 
 
-public function displayContentAsButton($source, $as, $id, $action_value){
+public function displayContentAsButton($source, $as, $index, $id, $action_value){
     $i = 1;
     echo '<table class="table table-sm">';
     echo '<tbody>';
@@ -309,7 +330,7 @@ public function displayContentAsButton($source, $as, $id, $action_value){
             <tr>
               <td>
               <button class="table-button" data-toggle="modal" data-target="#'. $id. $i .'" >
-                ' . $as .'
+                ' . $as[$index] .'
               </button>
               </td>
             </tr>
@@ -326,9 +347,9 @@ public function displayContentAsButton($source, $as, $id, $action_value){
 
                     <div class="modal-body">          
                       <div class="form-group">
-                        <input type = "text" class="form-control" name = "value" placeholder = "'. $as . '" required>
+                        <input type = "text" class="form-control" name = "value" placeholder = "'. $as[$index] . '" required>
                           <input type = "hidden" name = "action" value = "' . $action_value . '">
-                          <input name = "old_value" type = "hidden" value = "' . $as . '">
+                          <input name = "old_value" type = "hidden" value = "' . $as[$index] . '">
                       </div>
                     </div>
 
