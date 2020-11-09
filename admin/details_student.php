@@ -69,10 +69,10 @@
         </div>
         <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">...</div>
         <div class="tab-pane fade" id="marks" role="tabpanel" aria-labelledby="marks-tab">           
-              <?php $displayer->displayStudentMarks($_POST['id'],'2020/2021');?>
+              <?php $displayer->displayStudentMarks($_POST['id'], $database->getCurrentYear());?>
         </div>
         <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
-          <?php $displayer->displayNotes($_POST['id'], '2020/2021');?>
+          <?php $displayer->displayNotes($_POST['id'], $database->getCurrentYear());?>
         </div>    
       </div>  
 
