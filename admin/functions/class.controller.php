@@ -3,12 +3,16 @@
 class Controller {
 
     private $database;
+
+    private $displayer;
     
     private $form;
 
-    function __construct($database) {
+    function __construct($database, $displayer) {
 
         $this->database = $database;
+
+        $this->displayer = $displayer;
         
 
     }
@@ -74,8 +78,13 @@ class Controller {
                 $this->database->addPerson($value);
                 $this->result();
                 break;
+    
+            case 'choose_month':
+                echo 'chuj';
+                $this->displayer->displayAttendance($_POST['id'], $database->getCurrentYear());
+                $this->result();
+                break;
             }
-
 
 
     }
