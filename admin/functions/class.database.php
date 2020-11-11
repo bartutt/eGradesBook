@@ -45,7 +45,7 @@ class DataBase{
 
         private $category_name = array();
 
-        private $subjects = array();
+        private $subjects = array();    
     
     /**    
     *	containts list of roles/status
@@ -60,6 +60,7 @@ class DataBase{
         private $person = array();
         private $notes = array();
         private $marks = array();
+        private $attDays = array();
 
   /**    
     *	connection to database
@@ -109,6 +110,31 @@ public function getMarks($subject, $student_id, $sem, $school_year) {
 
 }
 
+public function getAttendance($student_id, $date){
+    
+    unset($this->attendance);
+    
+    $this->setQuery(
+        "SELECT
+        attendance.type, 
+        lesson_times.time, 
+        attendance.date, 
+        subjects.name 
+        
+        FROM attendance 
+        INNER JOIN lesson_times ON lesson_time_id = lesson_times.id 
+        INNER JOIN subjects ON id_subject = subjects.id    
+        WHERE id_student = ? AND date = ? "
+        );
+        $values[] = $student_id;
+        $values[] = $date;
+
+        $this->getContent($values, 'attendance');
+        
+        return $this->attendance;
+
+
+}
 
 public function getNotes($student_id, $school_year){
     
@@ -143,6 +169,27 @@ public function getSubjects(){
 
 }
 
+public function getAttDays($student_id, $school_year){
+
+    $this->setQuery(
+        "SELECT date FROM attendance    
+        WHERE id_student = ? AND date BETWEEN ? AND ?
+        group by attendance.date
+        order by date DESC"
+        );
+
+        $year = explode('/', $school_year);
+
+        $values[] =  $student_id;
+        $values[] = $year[0].'-09-01';
+        $values[] = $year[1].'-06-31';
+    
+
+        $this->getContent($values, 'attDays');
+
+        return $this->attDays;
+
+}
 
 /** 
 * return person details

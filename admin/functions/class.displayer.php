@@ -9,6 +9,8 @@ class Displayer{
      */
     private $mark_color = array();
 
+    private $att_color = array();
+
     private $person = array();
 
     private $marks = array();
@@ -20,27 +22,42 @@ class Displayer{
 
     }
 
-    
-    private function setColor($mark){
+    private function setAttColor($att){
+      if ($att == 'absent') 
+        $this->att_color = 'bg-danger';
+      if ($att == 'execused') 
+        $this->att_color = 'bg-primary';
+      if ($att == 'unexecused') 
+        $this->att_color = 'bg-warning';
+      if ($att == 'late') 
+        $this->att_color = 'bg-secondary';  
+      if ($att == 'present') 
+        $this->att_color = 'bg-success';
+      
+      return $this->att_color;
+
+    }
+    private function setMarkColor($mark = '', $att = ''){
       if ($mark == 1) 
         $this->mark_color = 'bg-danger';
       
       if ($mark == 2) 
         $this->mark_color = 'bg-secondary';
       
-        if ($mark == 3) 
+      if ($mark == 3) 
         $this->mark_color = 'bg-warning';
       
-        if ($mark == 4) 
+      if ($mark == 4) 
         $this->mark_color = 'bg-info';
 
-        if ($mark == 5) 
+      if ($mark == 5) 
         $this->mark_color = 'bg-success';
 
-        if ($mark == 6) 
+      if ($mark == 6) 
         $this->mark_color = 'bg-primary';
-
       
+      if ($att == 'present') 
+        $this->mark_color = 'bg-succes';
       
       return $this->mark_color;
 
@@ -63,12 +80,58 @@ class Displayer{
             <button type="button" class="button" data-dismiss="modal">Close</button>
           </div>
         </div>
-      </div>
-    </div>';
+        </div>
+      </div>';
 
 
     }
+    private function displayMarks() {
 
+      echo '<td>';
+        if (is_array($this->marks))
+            foreach ($this->marks as $mark) {
+                  $this->setMarkColor($mark['mark']);
+                  $sum[] = $mark['mark'] * $mark['weight'];
+                  $sum_weight[] = $mark['weight'];
+                 echo '<a data-toggle="tooltip" data-html="true" title="
+                      Teacher: '.$mark['teacher'].'<br>
+                      Description: '.$mark['description'].'<br>
+                      Weight: '.$mark['weight'].'<br>
+                      Date: '.$mark['date'].'<br>
+                      Category: '.$mark['cat'].'<br>      
+                      " class="badge '.$this->mark_color.'">' .$mark['mark']. '</a>';
+              
+                    }else echo '-';
+        echo '</td>';
+        echo '<td>'; 
+        
+          if (!empty($sum))
+            echo '<a class="badge '.$this->mark_color.'">'.number_format(array_sum($sum)/array_sum($sum_weight), 2, '.', '').'</a>';
+          
+        echo '</td>';
+        echo '<td>'; 
+        
+        if (!empty($sum))
+          echo '<a class="badge bg-dark text-white">'.round(array_sum($sum)/array_sum($sum_weight)).'</a>';
+        
+      echo '</td>';
+    
+    
+      
+    }
+    private function displayDayAttendance($student_id, $date) {
+  
+      echo '<tr><td>'.$date.'</td><td>';
+      foreach ($this->attendance as $att){
+        $this->setAttColor($att['type']);
+          echo '
+          <a class="badge '.$this->att_color.'" data-toggle="tooltip" data-html="true" title="
+          Type: '.$att['type'].'<br>
+          Lesson time: '.$att['time'].'<br>
+          Subject: '.$att['name'].'<br>">&nbsp;&nbsp;</a>';
+          }
+      echo '</td></tr>';
+    }
 
 public function displayErrors(){
   
@@ -151,8 +214,6 @@ public function displayPersons($role_status) {
 }
   
 
-
-
 public function displayNotes($student_id, $school_year) {
 
  
@@ -175,7 +236,6 @@ public function displayNotes($student_id, $school_year) {
   echo '</table>';
 
 }
-
 
 
 public function displayStudentMarks($student_id, $school_year) {
@@ -225,44 +285,19 @@ public function displayStudentMarks($student_id, $school_year) {
 }
 
 
+public function displayAttendance($student_id, $school_year){
 
+  echo '<table class="table" id = "attendanceTable">';
+  echo '<thead><th>date</th><th>attendance</th></thead>';
+  echo '<tbody>';
+    foreach($this->database->getAttDays($student_id, $school_year) as $date){
+      $this->attendance = $this->database->getAttendance($student_id, $date['date']);
+      $this->displayDayAttendance($student_id, $date['date']);
+    }
+  echo '</tbody>';
+  echo '</table>';
 
-
-public function displayMarks() {
-
-  echo '<td>';
-    if (is_array($this->marks))
-        foreach ($this->marks as $mark) {
-              $this->setColor($mark['mark']);
-              $sum[] = $mark['mark'] * $mark['weight'];
-              $sum_weight[] = $mark['weight'];
-             echo '<a data-toggle="tooltip" data-html="true" title="
-                  Teacher: '.$mark['teacher'].'<br>
-                  Description: '.$mark['description'].'<br>
-                  Weight: '.$mark['weight'].'<br>
-                  Date: '.$mark['date'].'<br>
-                  Category: '.$mark['cat'].'<br>      
-                  " class="badge '.$this->mark_color.'">' .$mark['mark']. '</a>';
-          
-                }else echo '-';
-    echo '</td>';
-    echo '<td>'; 
-    
-      if (!empty($sum))
-        echo '<a class="badge '.$this->mark_color.'">'.number_format(array_sum($sum)/array_sum($sum_weight), 2, '.', '').'</a>';
-      
-    echo '</td>';
-    echo '<td>'; 
-    
-    if (!empty($sum))
-      echo '<a class="badge bg-dark text-white">'.round(array_sum($sum)/array_sum($sum_weight)).'</a>';
-    
-  echo '</td>';
-
-
-  
 }
-
 
 
 public function displayPersonDetails($id) {
