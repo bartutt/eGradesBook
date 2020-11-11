@@ -13,41 +13,32 @@
 <!-- head -->
 <?php include './div/head.html'?>
 
-<!-- head -->
 <body class="d-flex flex-column min-vh-100">
-
-
-<!-- topnav -->
 <?php include './div/admin_topnav.html'?>
-<!-- topnav -->
+<!-- main -->
+<div class="container-fluid" >
+  <div class = "row">  
+    <!--first main col -->
+    <?php include './div/leftbar.html'?>
+    <!--end of first main col -->
 
-
-<!-- header -->
-<div class="container" >
-   
-  <!-- content -->
-  <div class="row">
-    <div class = "header"><h2 class="display-4">Teachers</h2></div>
-  </div>
-  <!-- content -->
- 
-</div>
-<!-- header -->
-
-
+    <!--second main col -->
+    <div class = "col-lg-10 offset-lg-2 ">
+      <div class = "row">
+        <div class = "col m-3 modul rounded shadow-sm">
+          <div class = "header">
+            <h2 class="display-4">Students</h2>
+          </div>
 <!-- CONTROLLER -->
 <?php
   $database = new DataBase();
-  $controller = new Controller ($database);
+  $displayer = new Displayer ($database);
+  $controller = new Controller ($database, $displayer);
   $student = new RandomPerson;
 
   $controller->htmlForm('details');
   
-
   echo $controller->getForms();
-
-  $displayer = new Displayer ($database);
-
 
   if (!empty ($_POST)){
     $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['student']);
@@ -56,24 +47,20 @@
   }
 ?>
 <!-- CONTROLLER -->
-
-
-<!-- main content -->
-<div class="container">
-  <div class="row">
-    <div class="col 12">  
         <p class="lead">Overview</p>
           <?php $displayer->displayPersons('teacher');?>
-    </div> 
+        </div>
+      </div>
+    </div>
+    <!--end of second main col -->
+
   </div>
 </div>
-<!-- main content -->
+ <!--end main -->
+
 
 <!-- Footer -->
 <?php include './div/footer.html'?>
 <!-- Footer -->
-
-<script src="js/collapse.js"></script>
-
 </body>
 </html>

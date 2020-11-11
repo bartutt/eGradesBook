@@ -1,11 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 body{
   overflow-y: scroll;
+  background-color: #f5f5f5;
 }
 
+footer{
+  padding:1rem;
+}
+h5{
+  font-family: 'Roboto', sans-serif;
+}
 .form-controll{
   font-family: 'Barlow', sans-serif;
+}
+
+.person-img{
+  height: 4rem;
+  width: 4rem;
+}
+
+.modul{
+  background-color: #fdfcfc;
+}
+.bg-custom{
+  background-color:#66757F;
+}
+
+.logo{
+  background-color: #292F33;
+  height: 100%;
+  color:white;
 }
 
 a{
@@ -14,16 +41,6 @@ a{
 }
 a:hover{
   color: inherit;
-}
-
-
-footer {
-  padding: 0.5rem;
-  text-align: center;
-}
-
-.container{
-  margin-bottom: 2rem;
 }
 
 .display-4{
@@ -41,9 +58,8 @@ table{
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 0;
-
-
 }
+
 button:focus {
   outline: inherit;
 }
@@ -80,17 +96,22 @@ button:focus {
   padding:0.5rem;
   
 }
+.leftbar{
+  position: fixed;
+  top: 0;
+  left:0;
+  bottom: 0;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+  background-color: whitesmoke;
+}
+
+.leftbar-menu{
+  background-color: whitesmoke;
+}
 
 .navbar{
 padding: 0;
-box-shadow: 0 2px 4px 0 grey; 
-font-size: 1rem;
-margin-bottom: 1rem;
-padding-left: 3rem;
-}
-
-.nav-link{
-  padding:1rem;
+width:100%;
 }
 
 .badge{
@@ -98,26 +119,18 @@ padding-left: 3rem;
   margin-left: 0.2rem;
 }
 
-.dropdown-item{
-border-left: 1px solid seagreen;
-}
-
 .dropdown-item:hover{
   background-color: whitesmoke;
-  transition: 0.7s ease;
+  transition: 0.4s ease;
 }
 
 .header{
   border-left: 4px solid seagreen; 
-  padding-left: 2rem;
-  border-bottom: 1px solid lightgrey;
+  padding-left: 1rem;
   width: 100%;
+  margin: 1rem;
 }
 
-.list-group-item{
-  margin-top: 1rem;
-  box-shadow: 0 2px 4px 0 lightgrey; 
-}
 
 .button {
   font-family: 'Barlow', sans-serif;

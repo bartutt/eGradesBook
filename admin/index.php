@@ -1,47 +1,48 @@
-<?php include './functions/class.school.php' ?>
-<!DOCTYPE html>
+<?php 
+  session_start();
+  require_once './functions/class.controller.php';
+  require_once './functions/class.displayer.php';
+  require_once './functions/class.database.php';
 
+?>
+
+<!DOCTYPE html>
 <html lang="en">
+
 <!-- head -->
 <?php include './div/head.html'?>
-<!-- head -->
-<body>
 
-
-<!-- topnav -->
+<body class="d-flex flex-column min-vh-100">
 <?php include './div/admin_topnav.html'?>
-<!-- topnav -->
+<!-- main -->
+<div class="container-fluid" >
+  <div class = "row">  
+    <!--first main col -->
+    <?php include './div/leftbar.html'?>
+    <!--end of first main col -->
 
+    <!--second main col -->
+    <div class = "col-lg-10 offset-lg-2 ">
+      <div class = "row">
+        <div class = "col m-3 modul rounded shadow-sm">
+          <div class = "header">
+            <h2 class="display-4">Dahsboard</h2>
+          </div>
 
+        <p class="lead">Dashboard</p>
 
-<!-- header -->
-<div class="container" style="margin-top:30px">
-  <div class="row">
-  <!-- content -->
-  <div class = "col">
-    <div class = "header" ><h2>Dashboard</h2></div>
-  </div>
-  <!-- content -->
-  
+        </div>
+      </div>
+    </div>
+    <!--end of second main col -->
+
   </div>
 </div>
-<!-- header -->
-
-
-<!-- main content -->
-<div class="container" style="margin-top:30px">
-     
-        
-  </div>
-</div>
-<!-- main content -->
-
+ <!--end main -->
 
 
 <!-- Footer -->
 <?php include './div/footer.html'?>
 <!-- Footer -->
-
-
 </body>
 </html>
