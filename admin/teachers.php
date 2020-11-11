@@ -27,7 +27,7 @@
       <div class = "row">
         <div class = "col m-3 modul rounded shadow-sm">
           <div class = "header">
-            <h2 class="display-4">Students</h2>
+            <h2 class="display-4">Teachers</h2>
           </div>
 <!-- CONTROLLER -->
 <?php
