@@ -89,10 +89,10 @@ class DataBase{
 */
 public function getProfiles(){
     
-    $this->connectDB();
+    $this->setQuery("SELECT * FROM profiles");
 
-    $this->readTable('profiles', 'name');
-    
+    $this->getContent('', 'profiles');
+
     return $this->profiles;
 }
 
@@ -692,14 +692,27 @@ public function addPerson($value) {
         else
             $this->errors[] = $value[1] .' '. $value[2] .' can not be add';
     }     
+
+} 
+/**
+*     
+*/ 
+public function addClass($value) {
+
+    $this->setQuery("INSERT INTO classes (name, id_teacher, id_profile, years) VALUES (?, ?, ?, ?)");
+    
+    $validation = new Validator;
+
+    if ($validation->isValid ($value[0], 'class') === true){
         
-    
-    
+        if ($this->setContent($value) === true)
+            $this->success[] = $value[0] . ' is added.'; 
+        else
+            $this->errors[] = $value[0] . ' can not be add';
+    }else $this->errors[] = $value[0] . ' is not valid!';
 
     return $this;
-} 
-
-
+}
 
 
 //PRIVATE METHODS 
@@ -854,8 +867,6 @@ private function getContent($values = null, $var = null){
     
 
 }
-
-
 /**    
 * This function
 *

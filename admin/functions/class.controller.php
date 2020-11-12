@@ -98,6 +98,11 @@ class Controller {
                 $this->database->addProfile($value);
                 $this->result();
                 break;
+
+            case 'add_class':
+                $this->database->addClass($value);
+                $this->result();
+                break;
                 
             }
 
