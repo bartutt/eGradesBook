@@ -27,7 +27,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-        <div class = "col m-3 modul rounded shadow-sm">      
+        <div class = "col m-3 modul rounded shadow-sm p-3">      
           <?php $displayer->displayClassDetails($_POST['id']);?>
         </div>
       </div>
