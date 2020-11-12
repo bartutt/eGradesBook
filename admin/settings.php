@@ -41,6 +41,8 @@
   $controller->htmlForm('set_year');
   $controller->htmlForm('add_mark_cat');
   $controller->htmlForm('add_role_status');
+  $controller->htmlForm('add_subject');
+  $controller->htmlForm('add_profile');
 
   echo $controller->getForms();
 
@@ -107,8 +109,48 @@
               </div>
  
 <!-- marks settings -->
+<!-- subjects settings -->
+            <button aria-controls="subjects" style = " border-left: 4px solid yellow" class="list-group-item list-group-item-action m-1" data-toggle="collapse" data-target="#subjects" aria-expanded="false">
+              Subjects
+            </button>
+              <div id="subjects" class="collapse">
+                <div class="row m-3">
+                  <div class="col-sm-6">
+                    <p class="lead">List:</p>
+                    <?php $displayer->displayContentAsButton('getSubjects', '$subjects', 'name', 'subject', 'set_subject');?> 
+                  </div>
+
+                  <div class="col-sm-6">
+                    <p class="lead">Add new subject</p>
+                    <input type = "text" class="form-control" name = "value" form = "add_subject" placeholder = "subject" required>
+                    <button class="button" form = "add_subject" >add</button>
+                  </div>
+                </div>
+              </div>
+ 
+<!-- subjects settings -->
+<!-- profiles settings -->
+            <button aria-controls="profiles" style = " border-left: 4px solid purple" class="list-group-item list-group-item-action m-1" data-toggle="collapse" data-target="#profiles" aria-expanded="false">
+              Profiles
+            </button>
+              <div id="profiles" class="collapse">
+                <div class="row m-3">
+                  <div class="col-sm-6">
+                    <p class="lead">List:</p>
+                    <?php $displayer->displayContentAsButton('getProfiles', '$profiles', 'name', 'profile', 'set_profile');?> 
+                  </div>
+
+                  <div class="col-sm-6">
+                    <p class="lead">Add new profile</p>
+                    <input type = "text" class="form-control" name = "value" form = "add_profile" placeholder = "profile" required>
+                    <button class="button" form = "add_profile" >add</button>
+                  </div>
+                </div>
+              </div>
+ 
+<!-- profiles settings -->
 <!-- person status settings -->
-            <button aria-controls="status" style = " border-left: 4px solid seagreen" class="list-group-item list-group-item-action m-1" data-toggle="collapse" data-target="#status" aria-expanded="false">
+            <button aria-controls="status" style = " border-left: 4px solid grey" class="list-group-item list-group-item-action m-1" data-toggle="collapse" data-target="#status" aria-expanded="false">
               Person status
             </button>
     
@@ -126,7 +168,7 @@
                 </div>
               </div>
             </div>
-<!-- marks settings -->
+<!-- person status settings -->
 
           </div> <!--end of list-group -->
         </div>

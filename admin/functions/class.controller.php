@@ -69,6 +69,16 @@ class Controller {
                 $this->result();
                 break;
 
+            case 'set_subject':
+                $this->database->setSubject($old_value, $value);
+                $this->result();
+                break;
+            case 'set_profile':
+                $this->database->setProfile($old_value, $value);
+                $this->result();
+                break;
+    
+
             case 'add_role_status':  
                 $this->database->addRoleStatus($value);
                 $this->result();
@@ -78,12 +88,17 @@ class Controller {
                 $this->database->addPerson($value);
                 $this->result();
                 break;
-    
-            case 'choose_month':
-                echo 'chuj';
-                $this->displayer->displayAttendance($_POST['id'], $database->getCurrentYear());
+            
+            case 'add_subject':
+                $this->database->addSubject($value);
                 $this->result();
                 break;
+            
+            case 'add_profile':
+                $this->database->addProfile($value);
+                $this->result();
+                break;
+                
             }
 
 
