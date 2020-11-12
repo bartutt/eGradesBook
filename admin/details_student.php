@@ -57,7 +57,7 @@
                 </div>
                 <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
                   <p class="lead">Select month:</p>
-                    <select id = "inputAttendance" name = "value" class = "form-control" form = "choose_month">
+                    <select id = "inputAttendance" name = "value" class = "form-control m-3 w-50" form = "choose_month">
                       <option value = '-01-'>january</option>
                       <option value = '-02-'>february</option>
                       <option value = '-03-'>march</option>
