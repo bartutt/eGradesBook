@@ -150,7 +150,7 @@ class Displayer{
 public function displayErrors(){
   
   if (!empty ($this->database->getErrors() ) ){
-    echo '<div class = "container">';
+
     echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
     echo '<h4 class="alert-heading">Error</h4>';
     echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
@@ -158,7 +158,7 @@ public function displayErrors(){
     echo '</button>';    
       foreach ($this->database->getErrors() as $error)
           echo '<hr>' . $error;            
-    echo '<br></div></div>';
+    echo '<br></div>';
   }
 }
 
@@ -166,7 +166,6 @@ public function displayErrors(){
 public function displaySuccess(){
   if (!empty ($this->database->getSuccess() ) ){
 
-    echo '<div class = "container">';
     echo '<div class="alert alert-success alert-dismissible fade show" role="alert">';
     echo '<h4 class="alert-heading">Success</h4>';
     echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
@@ -174,17 +173,39 @@ public function displaySuccess(){
     echo '</button>';    
       foreach ($this->database->getSuccess() as $success)
           echo '<hr>' . $success;            
-    echo '<br></div></div>';
+    echo '<br></div>';
   }     
      
 }
 
-  
+
+public function displayProfilesSelect() {
+
+  foreach ($this->database->getProfiles() as $profile)
+      echo 
+      '<option value = '. $profile['id'] .'>'         
+           . $profile['name'] .                       
+      '</option>';
+
+
+}
+
+public function displayPersonsSelect($role_status) {
+
+  foreach ($this->database->getPersons($role_status) as $person)
+      echo 
+      '<option value = ' . $person['id'] .'>'         
+           . $person['name'] .' '.  $person['surname'].                    
+      '</option>';
+    
+
+}
+
 public function displayYearsSelect() {
 
             foreach ($this->database->getYears() as $year)
                 echo 
-                '<option value = ' . $year['years'] .'>'         
+                '<option value = '. $year['years'] .'>'         
                      . $year['years'] .                       
                 '</option>';
     
@@ -313,6 +334,7 @@ public function displayAttendance($student_id, $school_year){
 
 }
 
+
 public function displayClassDetails($id, $school_year = ''){
   $this->displayClassHeader($id);
   echo '<table class="table table-sm" id = "attendanceTable">';
@@ -334,6 +356,7 @@ public function displayClassDetails($id, $school_year = ''){
   echo '</table>';
 
 }
+
 
 public function displayClasses($school_year){
 
@@ -407,8 +430,6 @@ public function displayPersonName($id) {
     return $this->person['name'] . ' '. $this->person['surname'];
 
 }
-
-
 
 
 public function displayContentAsButton($source, $as, $index, $id, $action_value){
