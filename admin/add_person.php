@@ -9,7 +9,7 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
   $person = new RandomPerson;
-
+  $controller->htmlForm('add_person');
 ?>
 
 <!DOCTYPE html>
@@ -30,21 +30,15 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-        <div class = "col m-3 modul rounded shadow-sm">
-          <div class = "header">
+        <div class = "col m-3 modul rounded shadow-sm p-3">
+          <div class = "header ">
             <h2 class="display-4">Add person</h2>
           </div>
 
 
 <!-- CONTROLLER -->
 <?php
-  
-  $controller->htmlForm('add_person');
-
   echo $controller->getForms();
-
-  $displayer = new Displayer ($database);
-
 
   if (!empty ($_POST)){
     $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['person']);
