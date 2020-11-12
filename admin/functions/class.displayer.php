@@ -15,6 +15,8 @@ class Displayer{
 
     private $marks = array();
 
+    private $class = array();
+
 
     function __construct($database) {
 
@@ -132,6 +134,18 @@ class Displayer{
           }
       echo '</td></tr>';
     }
+    private function displayClassHeader($id) {
+    
+      $this->class = $this->database->getClassDetails($id);
+
+      echo '<div class = "header"><h2 class="display-4">Class: '.$this->class[0]['name'].'</h2></div>';
+      echo '<ul>';
+      echo '<li>Profile: '.$this->class[0]['profile'].'</li>';
+      echo '<li>Teacher: '.$this->class[0]['teacher'].'</li>';
+      echo '<li>School year: '.$this->class[0]['years'].'</li>';
+      echo '</ul>';
+
+    }
 
 public function displayErrors(){
   
@@ -217,8 +231,8 @@ public function displayPersons($role_status) {
 public function displayNotes($student_id, $school_year) {
 
  
-  echo '<table class="table table-sm">';
-  echo '<thead><th>#</th><th>teacher</th><th>content</th><th>date</th></thead>';
+  echo '<table class="table table-sm mt-3">';
+  echo '<thead class = "thead-light"><th>#</th><th>teacher</th><th>content</th><th>date</th></thead>';
   echo '<tbody>';
   foreach ($this->database->getNotes($student_id, $school_year) as $note){
       echo '
@@ -299,6 +313,49 @@ public function displayAttendance($student_id, $school_year){
 
 }
 
+public function displayClassDetails($id, $school_year = ''){
+  $this->displayClassHeader($id);
+  echo '<table class="table table-sm" id = "attendanceTable">';
+  echo '<thead class = "thead-light"><th>#</th><th>Student</th></thead>';
+  echo '<tbody>';
+  $i = 1;
+    foreach($this->class as $class){
+      echo '
+        <tr>
+          <form action = "details_student.php" method = "post">
+            <td class = "nr"><button type = "submit" class="table-button">' . $i . '</button></td>
+            <td><button type = "submit" class="table-button">' . $class['student'] . '</button></td>
+            <input type = "hidden" name = "id" value = "'.$class['student_id'].'">
+          </form>
+        </tr>';
+        $i++;
+    }
+  echo '</tbody>';
+  echo '</table>';
+
+}
+
+public function displayClasses($school_year){
+
+  echo '<table class="table table-sm" id = "attendanceTable">';
+  echo '<thead class = "thead-light" ><th>class</th><th>teacher</th><th>profile</th></thead>';
+  echo '<tbody>';
+    foreach($this->database->getClasses($school_year) as $class){
+      echo '
+        <tr>
+          <form action = "details_class.php" method = "post">
+            <td class = "nr"><button type = "submit" class="table-button">' . $class['name'] . '</button></td>
+            <td><button type = "submit" class="table-button">' . $class['teacher'] . '</button></td>
+            <td><button type = "submit" class="table-button">' . $class['profile'] . '</button></td>
+            <input type = "hidden" name = "id" value = "'.$class['id'].'">
+          </form>
+        </tr>';
+    }
+  echo '</tbody>';
+  echo '</table>';
+
+}
+
 
 public function displayPersonDetails($id) {
       
@@ -350,7 +407,8 @@ public function displayPersonName($id) {
     return $this->person['name'] . ' '. $this->person['surname'];
 
 }
-  
+
+
 
 
 public function displayContentAsButton($source, $as, $index, $id, $action_value){

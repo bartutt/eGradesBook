@@ -45,7 +45,15 @@ class DataBase{
 
         private $category_name = array();
 
-        private $subjects = array();    
+        private $subjects = array(); 
+
+        private $classes = array();  
+
+        private $class = array();
+        
+        private $classes_qty = array();
+
+        private $profiles = array();
     
     /**    
     *	containts list of roles/status
@@ -75,6 +83,87 @@ class DataBase{
 
 
 //PUBLIC METHODS
+
+/** 
+* return profiles
+*/
+public function getProfiles(){
+    
+    $this->connectDB();
+
+    $this->readTable('profiles', 'name');
+    
+    return $this->profiles;
+}
+
+public function getClassDetails($id){
+    
+    $this->setQuery(
+        "SELECT 
+        CONCAT(student.name, ' ', student.surname) AS student, 
+        CONCAT(teacher.name, ' ', teacher.surname) AS teacher,
+            classes.id, 
+            classes.name,
+            classes.years,
+            profiles.name as profile,
+            student.id as student_id
+        FROM student_class 
+        INNER JOIN classes ON id_class = classes.id
+        INNER JOIN person as student ON id_student = student.id
+        INNER JOIN profiles ON classes.id_profile = profiles.id
+        LEFT JOIN person as teacher ON classes.id_teacher = teacher.id
+        WHERE id_class = ?"
+        );
+            
+        $values[] = $id;
+
+        $this->getContent($values, 'class');
+            
+            return $this->class;
+
+
+}
+
+public function getClasses($school_year){
+    
+    
+    $this->setQuery(
+        "SELECT 
+        CONCAT(person.name, ' ', person.surname) AS teacher,
+        classes.id, 
+        classes.name,
+        profiles.name AS profile, 
+        classes.years
+        FROM classes
+        INNER JOIN person ON id_teacher = person.id
+        INNER JOIN profiles ON id_profile = profiles.id   
+        WHERE years = ?"
+        );
+            
+        $values[] = $school_year;
+
+        $this->getContent($values, 'classes');
+            
+            return $this->classes;
+
+
+}
+
+public function getClassesQty(){
+        
+        $this->setQuery(
+
+            "SELECT count(name) as qty, classes.years 
+            from classes 
+            inner join years ON classes.years = years.years
+            group by years.years"
+            );
+
+
+        $this->getContent('', 'classes_qty');
+
+        return $this->classes_qty;
+}
 
 
 public function getMarks($subject, $student_id, $sem, $school_year) {
@@ -377,6 +466,56 @@ public function setLessonTime($old_value, $new_value) {
 
     return $this;
 } 
+
+/**
+*     
+*/ 
+public function setSubject($old_value, $new_value) {
+
+    $this->setQuery("UPDATE subjects SET name = ? WHERE name = ?");
+
+    $this->connectDB();
+
+    $values[] = $new_value;
+    $values[] = $old_value;
+    
+    $validation = new Validator;
+
+    if ($validation->isValid ($new_value, 'char_space') === true){
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = $old_value . ' is changed to '. $new_value; 
+        else
+            $this->errors[] = $new_value . ' can not be set';
+    }else $this->errors[] = $new_value . ' is not valid!';
+
+    return $this;
+} 
+
+/**
+*     
+*/ 
+public function setProfile($old_value, $new_value) {
+
+    $this->setQuery("UPDATE profiles SET name = ? WHERE name = ?");
+
+    $this->connectDB();
+
+    $values[] = $new_value;
+    $values[] = $old_value;
+    
+    $validation = new Validator;
+
+    if ($validation->isValid ($new_value, 'char_space') === true){
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = $old_value . ' is changed to '. $new_value; 
+        else
+            $this->errors[] = $new_value . ' can not be set';
+    }else $this->errors[] = $new_value . ' is not valid!';
+
+    return $this;
+} 
 /**
 *     
 */ 
@@ -437,6 +576,49 @@ public function addMarkCat($value) {
     $validation = new Validator;
 
     if ($validation->isValid ($value, 'marks_cat') === true){
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = $value . ' is added.'; 
+        else
+            $this->errors[] = $value . ' can not be add';
+    }else $this->errors[] = $value . ' is not valid!';
+
+    return $this;
+} 
+/**
+*     
+*/ 
+public function addSubject($value) {
+    
+    $this->setQuery("INSERT INTO subjects (name) VALUES (?)");
+
+    $values[] = $value;
+
+    $validation = new Validator;
+
+    if ($validation->isValid ($value, 'char_space') === true){
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = $value . ' is added.'; 
+        else
+            $this->errors[] = $value . ' can not be add';
+    }else $this->errors[] = $value . ' is not valid!';
+
+    return $this;
+} 
+
+/**
+*     
+*/ 
+public function addProfile($value) {
+    
+    $this->setQuery("INSERT INTO profiles (name) VALUES (?)");
+
+    $values[] = $value;
+
+    $validation = new Validator;
+
+    if ($validation->isValid ($value, 'char_space') === true){
         
         if ($this->setContent($values) === true)
             $this->success[] = $value . ' is added.'; 
@@ -636,25 +818,29 @@ private function readTable($table, $col, $var = null){
 * @param values - array
 * @param var 
 */ 
-private function getContent($values, $var = null){
+private function getContent($values = null, $var = null){
 
     $this->connectDB();
+    if (!empty ($values)){
+    
+        $types = str_repeat('s', count($values));
 
-    $types = str_repeat('s', count($values));
+        $bind_values = [];
 
-    $bind_values = [];
-
-    $bind_values[] = $types;
+        $bind_values[] = $types;
+    }
 
     $sql = $this->query;
 
     $this->pre_stmt = $this->conn->prepare($sql);
-
-    foreach ($values as $key => $value)
+    if (!empty ($values)) {
+        foreach ($values as $key => $value)
             $bind_values[] = & $values[$key];
     
-    call_user_func_array(array($this->pre_stmt, 'bind_param'), $bind_values);
-    
+        call_user_func_array(array($this->pre_stmt, 'bind_param'), $bind_values);
+    }
+
+
     if (!$this->pre_stmt->execute() )
         $this->errors[] = 'Something went wrong';
         
