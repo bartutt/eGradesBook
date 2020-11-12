@@ -6,7 +6,10 @@ body{
   overflow-y: scroll;
   background-color: #f5f5f5;
 }
-
+.chart{
+  width: 100%; 
+  min-height: 100%;
+}
 footer{
   padding:1rem;
 }
@@ -23,10 +26,7 @@ h5{
 }
 
 .modul{
-  background-color: #fdfcfc;
-}
-.bg-custom{
-  background-color:#66757F;
+  background-color: #f8f8f8;
 }
 
 .logo{
@@ -65,9 +65,8 @@ button:focus {
 }
 
 .table-sm tr:hover{
-  background-color: whitesmoke;
-  transition: 0.7s ease;
-  
+  background-color: white;
+  transition: 0.3s ease;
 }
 
 .table-sm td:hover{
@@ -83,7 +82,11 @@ button:focus {
 .collapsing {
         transition: 1s ease;
 }
+.nr{
 
+  width:1rem;
+
+}
 .table-button{
   width: 100%;
   text-align: left;
@@ -101,7 +104,6 @@ button:focus {
   top: 0;
   left:0;
   bottom: 0;
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
   background-color: whitesmoke;
 }
 
