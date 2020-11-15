@@ -49,11 +49,14 @@ class DataBase{
 
         private $classes = array();  
 
-        private $class = array();
+        private $class_details = array();
         
         private $classes_qty = array();
 
         private $profiles = array();
+
+        private $students_class = array();
+        
     
     /**    
     *	containts list of roles/status
@@ -69,6 +72,8 @@ class DataBase{
         private $notes = array();
         private $marks = array();
         private $attDays = array();
+        private $attendance = array();
+        private $month_attendance = array();
 
   /**    
     *	connection to database
@@ -96,30 +101,46 @@ public function getProfiles(){
     return $this->profiles;
 }
 
-public function getClassDetails($id){
-    
+public function getStudentsInClass($class_id){
+
     $this->setQuery(
         "SELECT 
-        CONCAT(student.name, ' ', student.surname) AS student, 
-        CONCAT(teacher.name, ' ', teacher.surname) AS teacher,
-            classes.id, 
-            classes.name,
-            classes.years,
-            profiles.name as profile,
+        CONCAT(student.name, ' ', student.surname) AS student,
             student.id as student_id
         FROM student_class 
-        INNER JOIN classes ON id_class = classes.id
         INNER JOIN person as student ON id_student = student.id
-        INNER JOIN profiles ON classes.id_profile = profiles.id
-        LEFT JOIN person as teacher ON classes.id_teacher = teacher.id
         WHERE id_class = ?"
         );
             
-        $values[] = $id;
+        $values[] = $class_id;
 
-        $this->getContent($values, 'class');
+        $this->getContent($values, 'students_class');
             
-            return $this->class;
+            return $this->students_class;
+
+
+}
+
+public function getClassDetails($class_id){
+    
+    $this->setQuery(
+        "SELECT 
+        CONCAT(person.name, ' ', person.surname) AS teacher,
+        classes.id, 
+        classes.name,
+        profiles.name AS profile, 
+        classes.years
+        FROM classes
+        INNER JOIN person ON id_teacher = person.id
+        INNER JOIN profiles ON id_profile = profiles.id   
+        WHERE classes.id = ?"
+        );
+            
+        $values[] = $class_id;
+
+        $this->getContent($values, 'class_details');
+            
+            return $this->class_details;
 
 
 }
@@ -279,6 +300,36 @@ public function getAttDays($student_id, $school_year){
         return $this->attDays;
 
 }
+
+public function getClassAttendance($class_id, $school_year) {
+
+    $this->setQuery(
+        "SELECT 
+        DATE_FORMAT(date,'%M') as month,
+        SUM(IF(attendance.type = 'present'
+               OR attendance.type = 'late', 1, 0)) AS present, 
+        SUM(IF(attendance.type = 'absent' 
+               OR attendance.type = 'execused', 1, 0)) AS absent,
+        COUNT(id) as percent           
+        FROM attendance 
+        INNER JOIN student_class ON attendance.id_student = student_class.id_student
+        AND student_class.id_class = ?
+        AND date BETWEEN ? AND ?
+        GROUP BY YEAR(date), MONTH(date)"
+        );
+        $year = explode('/', $school_year);
+        
+        $values[] =  $class_id;
+        $values[] = $year[0].'-09-01';
+        $values[] = $year[1].'-06-31';
+    
+
+        $this->getContent($values, 'month_attendance');
+
+        return $this->month_attendance;
+}
+
+
 
 /** 
 * return person details
@@ -606,7 +657,6 @@ public function addSubject($value) {
 
     return $this;
 } 
-
 /**
 *     
 */ 
@@ -628,6 +678,7 @@ public function addProfile($value) {
 
     return $this;
 } 
+
 /**
 *     
 */ 
@@ -713,6 +764,55 @@ public function addClass($value) {
 
     return $this;
 }
+/**
+*     
+*/ 
+public function addToClass($id_student, $id_class) {
+    
+    $this->setQuery("INSERT INTO student_class (id_student, id_class) VALUES (?,?)");
+
+    $values[] = $id_student;
+    $values[] = $id_class;
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = $id_student . ' is added'; 
+        else
+            $this->errors[] = $id_student . ' can not be add';
+
+} 
+
+/**
+*     
+*/ 
+public function removeFromClass($id_student, $id_class) {
+
+    $this->setQuery("DELETE FROM student_class WHERE id_student = ? AND id_class = ?");
+
+    $values[] = $id_student;
+    $values[] = $id_class;
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = $id_student . ' is removed'; 
+        else
+            $this->errors[] = $id_student . ' can not be removed';
+
+} 
+/**
+*     
+*/ 
+public function deleteClass($class_name, $id_class) {
+
+
+    $this->setQuery("DELETE FROM classes WHERE id = ?");
+
+    $values[] = $id_class;
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = $class_name . ' is deleted'; 
+        else
+            $this->errors[] = $class_name . ' can not be removed';
+
+} 
 
 
 //PRIVATE METHODS 
