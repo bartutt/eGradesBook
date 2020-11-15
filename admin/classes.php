@@ -3,7 +3,6 @@
   require_once './functions/class.controller.php';
   require_once './functions/class.displayer.php';
   require_once './functions/class.database.php';
-  require_once './functions/class.random_person.php';
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
@@ -36,7 +35,7 @@
 <?php
   echo $controller->getForms();
 
-  if (!empty ($_POST)){
+  if (!empty ($_POST['action'])) {
     $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['class']);
     $displayer->displayErrors();
     $displayer->displaySuccess();
@@ -83,8 +82,8 @@
           <p class="lead">Overview</p>
           <?php $displayer->displayClasses($database->getCurrentYear());?>
         </div>
-        <div class = "col-md-3 m-3 modul rounded shadow-sm p-0">
-          <div id="chart_div1" class = "chart"></div>
+        <div class = "col-md-3 m-3 modul rounded shadow-sm p-0 chart-col">
+          <div id="chartClasses" class = "chart"></div>
         </div>
         </div>
       </div>
@@ -100,7 +99,7 @@
 <?php include './div/footer.html'?>
 <!-- Footer -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<?php include './js/classes_chart.php'?>
-
+<?php include './js/chart_classes.php'?>
+<script src="js/delete_button.js"></script>
 </body>
 </html>
