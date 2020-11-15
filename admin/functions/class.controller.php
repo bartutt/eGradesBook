@@ -32,6 +32,7 @@ class Controller {
             </form >';
 
     }
+    
 
 
     
@@ -73,12 +74,12 @@ class Controller {
                 $this->database->setSubject($old_value, $value);
                 $this->result();
                 break;
+
             case 'set_profile':
                 $this->database->setProfile($old_value, $value);
                 $this->result();
                 break;
     
-
             case 'add_role_status':  
                 $this->database->addRoleStatus($value);
                 $this->result();
@@ -103,7 +104,21 @@ class Controller {
                 $this->database->addClass($value);
                 $this->result();
                 break;
-                
+
+            case 'add_to_class':
+                $this->database->addToClass($old_value, $value); // old value = id_class, $value = ID student
+                $this->result();
+                break;
+        
+            case 'delete_class':
+                $this->database->deleteClass($old_value, $value); // old value = class name
+                $this->result();
+                break;    
+        
+            case 'remove_from_class':
+                $this->database->removeFromClass($old_value, $value); // old value = id_class, $value = ID student
+                $this->result();
+                break;    
             }
 
 

@@ -137,16 +137,24 @@ class Displayer{
     private function displayClassHeader($id) {
     
       $this->class = $this->database->getClassDetails($id);
-
-      echo '<div class = "header"><h2 class="display-4">Class: '.$this->class[0]['name'].'</h2></div>';
-      echo '<ul>';
-      echo '<li>Profile: '.$this->class[0]['profile'].'</li>';
-      echo '<li>Teacher: '.$this->class[0]['teacher'].'</li>';
-      echo '<li>School year: '.$this->class[0]['years'].'</li>';
-      echo '</ul>';
+        echo '<div class = "header"><h2 class="display-4">Class: '.$this->class[0]['name'].'</h2></div>';
+        echo '<ul>';
+        echo '<li>Profile: '.$this->class[0]['profile'].'</li>';
+        echo '<li>Teacher: '.$this->class[0]['teacher'].'</li>';
+        echo '<li>School year: '.$this->class[0]['years'].'</li>';
+        echo '</ul>';
 
     }
+    private function displayRemoveButton($value, $name, $action_value, $name_removed = ''){
+      echo '<form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
+            <input type = "hidden" name = "'.$name.'" value = "'.$value.'">
+            <input type = "hidden" name = "action" value = "'.$action_value.'">
+            <input type = "hidden" name = "old_value" value = "'.$name_removed.'">
+            <td><button class="btn btn-danger rounded-0 pt-0 pb-0 float-right" type="submit">remove</button></td>
+          </form>';
 
+    }
+    
 public function displayErrors(){
   
   if (!empty ($this->database->getErrors() ) ){
@@ -224,7 +232,25 @@ public function displayRoleStatusSelect() {
 
 }
   
-  
+public function searchPersonButton($role_status) {
+
+  echo '<table id = "search_person" class = "table table-sm">';
+  echo '<tbody>';
+  foreach ($this->database->getPersons($role_status) as $person){
+    echo '<tr>
+            <form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
+            <td>' . $person['name'] . ' ' . $person['surname'] . ' ' . $person['id'] . '
+            <input type = "hidden" name = "student_id" value = "'.$person['id'].'">
+            <input type = "hidden" name = "action" value = "add_to_class">
+            <button class="btn btn-success rounded-0 pt-0 pb-0 float-right" type="submit">add</button></td>
+            </form>';
+    echo '</tr>';
+  }
+  echo '</tbody>';
+  echo '</table>';
+
+}
+
 public function displayPersons($role_status) {
 
       echo '<table class="table table-sm">';
@@ -335,44 +361,56 @@ public function displayAttendance($student_id, $school_year){
 }
 
 
-public function displayClassDetails($id, $school_year = ''){
-  $this->displayClassHeader($id);
-  echo '<table class="table table-sm" id = "attendanceTable">';
-  echo '<thead class = "thead-light"><th>#</th><th>Student</th></thead>';
-  echo '<tbody>';
-  $i = 1;
-    foreach($this->class as $class){
-      echo '
-        <tr>
-          <form action = "details_student.php" method = "post">
-            <td class = "nr"><button type = "submit" class="table-button">' . $i . '</button></td>
-            <td><button type = "submit" class="table-button">' . $class['student'] . '</button></td>
-            <input type = "hidden" name = "id" value = "'.$class['student_id'].'">
-          </form>
-        </tr>';
-        $i++;
-    }
-  echo '</tbody>';
-  echo '</table>';
+public function displayClassDetails($class_id, $school_year = ''){
+    
+    $students = $this->database->getStudentsInClass($class_id);
+    
+    $this->displayClassHeader($class_id);
 
+    if (!empty($students)) {
+      echo '<table class="table table-sm">';
+      echo '
+      <thead class = "thead-light"><th>#</th><th>Student</th>
+      <th><button class = "btn btn-outline-secondary pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
+      </thead>';
+      echo '<tbody>';
+        $i = 1;
+          foreach($students as $class) {
+            echo '
+                  <tr>
+                    <form action = "details_student.php" method = "post">
+                      <td class = "nr"><button type = "submit" class="table-button">' . $i . '</button></td>
+                      <td><button type = "submit" class="table-button">' . $class['student'] . '</button></td>
+                      <input type = "hidden" name = "id" value = "'.$class['student_id'].'">
+                    </form>';
+                  $this->displayRemoveButton($class['student_id'], 'student_id', 'remove_from_class');
+            echo '</tr>';
+              $i++;
+              }
+      echo '</tbody>';
+      echo '</table>';
+      } else echo 'No students';
 }
 
 
 public function displayClasses($school_year){
 
-  echo '<table class="table table-sm" id = "attendanceTable">';
-  echo '<thead class = "thead-light" ><th>class</th><th>teacher</th><th>profile</th></thead>';
+  echo '<table class="table table-sm">';
+  echo '
+    <thead class = "thead-light"><th>#</th><th>Teacher</th><th>Profile</th>
+    <th><button class = "btn btn-outline-secondary pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
+    </thead>';
   echo '<tbody>';
     foreach($this->database->getClasses($school_year) as $class){
       echo '
-        <tr>
-          <form action = "details_class.php" method = "post">
-            <td class = "nr"><button type = "submit" class="table-button">' . $class['name'] . '</button></td>
-            <td><button type = "submit" class="table-button">' . $class['teacher'] . '</button></td>
-            <td><button type = "submit" class="table-button">' . $class['profile'] . '</button></td>
-            <input type = "hidden" name = "id" value = "'.$class['id'].'">
-          </form>
-        </tr>';
+            <tr>
+              <form action = "details_class.php?class_id='.$class['id'].'" method = "post">
+                <td class = "nr"><button type = "submit" class="table-button">' . $class['name'] . '</button></td>
+                <td><button type = "submit" class="table-button">' . $class['teacher'] . '</button></td>
+                <td><button type = "submit" class="table-button">' . $class['profile'] . '</button></td>
+              </form>';
+            $this->displayRemoveButton($class['id'], 'class', 'delete_class', $class['name']);
+      echo '</tr>';
     }
   echo '</tbody>';
   echo '</table>';
