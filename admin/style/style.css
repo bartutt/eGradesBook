@@ -96,9 +96,6 @@ button:focus {
   transition: 0.3s ease;
 }
 
-.table-sm td:hover{
-  cursor: pointer;
-}
 
 .table-sm td, tr{
     padding: 0;
