@@ -10,7 +10,11 @@ body{
   width: 100%; 
   height: 100%;
 }
-
+span.modul{
+  background-color: transparent;
+  font-size: 1.8rem;
+  font-family: 'Barlow', sans-serif;
+}
 #search_person{
   padding:0;
   border: none;
@@ -48,6 +52,39 @@ h5{
 
 .modul{
   background-color: #f8f8f8;
+}
+
+.modul-orange{
+  background-color: #ffbb0094;
+  height:6rem;
+}
+.modul-orange:hover{
+  background-color: #ffbb00;
+  height:6rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.modul-red{
+  background-color: #df3838ad;
+  height:6rem;
+}
+.modul-red:hover{
+  background-color:  #df3838;
+  height:6rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.modul-dark{
+  background-color: #505050a2;
+  height:6rem;
+}
+.modul-dark:hover{
+  background-color: #505050;
+  height:6rem;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .logo{

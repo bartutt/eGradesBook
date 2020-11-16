@@ -3,8 +3,12 @@
   require_once './functions/class.controller.php';
   require_once './functions/class.displayer.php';
   require_once './functions/class.database.php';
-  require_once './functions/class.random_person.php';
 
+  $database = new DataBase();
+  $displayer = new Displayer ($database);
+  $controller = new Controller ($database, $displayer);
+
+  $controller->htmlForm('details');
 ?>
 
 <!DOCTYPE html>
@@ -25,30 +29,29 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-        <div class = "col m-3 modul rounded shadow-sm p-3">
+        <div class = "col-sm-7 m-3 modul rounded shadow-sm p-3">
           <div class = "header">
             <h2 class="display-4">Students</h2>
           </div>
-<!-- CONTROLLER -->
-<?php
-  $database = new DataBase();
-  $displayer = new Displayer ($database);
-  $controller = new Controller ($database, $displayer);
-  $student = new RandomPerson;
-
-  $controller->htmlForm('details');
-  
-  echo $controller->getForms();
-
-  if (!empty ($_POST)){
-    $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['student']);
-    $displayer->displayErrors();
-    $displayer->displaySuccess();
-  }
-?>
-<!-- CONTROLLER -->
-        <p class="lead">Overview</p>
+            <p class="lead">Overview</p>
           <?php $displayer->displayPersons('student');?>
+        </div>
+        <div class = "col-sm-4">
+          <div class = "row">
+            <a href = "#" class = "col m-3 modul-orange text-white rounded shadow p-3">
+              <i class="fas fa-plus fa-4x float-right"></i><span class = "modul"><?php echo $database->countNewPersons('student');?> new students</span>
+            </a>
+          </div>
+          <div class = "row">
+            <a href = "#" class = "col m-3 modul-dark text-white rounded shadow p-3">
+              <i class="fas fa-user-friends fa-4x float-right"></i><span class = "modul"><?php echo $database->countPersons('student');?> total</span>
+            </a>
+          </div>
+          <div class = "row">
+            <a href = "#" class = "col m-3 modul-red text-white rounded shadow p-3">
+              <i class="fas fa-user-graduate fa-4x float-right"></i><span class = "modul"><?php echo $database->countPersons('graduated');?> graduated</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

@@ -16,7 +16,8 @@ CREATE TABLE `person` (
   `code` int(4) NOT NULL,
   `street` varchar(20) NOT NULL,
   `house_nr` varchar(10) NOT NULL,
-  `password` char(128) NOT NULL
+  `password` char(128) NOT NULL,
+  `added_date` timestamp NOT NULL
 );
 
 CREATE TABLE `profiles` (

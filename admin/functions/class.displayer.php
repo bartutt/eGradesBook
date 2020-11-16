@@ -259,7 +259,7 @@ public function searchPersonButton($role_status) {
 }
 
 public function displayPersons($role_status) {
-
+      echo '<div class="table-responsive">';
       echo '<table class="table table-sm">';
       echo '<thead class = "thead-light"><th>name</th><th>surname</th><th>birth date</th><th>ID</th></thead>';
       echo '<tbody>';
@@ -278,6 +278,7 @@ public function displayPersons($role_status) {
       }
       echo '</tbody>';
       echo '</table>';
+      echo '</div>';
   
 }
   

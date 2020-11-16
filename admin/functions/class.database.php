@@ -57,6 +57,8 @@ class DataBase{
 
         private $students_class = array();
 
+        private $persons_qty = array();
+
         private $teacher_subject = array();
 
         private $teacher_class = array();
@@ -92,6 +94,52 @@ class DataBase{
 
 
 //PUBLIC METHODS
+
+/** 
+* return new students
+*/
+public function countNewPersons($role_status){
+    
+    $this->setQuery("SELECT 
+    COUNT(person.id) AS qty
+    FROM person
+    INNER JOIN role_status ON role_status_id = role_status.id
+    WHERE role_status.name = ? AND YEAR(added_date) = ?");
+
+        $school_year = $this->getCurrentYear();
+
+        $year = explode('/', $school_year);
+    
+            $values[] = $role_status;
+            
+            $values[] = $year[0];
+
+            $this->getContent($values, 'new_persons');
+
+            return $this->new_persons[0]['qty'];
+}
+
+
+/** 
+* return students quantity
+*/
+public function countPersons($role_status){
+    
+    
+        $this->setQuery("SELECT 
+        COUNT(person.id) AS qty
+        FROM person
+        INNER JOIN role_status ON role_status_id = role_status.id
+        WHERE role_status.name = ?");
+
+        $values[] = $role_status;
+
+        $this->getContent($values, $role_status);
+
+        return $this->$role_status[0]['qty'];
+}
+
+
 /** 
 * return teacher subjects
 */
