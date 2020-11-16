@@ -34,19 +34,16 @@
           <div class = "header ">
             <h2 class="display-4">Add <?php echo $_GET['person']?></h2>
           </div>
+            <?php
+              echo $controller->getForms();
 
+                if (!empty ($_POST['action'])){
+                  $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['person']);
+                  $displayer->displayErrors();
+                  $displayer->displaySuccess();
+                }
+              ?>
 
-<!-- CONTROLLER -->
-<?php
-  echo $controller->getForms();
-
-  if (!empty ($_POST)){
-    $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['person']);
-    $displayer->displayErrors();
-    $displayer->displaySuccess();
-  }
-?>
-<!-- CONTROLLER -->
           <p class="lead">Fill up form:</p>
             <table class = "table table-sm" >
               <tr>

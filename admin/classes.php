@@ -31,17 +31,15 @@
           <div class = "header">
             <h2 class="display-4">Add class</h2>
           </div>
-<!-- CONTROLLER -->
-<?php
-  echo $controller->getForms();
+            <?php
+                echo $controller->getForms();
 
-  if (!empty ($_POST['action'])) {
-    $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['class']);
-    $displayer->displayErrors();
-    $displayer->displaySuccess();
-  }
-?>
-<!-- CONTROLLER -->
+                if (!empty ($_POST['action'])) {
+                  $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['class']);
+                  $displayer->displayErrors();
+                  $displayer->displaySuccess();
+                }
+              ?>
             <div class="form-row">
               <div class="col-sm-2">
               <label for="class-name">Class name</label>
