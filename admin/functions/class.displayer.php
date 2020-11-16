@@ -236,9 +236,8 @@ public function displayRoleStatusSelect() {
       '<option value = '. $role_status['id'] .'>'         
            . $role_status['name'] .                       
       '</option>';
-
-
 }
+
   
 public function searchPersonButton($role_status) {
 
@@ -442,7 +441,6 @@ public function displayClasses($school_year){
   echo '</table>';
 
 }
-
 
 public function displayPersonDetails($id) {
       

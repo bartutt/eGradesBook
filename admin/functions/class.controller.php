@@ -26,13 +26,19 @@ class Controller {
     public function htmlForm($id){
         
         $this->form .= '
-            <form id = "'. $id .'" action = "'.$_SERVER['PHP_SELF'].'" method = "post" >
+            <form id = "'. $id .'" action = "'.$_SERVER['REQUEST_URI'].'" method = "post" >
                 <input type = "hidden" name = "action" value = "'. $id .'">
                 <input type = "hidden" name = "old_value" value = "">
             </form >';
 
     }
     
+    public function addPerson($person) {
+
+        foreach ($this->database->getRoleStatus() as $role_status)
+          if ($role_status['name'] == $person)
+            echo '<input class = "form-control" form = "add_person" name = "person[]" type = "hidden" value = '.$role_status['id'] .'>';
+    }
 
 
     
