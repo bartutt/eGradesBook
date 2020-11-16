@@ -41,10 +41,10 @@
                 <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Details</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="attendance-tab" aria-selected="false">Subjects</a>
+                <a class="nav-link" id=subjects-tab" data-toggle="tab" href="#subjects" role="tab" aria-controls="subjects-tab" aria-selected="false">Subjects</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="marks-tab" data-toggle="tab" href="#marks" role="tab" aria-controls="marks" aria-selected="false">Classes</a>
+                <a class="nav-link" id="classes-tab" data-toggle="tab" href="#classes" role="tab" aria-controls="classes" aria-selected="false">Classes</a>
               </li>
             </ul>
       
@@ -52,15 +52,12 @@
                 <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
                   <?php $displayer->displayPersonDetails($_POST['id']);?>
                 </div>
-                <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
-                  
+                <div class="tab-pane fade" id="subjects" role="tabpanel" aria-labelledby="subjects-tab">
+                  <?php $displayer->displayTeacherSubjects($_POST['id']);?>
                 </div>
-                <div class="tab-pane fade" id="marks" role="tabpanel" aria-labelledby="marks-tab">           
-
+                <div class="tab-pane fade" id="classes" role="tabpanel" aria-labelledby="classes-tab">           
+                  <?php $displayer->displayTeacherClasses($_POST['id']);?>
                 </div>
-                <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
-                  
-                </div>    
             </div> 
         </div>
       </div>

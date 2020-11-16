@@ -56,6 +56,10 @@ class DataBase{
         private $profiles = array();
 
         private $students_class = array();
+
+        private $teacher_subject = array();
+
+        private $teacher_class = array();
         
     
     /**    
@@ -88,7 +92,41 @@ class DataBase{
 
 
 //PUBLIC METHODS
+/** 
+* return teacher subjects
+*/
+public function getTeacherClasses($teacher_id){
+    
+    $this->setQuery("SELECT 
+    classes.name, classes.years, classes.id
+    FROM classes
+    INNER JOIN person ON id_teacher = person.id
+    WHERE id_teacher = ?");
 
+    $values[] = $teacher_id;
+
+    $this->getContent($values, 'teacher_class');
+
+    return $this->teacher_class;
+}
+
+/** 
+* return teacher subjects
+*/
+public function getTeacherSubjects($teacher_id){
+    
+    $this->setQuery("SELECT 
+    CONCAT(person.name, ' ', person.surname) AS teacher, subjects.name as subject 
+    FROM teacher_subject 
+    INNER JOIN person ON id_teacher = person.id
+    INNER JOIN subjects ON id_subject = subjects.id
+    WHERE id_teacher = ?");
+
+    $values[] = $teacher_id;
+    $this->getContent($values, 'teacher_subject');
+
+    return $this->teacher_subject;
+}
 /** 
 * return profiles
 */

@@ -298,6 +298,24 @@ public function displayNotes($student_id, $school_year) {
 
 }
 
+public function displayTeacherSubjects($teacher_id) {
+
+  echo '<ul class = "pt-2">';
+  foreach ($this->database->getTeacherSubjects($teacher_id) as $subject){
+      echo '<li>'.$subject['subject'].'</li>';
+      }
+  echo '</ul>';
+}
+
+public function displayTeacherClasses($teacher_id) {
+
+  echo '<ul class = "pt-2">';
+  foreach ($this->database->getTeacherClasses($teacher_id) as $class){
+      echo '<li class = "p-1"><a href = "details_class.php?class_id='.$class['id'].'">'.$class['name'].' '. $class['years'].'</a></li>';
+      }
+  echo '</ul>';
+}
+
 
 public function displayStudentMarks($student_id, $school_year) {
   
