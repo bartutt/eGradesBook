@@ -355,11 +355,14 @@ public function getNotes($student_id, $school_year){
 
 public function getSubjects(){
 
+    if (empty ($this->subjects)) {
+
     $this->setQuery("SELECT * FROM subjects");
 
     $this->getContent('', 'subjects');
+    }
 
-    return $this->subjects;
+        return $this->subjects;
 
 }
 
