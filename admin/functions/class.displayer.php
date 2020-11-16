@@ -420,7 +420,7 @@ public function displayClasses($school_year){
 
 public function displayPersonDetails($id) {
       
-      echo '<table class="table">';
+      echo '<table class="table table-sm">';
         echo '<tr> 
                 <th scope="row">id</th>     
                 <td>' . $this->person['id'] . '</td>
