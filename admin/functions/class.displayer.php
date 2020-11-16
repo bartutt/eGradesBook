@@ -205,10 +205,18 @@ public function displayPersonsSelect($role_status) {
       '<option value = ' . $person['id'] .'>'         
            . $person['name'] .' '.  $person['surname'].                    
       '</option>';
+}
+
+public function displaySubjectsSelect() {
+
+  foreach ($this->database->getSubjects() as $subject)
+      echo 
+      '<option value = ' . $subject['id'] .'>'         
+           . $subject['name'].                    
+      '</option>';
     
 
 }
-
 public function displayYearsSelect() {
 
             foreach ($this->database->getYears() as $year)

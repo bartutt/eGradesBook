@@ -82,9 +82,9 @@
           <p class="lead">Overview</p>
           <?php $displayer->displayClasses($database->getCurrentYear());?>
         </div>
-        <div class = "col-md-3 m-3 modul rounded shadow-sm p-0 chart-col">
-          <div id="chartClasses" class = "chart"></div>
-        </div>
+          <div class = "col-md-3 m-3 modul rounded shadow-sm p-0 chart-col">
+            <div id="chartClasses" class = "chart"></div>
+          </div>
         </div>
       </div>
     </div>

@@ -180,3 +180,5 @@ ALTER TABLE `message` ADD FOREIGN KEY (`receiver`) REFERENCES `person` (`id`);
 ALTER TABLE classes ADD CONSTRAINT student_class UNIQUE(id_student, id_class);
 
 ALTER TABLE classes ADD CONSTRAINT class_year UNIQUE(name, years);
+
+ALTER TABLE teacher_subject ADD CONSTRAINT teacher_subject UNIQUE(id_teacher, id_subject);

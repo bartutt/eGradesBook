@@ -79,6 +79,11 @@ class Controller {
                 $this->database->setProfile($old_value, $value);
                 $this->result();
                 break;
+
+            case 'set_teacher_subject':
+                $this->database->setTeacherSubject($value);
+                $this->result();
+                break;
     
             case 'add_role_status':  
                 $this->database->addRoleStatus($value);

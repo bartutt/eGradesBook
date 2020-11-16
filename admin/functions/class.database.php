@@ -307,11 +307,9 @@ public function getNotes($student_id, $school_year){
 
 public function getSubjects(){
 
-    unset($this->subjects);
+    $this->setQuery("SELECT * FROM subjects");
 
-    $this->connectDB();
-
-    $this->readTable('subjects', 'name');
+    $this->getContent('', 'subjects');
 
     return $this->subjects;
 
@@ -392,30 +390,32 @@ public function getPersonDetails($id){
 
 public function getPersons($role_status){
     
-    $this->setQuery("SELECT 
-    person.id,
-    person.name,
-    person.surname, 
-    person.gender,
-    person.tel,
-    person.birth_date,
-    person.e_mail,
-    person.city,
-    person.code,
-    person.street,
-    person.house_nr,
-    role_status.name AS role_status
-    FROM person
-    INNER JOIN role_status ON role_status_id = role_status.id
-    WHERE role_status.name = ?;
-    ");
+    if (empty ($this->person)) {
+        $this->setQuery("SELECT 
+        person.id,
+        person.name,
+        person.surname, 
+        person.gender,
+        person.tel,
+        person.birth_date,
+        person.e_mail,
+        person.city,
+        person.code,
+        person.street,
+        person.house_nr,
+        role_status.name AS role_status
+        FROM person
+        INNER JOIN role_status ON role_status_id = role_status.id
+        WHERE role_status.name = ?;
+        ");
 
 
-    $values[] = $role_status;
+            $values[] = $role_status;
 
-    $this->getContent($values, 'person');
-    
-    return $this->person;
+            $this->getContent($values, 'person');
+    }
+
+        return $this->person;
 }
 /** 
 * return status/role
@@ -652,6 +652,19 @@ public function setRoleStatus($old_value, $new_value) {
     }else $this->errors[] = $new_value . ' is not valid!';
 
     return $this;
+} 
+
+/**
+*     
+*/ 
+public function setTeacherSubject($value) {
+    
+    $this->setQuery("INSERT INTO teacher_subject (id_teacher, id_subject) VALUES (?, ?)");
+   
+        if ($this->setContent($value) === true)
+            $this->success[] = 'Subject is assigned.'; 
+        else
+            $this->errors[] = 'Subject can not be assigned';
 } 
 /**
 *     

@@ -3,8 +3,11 @@
   require_once './functions/class.controller.php';
   require_once './functions/class.displayer.php';
   require_once './functions/class.database.php';
-  require_once './functions/class.random_person.php';
+  $database = new DataBase();
+  $displayer = new Displayer ($database);
+  $controller = new Controller ($database, $displayer);
 
+  $controller->htmlForm('set_teacher_subject');
 ?>
 
 <!DOCTYPE html>
@@ -25,30 +28,46 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
+        <div class = "col-7 m-3 modul rounded shadow-sm p-3">
+          <?php
+          echo $controller->getForms();
+
+          if (!empty ($_POST['action'])){
+            $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['value']);
+            $displayer->displayErrors();
+            $displayer->displaySuccess();
+            }
+            ?>
+          <div class = "header">
+            <h2 class="display-4">Assign subject</h2>
+          </div>
+            <div class="form-row">
+              <div class="col-sm-4">
+                <select name = "value[]" form = "set_teacher_subject" class="form-control">
+                  <option selected>Choose teacher</option>
+                  <?php $displayer->displayPersonsSelect('teacher');?>
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <select name = "value[]" form = "set_teacher_subject" class="form-control">
+                  <option selected>Choose subject</option>
+                  <?php $displayer->displaySubjectsSelect();?>
+                </select>
+              </div>
+              <div class="col">
+                <button form = "set_teacher_subject" class="btn btn-success rounded-0" type="submit">assign</button>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class = "row">
         <div class = "col m-3 modul rounded shadow-sm p-3">
           <div class = "header">
             <h2 class="display-4">Teachers</h2>
           </div>
-<!-- CONTROLLER -->
-<?php
-  $database = new DataBase();
-  $displayer = new Displayer ($database);
-  $controller = new Controller ($database, $displayer);
-  $student = new RandomPerson;
-
-  $controller->htmlForm('details');
-  
-  echo $controller->getForms();
-
-  if (!empty ($_POST)){
-    $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['student']);
-    $displayer->displayErrors();
-    $displayer->displaySuccess();
-  }
-?>
-<!-- CONTROLLER -->
-        <p class="lead">Overview</p>
-          <?php $displayer->displayPersons('teacher');?>
+          <p class="lead">Overview</p>
+            <?php $displayer->displayPersons('teacher');?>
+          </div>
         </div>
       </div>
     </div>
