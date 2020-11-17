@@ -38,9 +38,11 @@ span.modul{
 footer{
   padding:1rem;
 }
+
 h5{
   font-family: 'Roboto', sans-serif;
 }
+
 .form-controll{
   font-family: 'Barlow', sans-serif;
 }
@@ -142,13 +144,13 @@ button:focus {
 }
 
 .collapsing {
-        transition: 1s ease;
+      transition: 1s ease;
 }
+
 .nr{
-
   width:1rem;
-
 }
+
 .table-button{
   width: 100%;
   text-align: left;
@@ -206,6 +208,14 @@ width:100%;
   border-left: 4px solid lightgrey;
   box-shadow: 0 2px 4px 0 whitesmoke;
 }
+
+.btn-link {
+ color: black;
+}
+
+.btn-link:hover {
+  color: black;
+ }
 
 .button:hover {
   border-left: 4px solid seagreen;

@@ -62,6 +62,8 @@ class DataBase{
         private $teacher_subject = array();
 
         private $teacher_class = array();
+
+        private $supervisor_student = array();
         
     
     /**    
@@ -125,6 +127,7 @@ public function countNewPersons($role_status){
 */
 public function countPersons($role_status){
     
+    unset($this->$role_status);
     
         $this->setQuery("SELECT 
         COUNT(person.id) AS qty
@@ -175,6 +178,30 @@ public function getTeacherSubjects($teacher_id){
 
     return $this->teacher_subject;
 }
+
+/** 
+* return teacher subjects
+*/
+public function getSupervisorStudent($supervisor_id){
+    
+    $this->setQuery("SELECT 
+    CONCAT(supervisor.name, ' ', supervisor.surname) AS supervisor, 
+    CONCAT(student.name, ' ', student.surname) AS student,
+    student.id as student_id
+    FROM supervisor_student 
+    INNER JOIN person student ON id_student = student.id
+    INNER JOIN person supervisor ON id_supervisor = supervisor.id
+    WHERE id_supervisor = ?");
+
+    $values[] = $supervisor_id;
+    
+    $this->getContent($values, 'supervisor_student');
+
+    return $this->supervisor_student;
+}
+
+
+
 /** 
 * return profiles
 */
@@ -441,7 +468,7 @@ public function getPersonDetails($id){
 
 public function getPersons($role_status){
     
-    if (empty ($this->person)) {
+    if (empty ($this->$role_status)) {
         $this->setQuery("SELECT 
         person.id,
         person.name,
@@ -463,10 +490,10 @@ public function getPersons($role_status){
 
             $values[] = $role_status;
 
-            $this->getContent($values, 'person');
+            $this->getContent($values, $role_status);
     }
 
-        return $this->person;
+        return $this->$role_status;
 }
 /** 
 * return status/role
@@ -708,14 +735,26 @@ public function setRoleStatus($old_value, $new_value) {
 /**
 *     
 */ 
-public function setTeacherSubject($value) {
+public function setTeacherSubject($values) {
     
     $this->setQuery("INSERT INTO teacher_subject (id_teacher, id_subject) VALUES (?, ?)");
    
-        if ($this->setContent($value) === true)
+        if ($this->setContent($values) === true)
             $this->success[] = 'Subject is assigned.'; 
         else
             $this->errors[] = 'Subject can not be assigned';
+} 
+/**
+*     
+*/ 
+public function setSupervisorStudent($values) {
+
+    $this->setQuery("INSERT INTO supervisor_student (id_student, id_supervisor) VALUES (?, ?)");
+   
+        if ($this->setContent($values) === true)
+            $this->success[] = 'Student is assigned.'; 
+        else
+            $this->errors[] = 'Student can not be assigned';
 } 
 /**
 *     

@@ -33,7 +33,7 @@
       <div class = "row">
         <div class = "col m-3 modul rounded shadow-sm p-3">
           <div class = "header">
-            <h2 class="display-4"><?php echo $displayer->displayPersonName($_POST['id']);?></h2>
+            <h2 class="display-4"><?php echo $displayer->displayPersonName($_GET['id']);?></h2>
           </div>
  
             <ul class="nav nav-tabs" role="tablist">
@@ -50,13 +50,13 @@
       
               <div class="tab-content">
                 <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
-                  <?php $displayer->displayPersonDetails($_POST['id']);?>
+                  <?php $displayer->displayPersonDetails($_GET['id']);?>
                 </div>
                 <div class="tab-pane fade" id="subjects" role="tabpanel" aria-labelledby="subjects-tab">
-                  <?php $displayer->displayTeacherSubjects($_POST['id']);?>
+                  <?php $displayer->displayTeacherSubjects($_GET['id']);?>
                 </div>
                 <div class="tab-pane fade" id="classes" role="tabpanel" aria-labelledby="classes-tab">           
-                  <?php $displayer->displayTeacherClasses($_POST['id']);?>
+                  <?php $displayer->displayTeacherClasses($_GET['id']);?>
                 </div>
             </div> 
         </div>

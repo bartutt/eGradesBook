@@ -183,3 +183,5 @@ ALTER TABLE classes ADD CONSTRAINT student_class UNIQUE(id_student, id_class);
 ALTER TABLE classes ADD CONSTRAINT class_year UNIQUE(name, years);
 
 ALTER TABLE teacher_subject ADD CONSTRAINT teacher_subject UNIQUE(id_teacher, id_subject);
+
+ALTER TABLE supervisor_student ADD CONSTRAINT spr_st UNIQUE (id_student,id_supervisor);

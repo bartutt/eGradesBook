@@ -150,7 +150,7 @@ class Displayer{
             <input type = "hidden" name = "'.$name.'" value = "'.$value.'">
             <input type = "hidden" name = "action" value = "'.$action_value.'">
             <input type = "hidden" name = "old_value" value = "'.$name_removed.'">
-            <td><button class="btn btn-danger rounded-0 pt-0 pb-0 float-right" type="submit">remove</button></td>
+            <td><button class="btn btn-danger rounded-0 pt-0 pb-0 float-right" type="submit"><i class="fas fa-trash-alt"></i></button></td>
           </form>';
 
     }
@@ -217,6 +217,8 @@ public function displaySubjectsSelect() {
     
 
 }
+
+
 public function displayYearsSelect() {
 
             foreach ($this->database->getYears() as $year)
@@ -265,7 +267,7 @@ public function displayPersons($role_status) {
       echo '<tbody>';
       foreach ($this->database->getPersons($role_status) as $person){
         echo '<tr>
-                <form action = "details_'.$role_status.'.php" method = "post">
+                <form action = "details_'.$role_status.'.php" method = "get">
                 <td><button type = "submit" class="table-button">' . $person['name'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['surname'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
@@ -324,6 +326,20 @@ public function displayTeacherClasses($teacher_id) {
   echo '</ul>';
 }
 
+
+public function displaySupervisorStudent($supervisor_id) {
+
+  echo '<ul class = "pt-2">';
+    foreach ($this->database->getSupervisorStudent($supervisor_id) as $student){
+
+    echo '<form action = "details_student.php" method = "get">    
+          <input type = "hidden" name = "id" value = "'.$student['student_id'].'">';   
+    echo '<li><button class = "btn btn-link" type = "submit">'.$student['student'].'</button></li>';
+      }
+
+  echo '</ul>';
+  echo '</form>';
+}
 
 public function displayStudentMarks($student_id, $school_year) {
   
@@ -404,7 +420,7 @@ public function displayClassDetails($class_id, $school_year = ''){
           foreach($students as $class) {
             echo '
                   <tr>
-                    <form action = "details_student.php" method = "post">
+                    <form action = "details_student.php" method = "get">
                       <td class = "nr"><button type = "submit" class="table-button">' . $i . '</button></td>
                       <td><button type = "submit" class="table-button">' . $class['student'] . '</button></td>
                       <input type = "hidden" name = "id" value = "'.$class['student_id'].'">
