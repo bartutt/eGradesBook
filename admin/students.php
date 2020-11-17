@@ -39,17 +39,17 @@
         <div class = "col-sm-4">
           <div class = "row">
             <a href = "#" class = "col m-3 modul-orange text-white rounded shadow p-3">
-              <i class="fas fa-plus fa-4x float-right"></i><span class = "modul"><?php echo $database->countNewPersons('student');?> new students</span>
+              <i class="fas fa-plus fa-3x float-right"></i><span class = "modul"><?php echo $database->countNewPersons('student');?> new students</span>
             </a>
           </div>
           <div class = "row">
             <a href = "#" class = "col m-3 modul-dark text-white rounded shadow p-3">
-              <i class="fas fa-user-friends fa-4x float-right"></i><span class = "modul"><?php echo $database->countPersons('student');?> total</span>
+              <i class="fas fa-user-friends fa-3x float-right"></i><span class = "modul"><?php echo $database->countPersons('student');?> total</span>
             </a>
           </div>
           <div class = "row">
             <a href = "#" class = "col m-3 modul-red text-white rounded shadow p-3">
-              <i class="fas fa-user-graduate fa-4x float-right"></i><span class = "modul"><?php echo $database->countPersons('graduated');?> graduated</span>
+              <i class="fas fa-user-graduate fa-3x float-right"></i><span class = "modul"><?php echo $database->countPersons('graduated');?> graduated</span>
             </a>
           </div>
         </div>

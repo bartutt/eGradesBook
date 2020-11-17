@@ -468,7 +468,8 @@ public function getPersonDetails($id){
 
 public function getPersons($role_status){
     
-    if (empty ($this->$role_status)) {
+    unset($this->$role_status);
+
         $this->setQuery("SELECT 
         person.id,
         person.name,
@@ -488,10 +489,9 @@ public function getPersons($role_status){
         ");
 
 
-            $values[] = $role_status;
+        $values[] = $role_status;
 
-            $this->getContent($values, $role_status);
-    }
+        $this->getContent($values, $role_status);
 
         return $this->$role_status;
 }

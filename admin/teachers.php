@@ -59,6 +59,13 @@
               </div>
             </div>
         </div>
+        <div class = "col-sm-4 m-3">
+          <div class = "row align-self-center">
+            <a href = "#" class = "col m-3 modul-green text-white rounded shadow p-3">
+              <i class="fas fa-user-friends fa-3x float-right"></i><span class = "modul"><?php echo $database->countPersons('teacher');?> teachers</span>
+            </a>
+          </div>
+        </div>
       </div>
       <div class = "row">
         <div class = "col m-3 modul rounded shadow-sm p-3">

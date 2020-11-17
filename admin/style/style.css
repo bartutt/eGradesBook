@@ -58,33 +58,36 @@ h5{
 
 .modul-orange{
   background-color: #ffbb0094;
-  height:6rem;
 }
 .modul-orange:hover{
   background-color: #ffbb00;
-  height:6rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.modul-green{
+  background-color: #008100a1;
+}
+.modul-green:hover{
+  background-color:#038503;
   cursor: pointer;
   text-decoration: none;
 }
 
 .modul-red{
   background-color: #df3838ad;
-  height:6rem;
 }
 .modul-red:hover{
   background-color:  #df3838;
-  height:6rem;
   cursor: pointer;
   text-decoration: none;
 }
 
 .modul-dark{
   background-color: #505050a2;
-  height:6rem;
 }
 .modul-dark:hover{
   background-color: #505050;
-  height:6rem;
   cursor: pointer;
   text-decoration: none;
 }
