@@ -27,7 +27,7 @@
 
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
-    <div class = "row">
+      <div class = "row">
         <div class = "col-sm-10 m-3 modul rounded shadow-sm p-3">
           <?php
           echo $controller->getForms();

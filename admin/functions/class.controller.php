@@ -90,6 +90,11 @@ class Controller {
                 $this->database->setTeacherSubject($val_2);
                 $this->result();
                 break;
+
+            case 'add_event':
+                $this->database->addEvent($val_2);
+                $this->result();
+                break;
                 
             case 'set_supervisor_student':
                 $this->database->setSupervisorStudent($val_2); // $val_1 = ID student, $val_2 = ID parent
@@ -128,6 +133,11 @@ class Controller {
         
             case 'delete_class':
                 $this->database->deleteClass($val_1, $val_2); // $val_1 = class name
+                $this->result();
+                break;    
+
+            case 'delete_event':
+                $this->database->deleteEvent($val_2);
                 $this->result();
                 break;    
         

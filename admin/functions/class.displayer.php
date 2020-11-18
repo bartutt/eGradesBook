@@ -154,7 +154,22 @@ class Displayer{
           </form>';
 
     }
-    
+public function colorEvents(){
+  
+        $color = array(
+        'bg-green-alt',
+        'bg-red-alt',
+        'bg-cyan-alt',
+        'bg-orange-alt',
+        'bg-purple-alt',
+        'bg-sky-blue-alt'
+    );
+
+	  $this->event_col = $color[rand ( 0 , count($color) -1)];
+	    return $this->event_col;
+}
+
+
 public function displayErrors(){
   
   if (!empty ($this->database->getErrors() ) ){
@@ -218,6 +233,17 @@ public function displaySubjectsSelect() {
 
 }
 
+public function displayClassesSelect() {
+
+  $school_year = $this->database->getCurrentYear();
+  foreach ($this->database->getClasses($school_year) as $class)
+      echo 
+      '<option value = ' . $class['id'] .'>'         
+           . $class['name'].                    
+      '</option>';
+    
+
+}
 
 public function displayYearsSelect() {
 
@@ -413,7 +439,7 @@ public function displayClassDetails($class_id, $school_year = ''){
       echo '<table class="table table-sm">';
       echo '
       <thead class = "thead-light"><th>#</th><th>Student</th>
-      <th><button class = "btn btn-outline-secondary pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
+      <th><button class = "btn btn-outline-danger pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
       </thead>';
       echo '<tbody>';
         $i = 1;
@@ -440,7 +466,7 @@ public function displayClasses($school_year){
   echo '<table class="table table-sm">';
   echo '
     <thead class = "thead-light"><th>#</th><th>Teacher</th><th>Profile</th>
-    <th><button class = "btn btn-outline-secondary pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
+    <th><button class = "btn btn-outline-danger pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
     </thead>';
   echo '<tbody>';
     foreach($this->database->getClasses($school_year) as $class){

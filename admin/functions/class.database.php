@@ -64,6 +64,10 @@ class DataBase{
         private $teacher_class = array();
 
         private $supervisor_student = array();
+
+        private $events = array();
+
+        private $calendar_min_max = array();
         
     
     /**    
@@ -97,6 +101,32 @@ class DataBase{
 
 //PUBLIC METHODS
 
+
+public function getCalMinMax(){
+
+    $this->setQuery("SELECT 
+    YEAR(min(date)) AS min, 
+    YEAR(max(date)) as max
+    from events");
+
+        $this->getContent('', 'calendar_min_max');
+
+        return $this->calendar_min_max[0];
+
+}
+
+public function getEvents(){
+
+    $this->setQuery("SELECT 
+    classes.name, events.description, events.date, events.id, classes.id as class_id 
+    FROM events
+    INNER JOIN classes ON id_class = classes.id");
+       
+            $this->getContent('', 'events');
+
+            return $this->events;
+
+}
 /** 
 * return new students
 */
@@ -777,6 +807,26 @@ public function addMarkCat($value) {
 
     return $this;
 } 
+
+/**
+*     
+*/ 
+public function addEvent($values) {
+    
+    $this->setQuery("INSERT INTO events (id_class, description, date) VALUES (?,?,?)");
+
+    $validation = new Validator;
+
+    if ($validation->isValid ($values[1], 'description') === true){
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = 'New event is added.'; 
+        else
+            $this->errors[] = 'Event can not be add';
+    }else $this->errors[] = $values[1] . ' is not valid!';
+
+    return $this;
+} 
 /**
 *     
 */ 
@@ -954,7 +1004,21 @@ public function deleteClass($class_name, $id_class) {
             $this->errors[] = $class_name . ' can not be removed';
 
 } 
+/**
+*     
+*/ 
+public function deleteEvent($ev_id) {
 
+
+    $this->setQuery("DELETE FROM events WHERE id = ?");
+
+        
+        if ($this->setContent($ev_id) === true)
+            $this->success[] = 'Event is deleted'; 
+        else
+            $this->errors[] = 'Event can not be deleted';
+
+} 
 
 //PRIVATE METHODS 
 
