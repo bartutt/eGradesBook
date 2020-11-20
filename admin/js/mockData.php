@@ -1,6 +1,3 @@
-<?php
-    $color = $displayer->colorEvents();
-?>
 
 <script type="text/javascript">
 const mockData = [

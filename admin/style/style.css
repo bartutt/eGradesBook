@@ -6,6 +6,16 @@ body{
   overflow-y: scroll;
   background-color: #f0f0f0;
 }
+
+.timetable{
+font-size: 0.8rem;
+list-style-type: none;
+padding:0;
+}
+.timetable-blocks{
+height: 4rem;
+max-height:4rem;
+}
 .chart{
   width: 100%; 
   height: 100%;
@@ -33,8 +43,21 @@ span.modul{
   padding:5%;
 }
 
+/** 
+* styling editting field
+*/
+.edit-field{
+  text-align: center;
+  position: relative;
+  margin: 0;
+  border:0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+}
 
-.btn-danger{
+
+.btn-danger, .hide{
   display:none;
 }
 

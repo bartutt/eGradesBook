@@ -1,10 +1,9 @@
 /*
-* Container for event og remove button
+* Container for event remove button and edit field
 */
 .event-container{
   position: relative;
 }
-
 h6{
   font-size: 0.8rem;
 }
@@ -84,7 +83,7 @@ Calendar Styling */
 .calendar .days li .event {
   font-size: 0.9rem;
   color: white;
-  padding:0.3rem;
+  padding:5%;
   margin:0.1rem;
 }
 

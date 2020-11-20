@@ -4,6 +4,8 @@ class Displayer{
 
     private $database;
 
+    private $lesson_times = array();
+
     /**
      * Holds colors mark weight
      */
@@ -154,6 +156,8 @@ class Displayer{
           </form>';
 
     }
+
+
 public function colorEvents(){
   
         $color = array(
@@ -170,16 +174,108 @@ public function colorEvents(){
 }
 
 
+public function createTimetable($class_id){
+  
+  $lesson_times = $this->database->getLessonTimes();
+
+  $timtbl = $this->database->getTimetable($class_id);
+
+  $week_days = array(
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday'
+  );
+
+  foreach($week_days as $day) {
+    foreach($timtbl as $lesson) { 
+        if ($lesson['week_day'] == $day) {
+          $lessons[$day][$lesson['time']] = $lesson['subject'];
+          $teachers[$day][$lesson['time']] = $lesson['teacher'];         
+        }            
+      }
+      $lessons[$day][] = '';
+   }
+
+
+    echo '<div class = "row">';  
+      echo '<div class = "col p-4">';
+        echo ' ';
+      echo '</div>';
+        foreach ($week_days as $day) {
+          echo '<div class = "col p-4">';
+            echo $day;
+          echo '</div>';
+      }
+    echo '</div>';
+
+
+    echo '<div class = "row">';
+
+      echo '<div class = "col">';
+        foreach($lesson_times as $time){
+            echo '<div class = "row">';
+              echo '<div class = "col py-2 m-1 timetable-blocks">';
+                echo $time['time'];
+            echo '</div>';
+          echo '</div>'; 
+    }
+      echo '</div>';
+
+
+    foreach ($lessons as $day => $lesson) {    
+        echo '<div class = "col">';  
+          foreach ($lesson_times as $hour) {         
+            $color = $this->colorEvents();
+              echo '<div class = "row" >';
+              if (!empty ($lesson[$hour['time']])) {
+                echo '<div class = "col lesson timetable-blocks  text-white p-2 m-1 '.$color.'">';
+                  echo '<ul class="timetable">';
+                    echo '<li class="my-1">'.$lesson[$hour['time']].'</li>';
+                    echo '<li class="my-1">'.$teachers[$day][$hour['time']].'</li>';
+                  echo '</ul>';
+                echo '</div>';
+              } else echo '<div class = "col lesson timetable-blocks  text-white p-2 m-1"></div>';
+                echo '<div class = "col timetable-blocks p-2 m-1 hide text-white '.$color.'">';   
+                    echo '<input name = "class[]" type = "hidden" value = "'.$class_id.'" form = "set_timetable" ">';          
+                    echo '<input name = "time[]" type = "hidden" value = "'.$hour['id'].'" form = "set_timetable" ">';
+                    echo '<input name = "day[]" type = "hidden" value = "'.$day.'" form = "set_timetable">';
+                  echo '<ul class="timetable">';
+                    echo '<li class="my-1">';
+                      echo '<select name = "subject[]" class = "edit-field" form = "set_timetable"</li>';
+                      echo '<option value = "Null"></option>';                      
+                          $this->displaySubjectsSelect($lesson[$hour['time']]);
+                      echo '</select>';
+                    echo '<li class="my-1">';
+                      echo '<select name = "teacher[]" class = "edit-field" form = "set_timetable"</li>';
+                        echo '<option value = "Null" ></option>';                
+                          $this->displayPersonsSelect('teacher', $teachers[$day][$hour['time']]);
+                      echo '</select>';
+                  echo '</ul>';           
+                echo'</div>';
+              echo'</div>';          
+            }            
+          echo '</div>';
+        } 
+
+        echo '</div>';
+      echo '</div>';
+}
+
+
 public function displayErrors(){
   
-  if (!empty ($this->database->getErrors() ) ){
+  $errors = $this->database->getErrors();
+  
+  if (!empty ($errors) ){ 
 
     echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
     echo '<h4 class="alert-heading">Error</h4>';
     echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
     echo '<span aria-hidden="true">&times;</span>';
     echo '</button>';    
-      foreach ($this->database->getErrors() as $error)
+      foreach ($errors as $error)
           echo '<hr>' . $error;            
     echo '<br></div>';
   }
@@ -187,15 +283,18 @@ public function displayErrors(){
 
 
 public function displaySuccess(){
-  if (!empty ($this->database->getSuccess() ) ){
+  
+  $success = $this->database->getSuccess();
+  
+  if (!empty ($success ) ){
 
     echo '<div class="alert alert-success alert-dismissible fade show" role="alert">';
     echo '<h4 class="alert-heading">Success</h4>';
     echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
     echo '<span aria-hidden="true">&times;</span>';
     echo '</button>';    
-      foreach ($this->database->getSuccess() as $success)
-          echo '<hr>' . $success;            
+      foreach ($success as $suc)
+          echo '<hr>' . $suc;            
     echo '<br></div>';
   }     
      
@@ -213,24 +312,44 @@ public function displayProfilesSelect() {
 
 }
 
-public function displayPersonsSelect($role_status) {
+public function displayPersonsSelect($role_status, $selected = '') {
 
-  foreach ($this->database->getPersons($role_status) as $person)
+  if (empty ($this->$role_status))
+      $this->$role_status = $this->database->getPersons($role_status);
+
+  foreach ($this->$role_status as $person){
+    if ($person['name'] .' '.  $person['surname'] !== $selected){
       echo 
-      '<option value = ' . $person['id'] .'>'         
-           . $person['name'] .' '.  $person['surname'].                    
-      '</option>';
+              '<option value = ' . $person['id'] .'>'         
+              . $person['name'] .' '.  $person['surname'].                    
+              '</option>';
+    }else {
+        echo 
+              '<option value = '. $person['id'] .' selected>'         
+              .   $person['name'] .' '.  $person['surname'].                    
+              '</option>';
+    }
+  }
 }
 
-public function displaySubjectsSelect() {
-
-  foreach ($this->database->getSubjects() as $subject)
-      echo 
-      '<option value = ' . $subject['id'] .'>'         
-           . $subject['name'].                    
-      '</option>';
-    
-
+public function displaySubjectsSelect($selected = '') {
+  
+  if (empty ($this->subjects))
+    $this->subjects = $this->database->getSubjects();
+  
+  foreach ($this->subjects as $subject){
+    if ($subject['name'] !== $selected){
+          echo 
+              '<option value = '. $subject['id'] .'>'         
+                . $subject['name'].                    
+              '</option>';
+    }else{
+          echo 
+              '<option value = '. $subject['id'] .' selected>'         
+                . $subject['name'].                    
+              '</option>';
+    }
+  }
 }
 
 public function displayClassesSelect() {

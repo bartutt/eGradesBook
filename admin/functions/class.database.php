@@ -68,6 +68,8 @@ class DataBase{
         private $events = array();
 
         private $calendar_min_max = array();
+
+        private $timetable = array();
         
     
     /**    
@@ -101,6 +103,28 @@ class DataBase{
 
 //PUBLIC METHODS
 
+
+public function getTimetable($class_id){
+
+    $this->setQuery("SELECT
+    CONCAT(teacher.name, ' ', teacher.surname) AS teacher,
+    classes.name as class, subjects.name as subject, lesson_times.time,lesson_times.id as time_id,
+    week_day
+
+    FROM class_subject
+    INNER JOIN classes ON id_class = classes.id
+    INNER JOIN subjects ON id_subject = subjects.id
+    INNER JOIN lesson_times ON id_lesson_time = lesson_times.id
+    INNER JOIN person teacher ON class_subject.id_teacher = teacher.id
+    WHERE classes.id = ?");
+    
+    $values[] = $class_id;
+            $this->getContent($values, 'timetable');
+
+            return $this->timetable;
+
+
+}
 
 public function getCalMinMax(){
 
@@ -576,11 +600,14 @@ public function getYears(){
 */
 public function getLessonTimes(){
     
-    $this->connectDB();
+    if (empty ($this->lesson_times)) {
 
-    $this->readTable('lesson_times', 'time');
+        $this->setQuery("SELECT * FROM lesson_times");
     
-    return $this->lesson_times;
+        $this->getContent('', 'lesson_times');
+        }
+    
+            return $this->lesson_times;
 }
 /** 
 * return errors
@@ -785,6 +812,26 @@ public function setSupervisorStudent($values) {
             $this->success[] = 'Student is assigned.'; 
         else
             $this->errors[] = 'Student can not be assigned';
+} 
+public function setTimetable($values) {
+
+for ($i = 0; $i <= 39; $i++)
+    if (!empty ($values[$i])) {
+
+        $this->setQuery("INSERT INTO 
+        class_subject (id_class, id_subject, id_teacher, id_lesson_time, week_day) 
+        VALUES(?, ?, ?, ?, ?) 
+        ON DUPLICATE KEY UPDATE    
+        id_subject = VALUES(id_subject), 
+        id_teacher = VALUES(id_teacher), 
+        id_lesson_time = VALUES(id_lesson_time)
+        ");
+       
+        if ($this->setContent($values[$i]) === true)
+            $this->success[0] = 'Timetable is saved'; 
+        else
+            $this->errors[0] = 'Timetable can not be save';
+    }
 } 
 /**
 *     

@@ -90,6 +90,11 @@ class Controller {
                 $this->database->setTeacherSubject($val_2);
                 $this->result();
                 break;
+            
+            case 'set_timetable':
+                $this->database->setTimetable($val_2);
+                $this->result();
+                break;
 
             case 'add_event':
                 $this->database->addEvent($val_2);
