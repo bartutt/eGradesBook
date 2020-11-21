@@ -45,15 +45,14 @@
             <div class="form-row">
               <div class="col-sm-3">
                 <select name = "value[]" form = "add_event" class="form-control">
-                <option>Choose class..</option>  
                   <?php $displayer->displayClassesSelect();?>
                 </select>
               </div>
               <div class="col-sm-3">
-                <input name = "value[]" form = "add_event" class="form-control" type="text" placeholder = "Description">
+                <input name = "value[]" form = "add_event" class="form-control" type="text" id = "description" placeholder = "Description">
               </div>    
               <div class="col-sm-3">
-                <input name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker" placeholder = "Date">
+                <input autocomplete="off" name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker" placeholder = "Date">
               </div>
               <div class="col-sm-3">
                 <button form = "add_event" class="btn btn-success rounded-0" type="submit">add</button>

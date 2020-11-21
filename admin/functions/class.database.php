@@ -104,6 +104,9 @@ class DataBase{
 //PUBLIC METHODS
 
 
+
+
+
 public function getTimetable($class_id){
 
     $this->setQuery("SELECT
@@ -813,10 +816,14 @@ public function setSupervisorStudent($values) {
         else
             $this->errors[] = 'Student can not be assigned';
 } 
+
+
 public function setTimetable($values) {
 
-for ($i = 0; $i <= 39; $i++)
-    if (!empty ($values[$i])) {
+   foreach ($values as $row) {  
+    // row 1 = subject, row 2 = teacher
+    if ( ($row['1'] !== '') && ($row['2'] !== '')) {  
+        echo      $row['2'];
 
         $this->setQuery("INSERT INTO 
         class_subject (id_class, id_subject, id_teacher, id_lesson_time, week_day) 
@@ -827,10 +834,15 @@ for ($i = 0; $i <= 39; $i++)
         id_lesson_time = VALUES(id_lesson_time)
         ");
        
-        if ($this->setContent($values[$i]) === true)
-            $this->success[0] = 'Timetable is saved'; 
-        else
-            $this->errors[0] = 'Timetable can not be save';
+            if ($this->setContent($row) === true) {
+                if (empty ($this->success) )
+                $this->success[] = 'Timetable is saved'; 
+            
+            }else {
+                if (empty ($this->errors) )
+                $this->errors[] = 'Timetable can not be save';
+                }
+        }
     }
 } 
 /**

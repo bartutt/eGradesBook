@@ -48,21 +48,18 @@
               <div class="col-sm-2">
                 <label for="teacher">Teacher</label>
                   <select form = "add_class" name = "class[]" id="teacher" class="form-control">
-                    <option selected>Choose...</option>
                     <?php $displayer->displayPersonsSelect('teacher');?>
                   </select>
               </div>
               <div class="col-sm-2">
                 <label for="profile">Profile</label>
                   <select form = "add_class" name = "class[]" id="profile" class="form-control">
-                    <option selected>Choose...</option>
                     <?php $displayer->displayProfilesSelect();?>
                   </select>
               </div>  
               <div class="col-sm-2">
                 <label for="profile">School year</label>
                   <select form = "add_class" name = "class[]" id="profile" class="form-control">
-                    <option selected>Choose...</option>
                     <?php $displayer->displayYearsSelect();?>
                   </select>
               </div>

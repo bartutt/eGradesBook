@@ -49,8 +49,7 @@
                 </select>
               </div>
               <div class="col-sm-4">
-                <select name = "value[]" form = "set_supervisor_student" class="form-control" placeholder = "Find parent">
-                <option value=""></option>   
+                <select name = "value[]" form = "set_supervisor_student" class="form-control" placeholder = "Find parent">  
                   <?php $displayer->displayPersonsSelect('parent');?>      
                 </select>
               </div>

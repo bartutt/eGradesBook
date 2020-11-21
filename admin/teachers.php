@@ -44,13 +44,11 @@
             <div class="form-row">
               <div class="col-sm-4">
                 <select name = "value[]" form = "set_teacher_subject" class="form-control">
-                  <option selected>Choose teacher</option>
                   <?php $displayer->displayPersonsSelect('teacher');?>
                 </select>
               </div>
               <div class="col-sm-4">
                 <select name = "value[]" form = "set_teacher_subject" class="form-control">
-                  <option selected>Choose subject</option>
                   <?php $displayer->displaySubjectsSelect();?>
                 </select>
               </div>

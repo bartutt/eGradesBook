@@ -32,19 +32,10 @@
           <?php
 
           echo $controller->getForms();
-          if (!empty ($_POST['action'])){
-            
-        for ($i = 0; $i <= 39; $i ++) {
-          if ($_POST['subject'][$i] !== ''){
-            $timetable[$i][] = $_POST['class'][$i];
-            $timetable[$i][] = $_POST['subject'][$i];
-            $timetable[$i][] = $_POST['teacher'][$i];
-            $timetable[$i][] = $_POST['time'][$i];
-            $timetable[$i][] = $_POST['day'][$i];
-        }
-        }
-          
-            $controller->handleRequest ($_POST['action'], '', $timetable);
+
+          if (!empty ($_POST['action'])) {
+                    
+            $controller->handleRequest ($_POST['action'], '', $_POST['timetable']);
             $displayer->displayErrors();
             $displayer->displaySuccess();
             }

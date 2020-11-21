@@ -4,10 +4,33 @@ class Displayer{
 
     private $database;
 
+    /**
+     * Contains lessons hours
+     */
     private $lesson_times = array();
+    
+    /**
+     * Contains available profiles
+     */
+    private $profiles = array();
+    
+    /**
+     * Contains classes for current school year
+     */
+    private $classes = array();
 
     /**
-     * Holds colors mark weight
+     * Contains available school years
+     */
+    private $years = array();
+
+    /**
+     * Contains available roles/statuses
+     */
+    private $role_status = array();
+
+    /**
+     * Contains colors mark weight
      */
     private $mark_color = array();
 
@@ -17,8 +40,24 @@ class Displayer{
 
     private $marks = array();
 
-    private $class = array();
+    private $class = array();  
+    
+    /**
+     * Contains rendered timetable content
+     */
+    private $lessons = array();
+    private $teachers = array();
 
+    /**
+     * Week days
+     */
+    private $week_days = array(
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday'
+    );
 
     function __construct($database) {
 
@@ -156,8 +195,48 @@ class Displayer{
           </form>';
 
     }
+    private function displayTimetableFrame() {
+
+      $this->lesson_times = $this->database->getLessonTimes();
+
+      echo '<div class = "row">';  
+      echo '<div class = "col p-4">';
+        echo ' ';
+      echo '</div>';
+        foreach ($this->week_days as $day) {
+          echo '<div class = "col p-4">';
+            echo $day;
+          echo '</div>';
+        }
+      echo '</div>';
 
 
+      echo '<div class = "row">';
+       echo '<div class = "col">';
+        foreach($this->lesson_times as $time){
+            echo '<div class = "row">';
+              echo '<div class = "col py-2 m-1 timetable-blocks">';
+                echo $time['time'];
+            echo '</div>';
+          echo '</div>'; 
+        }
+      echo '</div>';
+    }
+    private function renderTimetableContent($class_id){
+
+        $timtbl = $this->database->getTimetable($class_id);
+    
+            foreach($this->week_days as $day) {
+                foreach($timtbl as $lesson) { 
+                    if ($lesson['week_day'] == $day) {
+                        $this->lessons[$day][$lesson['time']] = $lesson['subject'];
+                        $this->teachers[$day][$lesson['time']] = $lesson['teacher'];         
+                    }            
+                }        
+                $this->lessons[$day][] = '';
+              }  
+    }
+  
 public function colorEvents(){
   
         $color = array(
@@ -174,91 +253,47 @@ public function colorEvents(){
 }
 
 
-public function createTimetable($class_id){
-  
-  $lesson_times = $this->database->getLessonTimes();
+public function createTimetable($class_id) {
 
-  $timtbl = $this->database->getTimetable($class_id);
+   $this->displayTimetableFrame();
 
-  $week_days = array(
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday'
-  );
-
-  foreach($week_days as $day) {
-    foreach($timtbl as $lesson) { 
-        if ($lesson['week_day'] == $day) {
-          $lessons[$day][$lesson['time']] = $lesson['subject'];
-          $teachers[$day][$lesson['time']] = $lesson['teacher'];         
-        }            
-      }
-      $lessons[$day][] = '';
-   }
-
-
-    echo '<div class = "row">';  
-      echo '<div class = "col p-4">';
-        echo ' ';
-      echo '</div>';
-        foreach ($week_days as $day) {
-          echo '<div class = "col p-4">';
-            echo $day;
-          echo '</div>';
-      }
-    echo '</div>';
-
-
-    echo '<div class = "row">';
-
-      echo '<div class = "col">';
-        foreach($lesson_times as $time){
-            echo '<div class = "row">';
-              echo '<div class = "col py-2 m-1 timetable-blocks">';
-                echo $time['time'];
-            echo '</div>';
-          echo '</div>'; 
-    }
-      echo '</div>';
-
-
-    foreach ($lessons as $day => $lesson) {    
+   $this->renderTimetableContent($class_id);
+    $i = 0;
+    foreach ($this->lessons as $day => $lesson) {    
         echo '<div class = "col">';  
-          foreach ($lesson_times as $hour) {         
+          foreach ($this->lesson_times as $hour) {         
             $color = $this->colorEvents();
               echo '<div class = "row" >';
               if (!empty ($lesson[$hour['time']])) {
                 echo '<div class = "col lesson timetable-blocks  text-white p-2 m-1 '.$color.'">';
                   echo '<ul class="timetable">';
                     echo '<li class="my-1">'.$lesson[$hour['time']].'</li>';
-                    echo '<li class="my-1">'.$teachers[$day][$hour['time']].'</li>';
+                    echo '<li class="my-1">'.$this->teachers[$day][$hour['time']].'</li>';
                   echo '</ul>';
                 echo '</div>';
               } else echo '<div class = "col lesson timetable-blocks  text-white p-2 m-1"></div>';
                 echo '<div class = "col timetable-blocks p-2 m-1 hide text-white '.$color.'">';   
-                    echo '<input name = "class[]" type = "hidden" value = "'.$class_id.'" form = "set_timetable" ">';          
-                    echo '<input name = "time[]" type = "hidden" value = "'.$hour['id'].'" form = "set_timetable" ">';
-                    echo '<input name = "day[]" type = "hidden" value = "'.$day.'" form = "set_timetable">';
+                    echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$class_id.'" form = "set_timetable" ">';          
                   echo '<ul class="timetable">';
                     echo '<li class="my-1">';
-                      echo '<select name = "subject[]" class = "edit-field" form = "set_timetable"</li>';
+                      echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable"</li>';
                       echo '<option value = "Null"></option>';                      
                           $this->displaySubjectsSelect($lesson[$hour['time']]);
                       echo '</select>';
                     echo '<li class="my-1">';
-                      echo '<select name = "teacher[]" class = "edit-field" form = "set_timetable"</li>';
+                      echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable"</li>';
                         echo '<option value = "Null" ></option>';                
-                          $this->displayPersonsSelect('teacher', $teachers[$day][$hour['time']]);
+                          $this->displayPersonsSelect('teacher', $this->teachers[$day][$hour['time']]);
                       echo '</select>';
+                      echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$hour['id'].'" form = "set_timetable" ">';
+                      echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$day.'" form = "set_timetable">';
                   echo '</ul>';           
                 echo'</div>';
-              echo'</div>';          
+              echo'</div>'; 
+              $i ++;         
             }            
           echo '</div>';
-        } 
-
+          } 
         echo '</div>';
       echo '</div>';
 }
@@ -301,9 +336,17 @@ public function displaySuccess(){
 }
 
 
-public function displayProfilesSelect() {
+public function displayProfilesSelect($selected = '') {
 
-  foreach ($this->database->getProfiles() as $profile)
+  if (empty ($this->profiles))
+    $this->profiles = $this->database->getProfiles();
+
+
+  if (empty ($selected) )
+    echo 
+      '<option value = "" hidden selected></option>';
+
+  foreach ($this->profiles as $profile)
       echo 
       '<option value = '. $profile['id'] .'>'         
            . $profile['name'] .                       
@@ -316,6 +359,10 @@ public function displayPersonsSelect($role_status, $selected = '') {
 
   if (empty ($this->$role_status))
       $this->$role_status = $this->database->getPersons($role_status);
+
+      if (empty ($selected) )
+        echo 
+          '<option value = "" hidden selected></option>';
 
   foreach ($this->$role_status as $person){
     if ($person['name'] .' '.  $person['surname'] !== $selected){
@@ -336,14 +383,18 @@ public function displaySubjectsSelect($selected = '') {
   
   if (empty ($this->subjects))
     $this->subjects = $this->database->getSubjects();
+    
+    if (empty ($selected) )
+      echo 
+        '<option value = "" hidden selected></option>';
   
-  foreach ($this->subjects as $subject){
-    if ($subject['name'] !== $selected){
+    foreach ($this->subjects as $subject){
+      if ($subject['name'] !== $selected){
           echo 
               '<option value = '. $subject['id'] .'>'         
                 . $subject['name'].                    
               '</option>';
-    }else{
+    }else {
           echo 
               '<option value = '. $subject['id'] .' selected>'         
                 . $subject['name'].                    
@@ -352,10 +403,18 @@ public function displaySubjectsSelect($selected = '') {
   }
 }
 
-public function displayClassesSelect() {
+public function displayClassesSelect($selected = '') {
 
   $school_year = $this->database->getCurrentYear();
-  foreach ($this->database->getClasses($school_year) as $class)
+
+  if (empty ($this->classes))
+    $this->classes = $this->database->getClasses($school_year);
+
+  if (empty ($selected) )
+        echo 
+          '<option value = "" hidden selected></option>';
+
+  foreach ($this->classes as $class)
       echo 
       '<option value = ' . $class['id'] .'>'         
            . $class['name'].                    
@@ -364,9 +423,17 @@ public function displayClassesSelect() {
 
 }
 
-public function displayYearsSelect() {
+public function displayYearsSelect($selected = '') {
 
-            foreach ($this->database->getYears() as $year)
+  if (empty ($this->years))
+    $this->years = $this->database->getYears();
+
+
+  if (empty ($selected) )
+    echo 
+      '<option value = "" hidden selected></option>';
+
+            foreach ($this->years as $year)
                 echo 
                 '<option value = '. $year['years'] .'>'         
                      . $year['years'] .                       
@@ -375,10 +442,16 @@ public function displayYearsSelect() {
     
 }
 
+public function displayRoleStatusSelect($selected = '') {
 
-public function displayRoleStatusSelect() {
+  if (empty ($this->role_status))
+    $this->role_status = $this->database->getRoleStatus();
 
-  foreach ($this->database->getRoleStatus() as $role_status)
+  if (empty ($selected) )
+        echo 
+          '<option value = "" hidden selected></option>';
+
+  foreach ($this->role_status as $role_status)
       echo 
       '<option value = '. $role_status['id'] .'>'         
            . $role_status['name'] .                       
