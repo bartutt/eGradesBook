@@ -823,7 +823,6 @@ public function setTimetable($values) {
    foreach ($values as $row) {  
     // row 1 = subject, row 2 = teacher
     if ( ($row['1'] !== '') && ($row['2'] !== '')) {  
-        echo      $row['2'];
 
         $this->setQuery("INSERT INTO 
         class_subject (id_class, id_subject, id_teacher, id_lesson_time, week_day) 

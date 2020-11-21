@@ -28,29 +28,44 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-      <div class = "col-10 m-3 modul rounded shadow-sm p-3">
+        <div class = "col-10 m-3 modul rounded shadow-sm p-3">
           <?php
-
-          echo $controller->getForms();
-
-          if (!empty ($_POST['action'])) {
+            echo $controller->getForms();
+              if (!empty ($_POST['action'])) {
                     
-            $controller->handleRequest ($_POST['action'], '', $_POST['timetable']);
-            $displayer->displayErrors();
-            $displayer->displaySuccess();
-            }
-            ?>
+                $controller->handleRequest ($_POST['action'], '', $_POST['timetable']);
+                $displayer->displayErrors();
+                $displayer->displaySuccess();
+                }
+              ?>
           <div class = "header">
             <h2 class="display-4">Timetable</h2>
-            <button class = "btn btn-outline-danger rounded-0" id = "editField" >Edit</button>
-            <button type = "submit" form = "set_timetable" class = "btn btn-outline-danger rounded-0" id = "editField" >Save</button>
           </div>
-            
+
+          <div class = "form-row">
+            <div class = "col-sm-3">
+              <form id = "set_class" action = "<?php $_SERVER['REQUEST_URI'] ?>" method = "get">
+                <select name = "class_id" class = "form-control" form = "set_class">
+                  <?php 
+                      $displayer->displayClassesSelect($_GET['class_id']); 
+                  ?>
+                </select>
+              </form>
+            </div>
+            <div class = "col-sm-3">
+              <button form = "set_class" class = "btn btn-secondary rounded-0" >Show</button>
+              <button class = "btn btn-outline-danger rounded-0" id = "editField" >Edit</button>         
+              <button type = "submit" form = "set_timetable" class = "btn btn-success rounded-0" id = "editField" >Save</button>
+            </div>      
+          </div>
         </div>
       </div>
       <div class = "row justify-content-center">
         <div class = "col-10 m-3 modul rounded shadow-sm text-center">
-          <?php $displayer->createTimetable('23');?>
+          <?php 
+            if (!empty($_GET['class_id']))
+              $displayer->createTimetable($_GET['class_id']); 
+          ?>
         </div>
       </div>
     </div>

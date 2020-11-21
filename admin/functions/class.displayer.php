@@ -414,12 +414,19 @@ public function displayClassesSelect($selected = '') {
         echo 
           '<option value = "" hidden selected></option>';
 
-  foreach ($this->classes as $class)
+  foreach ($this->classes as $class) {
+    if ($class['id'] != $selected) {
       echo 
-      '<option value = ' . $class['id'] .'>'         
-           . $class['name'].                    
-      '</option>';
-    
+            '<option value = ' . $class['id'] .'>'         
+              .$class['name'].                    
+            '</option>';
+      }else {
+        echo 
+            '<option value = '.$class['id'].' selected>'         
+              .$class['name'].                    
+            '</option>';
+      }
+    }
 
 }
 
