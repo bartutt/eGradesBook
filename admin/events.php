@@ -54,7 +54,7 @@
               <div class="col-sm-3">
                 <input autocomplete="off" name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker" placeholder = "Date">
               </div>
-              <div class="col-sm-3">
+              <div class="col-md-3">
                 <button form = "add_event" class="btn btn-success rounded-0" type="submit">add</button>
                 <button class = "btn btn-outline-danger rounded-0" id = "showRemove" >Edit</button>
               </div>

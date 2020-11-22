@@ -199,13 +199,21 @@ class Displayer{
 
       $this->lesson_times = $this->database->getLessonTimes();
 
+      echo '<div class = "row">';
+        echo '<div class = "col text-center">';
+          echo '<h2 class="display-4">Timetable</h2>';
+          echo '<button class = "btn btn-outline-danger rounded-0 float-left" id = "editField" >Edit</button>';     
+          echo '<button class = "btn btn-success rounded-0 float-right" type = "submit" form = "set_timetable"  id = "editField" >Save</button>';
+        echo '</div>';
+      echo '</div>';
+
       echo '<div class = "row">';  
-      echo '<div class = "col p-4">';
+      echo '<div class = "col p-2 d-none d-md-block">';
         echo ' ';
       echo '</div>';
         foreach ($this->week_days as $day) {
-          echo '<div class = "col p-4">';
-            echo $day;
+          echo '<div class = "col p-2 d-none d-md-block">';
+            echo '<span class = "day">'.$day.'</span>';
           echo '</div>';
         }
       echo '</div>';
@@ -215,7 +223,7 @@ class Displayer{
        echo '<div class = "col">';
         foreach($this->lesson_times as $time){
             echo '<div class = "row">';
-              echo '<div class = "col py-2 m-1 timetable-blocks">';
+              echo '<div class = "col time m-1 d-none d-md-block">';           
                 echo $time['time'];
             echo '</div>';
           echo '</div>'; 
@@ -260,35 +268,42 @@ public function createTimetable($class_id) {
    $this->renderTimetableContent($class_id);
     $i = 0;
     foreach ($this->lessons as $day => $lesson) {    
-        echo '<div class = "col">';  
+        echo '<div class = "col-md-2">'; 
+          echo '<span class="d-xs-block d-sm-block d-md-none day">'.$day.'</span>'; 
           foreach ($this->lesson_times as $hour) {         
             $color = $this->colorEvents();
               echo '<div class = "row" >';
               if (!empty ($lesson[$hour['time']])) {
-                echo '<div class = "col lesson timetable-blocks  text-white p-2 m-1 '.$color.'">';
-                  echo '<ul class="timetable">';
-                    echo '<li class="my-1">'.$lesson[$hour['time']].'</li>';
-                    echo '<li class="my-1">'.$this->teachers[$day][$hour['time']].'</li>';
-                  echo '</ul>';
+                echo '<div class = "col lesson py-2 px-0 text-white m-1 '.$color.'">';
+                    echo '<p class="d-xs-block d-sm-block d-md-none">'.$hour['time'].'</p>';
+                    echo '<p class="timetable">'.$lesson[$hour['time']].'</p>';
+                    echo '<p class="timetable">'.$this->teachers[$day][$hour['time']].'</p>';
                 echo '</div>';
-              } else echo '<div class = "col lesson timetable-blocks  text-white p-2 m-1"></div>';
-                echo '<div class = "col timetable-blocks p-2 m-1 hide text-white '.$color.'">';   
-                    echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$class_id.'" form = "set_timetable" ">';          
-                  echo '<ul class="timetable">';
-                    echo '<li class="my-1">';
-                      echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable"</li>';
+              }else { 
+                    echo '<div class = "col lesson py-2 px-0 m-1">';
+                      echo '<p class="d-xs-block d-sm-block d-md-none">'.$hour['time'].'</p>';
+                      echo '<p class="timetable">-</p>';
+                      echo '<p class="timetable">-</p>';
+                    echo '</div>';
+                    }
+                echo '<div class = "col py-2 px-1 m-1 hide text-white '.$color.'">';   
+                    echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$class_id.'" form = "set_timetable" ">';
+                    echo '<p class="d-xs-block d-sm-block d-md-none">'.$hour['time'].'</p>';
+                    echo '<p class="timetable">';
+                    echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable"</li>';
                       echo '<option value = "Null"></option>';                      
                           $this->displaySubjectsSelect($lesson[$hour['time']]);
                       echo '</select>';
-                    echo '<li class="my-1">';
-                      echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable"</li>';
-                        echo '<option value = "Null" ></option>';                
+                    echo '</p>';
+                    echo '<p class="timetable">';
+                    echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable"</li>';
+                      echo '<option value = "Null" ></option>';                
                           $this->displayPersonsSelect('teacher', $this->teachers[$day][$hour['time']]);
-                      echo '</select>';
-                      echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$hour['id'].'" form = "set_timetable" ">';
-                      echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$day.'" form = "set_timetable">';
-                  echo '</ul>';           
-                echo'</div>';
+                    echo '</select>';
+                     echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$hour['id'].'" form = "set_timetable" ">';
+                    echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$day.'" form = "set_timetable">';          
+                    echo '</p>';
+                  echo'</div>';
               echo'</div>'; 
               $i ++;         
             }            

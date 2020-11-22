@@ -39,11 +39,10 @@
                 }
               ?>
           <div class = "header">
-            <h2 class="display-4">Timetable</h2>
+            <h2 class="display-4">Choose class</h2>
           </div>
-
           <div class = "form-row">
-            <div class = "col-sm-3">
+            <div class = "col-lg-3">
               <form id = "set_class" action = "<?php $_SERVER['REQUEST_URI'] ?>" method = "get">
                 <select name = "class_id" class = "form-control" form = "set_class">
                   <?php 
@@ -52,11 +51,10 @@
                 </select>
               </form>
             </div>
-            <div class = "col-sm-3">
+              
+            <div class = "col-lg-3">
               <button form = "set_class" class = "btn btn-secondary rounded-0" >Show</button>
-              <button class = "btn btn-outline-danger rounded-0" id = "editField" >Edit</button>         
-              <button type = "submit" form = "set_timetable" class = "btn btn-success rounded-0" id = "editField" >Save</button>
-            </div>      
+            </div>
           </div>
         </div>
       </div>
