@@ -70,6 +70,11 @@ class DataBase{
         private $calendar_min_max = array();
 
         private $timetable = array();
+
+        /**    
+        *	containts list dates where student exist
+        */ 
+        private $attendance_days = array();
         
     
     /**    
@@ -85,7 +90,6 @@ class DataBase{
         private $person = array();
         private $notes = array();
         private $marks = array();
-        private $attDays = array();
         private $attendance = array();
         private $month_attendance = array();
 
@@ -257,8 +261,6 @@ public function getSupervisorStudent($supervisor_id){
     return $this->supervisor_student;
 }
 
-
-
 /** 
 * return profiles
 */
@@ -390,10 +392,10 @@ public function getMarks($subject, $student_id, $sem, $school_year) {
 
 }
 
-public function getAttendance($student_id, $date){
+
+public function getAttPeriod($student_id, $school_year = '', $date_from = '', $date_to = '') {
     
-    unset($this->attendance);
-    
+
     $this->setQuery(
         "SELECT
         attendance.type, 
@@ -404,17 +406,87 @@ public function getAttendance($student_id, $date){
         FROM attendance 
         INNER JOIN lesson_times ON lesson_time_id = lesson_times.id 
         INNER JOIN subjects ON id_subject = subjects.id    
-        WHERE id_student = ? AND date = ? "
+        WHERE id_student = ? AND date BETWEEN ? AND ?"
         );
-        $values[] = $student_id;
-        $values[] = $date;
+    
+        if (!empty ($school_year)) {
+            $year = explode('/', $school_year);
+            $values[] =  $student_id;
+            $values[] = $year[0].'-09-01';
+            $values[] = $year[1].'-06-31';
+        }
 
-        $this->getContent($values, 'attendance');
-        
-        return $this->attendance;
+        if (!empty ($date_from) && ($date_to)) {
+            $values[] = $student_id;         
+            $values[] = $date_from;       
+            $values[] = $date_to;
+        }
+
+ 
+        if  ($this->getContent($values, 'attendance') !== false)
+                return $this->attendance;
 
 
 }
+
+public function getAttendanceDays($student_id, $school_year = '', $date_from = '', $date_to = '') {
+    
+
+    $this->setQuery(
+        "SELECT attendance.date
+        
+        FROM attendance  
+        WHERE id_student = ? AND date BETWEEN ? AND ?
+        GROUP by date"
+        );
+
+        if (!empty ($school_year)) {
+            $year = explode('/', $school_year);
+            $values[] =  $student_id;
+            $values[] = $year[0].'-09-01';
+            $values[] = $year[1].'-06-31';
+        }
+
+        if (!empty ($date_from) && ($date_to)) {
+            $values[] = $student_id;         
+            $values[] = $date_from;       
+            $values[] = $date_to;
+        }
+
+            if  ($this->getContent($values, 'attendance_days') !== false)
+                return $this->attendance_days;
+
+
+}
+
+public function getClassAttendance($class_id, $school_year) {
+
+    $this->setQuery(
+        "SELECT 
+        DATE_FORMAT(date,'%M') as month,
+        SUM(IF(attendance.type = 'present'
+               OR attendance.type = 'late', 1, 0)) AS present, 
+        SUM(IF(attendance.type = 'absent' 
+               OR attendance.type = 'execused', 1, 0)) AS absent,
+        COUNT(id) as percent           
+        FROM attendance 
+        INNER JOIN student_class ON attendance.id_student = student_class.id_student
+        AND student_class.id_class = ?
+        AND date BETWEEN ? AND ?
+        GROUP BY YEAR(date), MONTH(date)"
+        );
+        $year = explode('/', $school_year);
+        
+        $values[] =  $class_id;
+        $values[] = $year[0].'-09-01';
+        $values[] = $year[1].'-06-31';
+    
+
+        $this->getContent($values, 'month_attendance');
+
+        return $this->month_attendance;
+}
+
 
 public function getNotes($student_id, $school_year){
     
@@ -450,55 +522,6 @@ public function getSubjects(){
 
 }
 
-public function getAttDays($student_id, $school_year){
-
-    $this->setQuery(
-        "SELECT date FROM attendance    
-        WHERE id_student = ? AND date BETWEEN ? AND ?
-        group by attendance.date
-        order by date DESC"
-        );
-
-        $year = explode('/', $school_year);
-
-        $values[] =  $student_id;
-        $values[] = $year[0].'-09-01';
-        $values[] = $year[1].'-06-31';
-    
-
-        $this->getContent($values, 'attDays');
-
-        return $this->attDays;
-
-}
-
-public function getClassAttendance($class_id, $school_year) {
-
-    $this->setQuery(
-        "SELECT 
-        DATE_FORMAT(date,'%M') as month,
-        SUM(IF(attendance.type = 'present'
-               OR attendance.type = 'late', 1, 0)) AS present, 
-        SUM(IF(attendance.type = 'absent' 
-               OR attendance.type = 'execused', 1, 0)) AS absent,
-        COUNT(id) as percent           
-        FROM attendance 
-        INNER JOIN student_class ON attendance.id_student = student_class.id_student
-        AND student_class.id_class = ?
-        AND date BETWEEN ? AND ?
-        GROUP BY YEAR(date), MONTH(date)"
-        );
-        $year = explode('/', $school_year);
-        
-        $values[] =  $class_id;
-        $values[] = $year[0].'-09-01';
-        $values[] = $year[1].'-06-31';
-    
-
-        $this->getContent($values, 'month_attendance');
-
-        return $this->month_attendance;
-}
 
 
 
@@ -1217,9 +1240,10 @@ private function getContent($values = null, $var = null){
     }
 
 
-    if (!$this->pre_stmt->execute() )
+    if (!$this->pre_stmt->execute() ){
         $this->errors[] = 'Something went wrong';
-        
+        return false;
+    }
         $result = $this->pre_stmt->get_result();
             while ($row = $result->fetch_assoc()) {
 

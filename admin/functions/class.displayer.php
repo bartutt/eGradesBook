@@ -8,6 +8,11 @@ class Displayer{
      * Contains lessons hours
      */
     private $lesson_times = array();
+
+    /**
+     * Contains rendered day attendance
+     */
+    private $day_att = array();
     
     /**
      * Contains available profiles
@@ -162,16 +167,16 @@ class Displayer{
     
       
     }
-    private function displayDayAttendance($student_id, $date) {
+    private function displayDayAttendance($student_id, $day) {
   
-      echo '<tr><td>'.$date.'</td><td>';
-      foreach ($this->attendance as $att){
-        $this->setAttColor($att['type']);
+      echo '<tr><td>'.$day[0]['date'].'</td><td>';
+      foreach ($day as $lesson){
+        $this->setAttColor($lesson['type']);
           echo '
           <a class="badge '.$this->att_color.'" data-toggle="tooltip" data-html="true" title="
-          Type: '.$att['type'].'<br>
-          Lesson time: '.$att['time'].'<br>
-          Subject: '.$att['name'].'<br>">&nbsp;&nbsp;</a>';
+          Type: '.$lesson['type'].'<br>
+          Lesson time: '.$lesson['time'].'<br>
+          Subject: '.$lesson['name'].'<br>">&nbsp;&nbsp;</a>';
           }
       echo '</td></tr>';
     }
@@ -243,6 +248,17 @@ class Displayer{
                 }        
                 $this->lessons[$day][] = '';
               }  
+    }
+    private function renderAttendance($attendance, $days){
+
+      foreach($attendance as $att) {  
+        foreach ($days as $date)
+          if ($att['date'] == $date['date']) {
+            $this->day_att[$att['date']][] = $att;   
+          }   
+      }
+
+        return $this->day_att;
     }
   
 public function colorEvents(){
@@ -628,16 +644,40 @@ public function displayStudentMarks($student_id, $school_year) {
 }
 
 
-public function displayAttendance($student_id, $school_year){
+public function displayAttendance($student_id, $school_year = '', $date_from = '', $date_to = '') {
 
+  
   echo '<table class="table" id = "attendanceTable">';
   echo '<thead><th>date</th><th>attendance</th></thead>';
   echo '<tbody>';
-    foreach($this->database->getAttDays($student_id, $school_year) as $date){
-      $this->attendance = $this->database->getAttendance($student_id, $date['date']);
-      $this->displayDayAttendance($student_id, $date['date']);
+
+    if (!empty ($school_year)) {
+      
+      $attendance = $this->database->getAttPeriod($student_id, $school_year);
+      
+      $date = $this->database->getAttendanceDays($student_id, $school_year);
+      
+      $this->renderAttendance($attendance, $date);
+      
+      foreach ($date as $dat)
+        $this->displayDayAttendance($student_id, $this->day_att[$dat['date']]);
     }
-  echo '</tbody>';
+
+
+    if (!empty ($date_from) && ($date_to)) {
+      
+      $attendance = $this->database->getAttPeriod($student_id, '', $date_from, $date_to);
+
+      $date = $this->database->getAttendanceDays($student_id, '', $date_from, $date_to);
+      
+      $this->renderAttendance($attendance, $date);
+      
+      foreach ($date as $dat)
+        $this->displayDayAttendance($student_id, $this->day_att[$dat['date']]);
+    }
+
+  
+    echo '</tbody>';
   echo '</table>';
 
 }

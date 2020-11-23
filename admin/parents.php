@@ -44,7 +44,6 @@
             <div class="form-row">
               <div class="col-sm-4">
                 <select name = "value[]" form = "set_supervisor_student" class="form-control" placeholder = "Find student">
-                <option value=""></option>  
                   <?php $displayer->displayPersonsSelect('student');?>
                 </select>
               </div>
