@@ -398,15 +398,20 @@ public function getAttPeriod($student_id, $school_year = '', $date_from = '', $d
 
     $this->setQuery(
         "SELECT
+        attendance.id,
         attendance.type, 
         lesson_times.time, 
+        lesson_times.id as time_id,
         attendance.date, 
-        subjects.name 
+        subjects.name,
+        subjects.id as subject_id
         
         FROM attendance 
         INNER JOIN lesson_times ON lesson_time_id = lesson_times.id 
         INNER JOIN subjects ON id_subject = subjects.id    
-        WHERE id_student = ? AND date BETWEEN ? AND ?"
+        WHERE id_student = ? AND date BETWEEN ? AND ?
+        ORDER BY lesson_time_id
+        "
         );
     
         if (!empty ($school_year)) {
@@ -838,6 +843,33 @@ public function setSupervisorStudent($values) {
             $this->success[] = 'Student is assigned.'; 
         else
             $this->errors[] = 'Student can not be assigned';
+} 
+
+public function setAttendance($values) {
+
+
+    foreach ($values as $row) {  
+        // row 1 = subject, row 2 = teacher
+        if ( $row['2'] !== '') {  
+ 
+         $this->setQuery("INSERT INTO 
+         attendance (id_student, id_subject, type, lesson_time_id, date) 
+         VALUES( ?, ?, ?, ?, ?) 
+         ON DUPLICATE KEY UPDATE    
+         type = VALUES(type)
+         ");
+        
+             if ($this->setContent($row) === true) {
+                 if (empty ($this->success) )
+                 $this->success[] = 'Attendance is saved'; 
+             
+             }else {
+                 if (empty ($this->errors) )
+                 $this->errors[] = 'Attendance can not be save';
+                 }
+        }
+    }
+     
 } 
 
 

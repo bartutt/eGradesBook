@@ -187,3 +187,5 @@ ALTER TABLE teacher_subject ADD CONSTRAINT teacher_subject UNIQUE(id_teacher, id
 ALTER TABLE supervisor_student ADD CONSTRAINT spr_st UNIQUE (id_student,id_supervisor);
 
 ALTER TABLE class_subject ADD CONSTRAINT lesson UNIQUE (id_class,id_lesson_time,week_day);
+
+ALTER TABLE attendance ADD CONSTRAINT attendance UNIQUE (id_student, id_subject, lesson_time_id, date);

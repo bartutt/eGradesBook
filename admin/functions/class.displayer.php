@@ -69,7 +69,47 @@ class Displayer{
         $this->database = $database;
 
     }
+    private function displayAttendanceSelect($name, $value){
 
+      echo '
+      <select 
+        onChange="this.className=this.options[this.selectedIndex].className" 
+        form = "set_attendance" 
+        name = "attendance['.$name.'][]" 
+        class="form-control form-control-sm edit-attendance" >
+        
+        <option 
+          class = "'.$this->att_color.' form-control form-control-sm edit-attendance" 
+          value = "" selected hidden>'.$value.'
+        </option>
+      
+        <option 
+          class = "bg-success form-control form-control-sm edit-attendance" 
+          value = "present">
+        present
+        </option>
+      
+        <option 
+          class = "bg-danger form-control form-control-sm edit-attendance" 
+          value = "absent" >
+        absent
+        </option>
+      
+        <option 
+          class = "bg-primary form-control form-control-sm edit-attendance" 
+          value = "execused">
+        execused
+        </option>
+      
+        <option 
+          class = "bg-secondary form-control form-control-sm edit-attendance" 
+          value = "late">
+        late
+        </option>
+          
+      </select> 
+      ';
+    }
     private function setAttColor($att){
       if ($att == 'absent') 
         $this->att_color = 'bg-danger';
@@ -167,18 +207,60 @@ class Displayer{
     
       
     }
-    private function displayDayAttendance($student_id, $day) {
-  
-      echo '<tr><td>'.$day[0]['date'].'</td><td>';
-      foreach ($day as $lesson){
-        $this->setAttColor($lesson['type']);
+    private function displayDayAttendance($student_id, $dates, $day) {   
+
+      echo '<tr><td>'.$day.'</td>';    
+      $lesson_times = $this->database->getLessonTimes();
+      $i = 0;
+      foreach($lesson_times as $lesson) {
+        
+        if (!empty ($dates [$lesson['time']] ['type']) ) {
+        
+          $this->setAttColor($dates [$lesson['time']] ['type']);
           echo '
-          <a class="badge '.$this->att_color.'" data-toggle="tooltip" data-html="true" title="
-          Type: '.$lesson['type'].'<br>
-          Lesson time: '.$lesson['time'].'<br>
-          Subject: '.$lesson['name'].'<br>">&nbsp;&nbsp;</a>';
-          }
-      echo '</td></tr>';
+          <input 
+            name = "attendance['.$day.$i.'][]" 
+            type = "hidden" value = "'.$_GET['person_id'].'" 
+            form = "set_attendance" ">
+          
+          <input 
+            name = "attendance['.$day.$i.'][]" 
+            type = "hidden" value = "'.$dates [$lesson['time']]['subject_id'].'" 
+            form = "set_attendance" ">
+
+            <td class = "p-1">
+              <a 
+              class="badge p-0 w-100 '.$this->att_color.'" 
+              data-toggle="tooltip" data-html="true" 
+              title="
+                Type: '.$dates [$lesson['time']] ['type'].'<br>
+                Lesson time: '.$dates [$lesson['time']] ['time'].'<br>
+                Subject: '.$dates [$lesson['time']] ['name'].'<br>">';                  
+              
+                $this->displayAttendanceSelect($day.$i, $dates [$lesson['time']] ['type']);
+                echo '
+              </a>    
+            </td>
+  
+          <input 
+            name = "attendance['.$day.$i.'][]" type = "hidden" 
+            value = "'.$dates[$lesson['time']]['time_id'].'" 
+            form = "set_attendance" ">
+          
+          <input 
+            name = "attendance['.$day.$i.'][]" type = "hidden" 
+            value = "'.$dates[$lesson['time']]['date'].'" 
+            form = "set_attendance" ">';          
+        $i++;
+        
+        }else {
+          echo '<td class = "p-1"></td>';
+        }
+
+      } // end foreach
+    
+      echo '</tr>';
+    
     }
     private function displayClassHeader($id) {
     
@@ -251,11 +333,12 @@ class Displayer{
     }
     private function renderAttendance($attendance, $days){
 
-      foreach($attendance as $att) {  
-        foreach ($days as $date)
+      foreach($attendance as $att) {      
+        foreach ($days as $date){
           if ($att['date'] == $date['date']) {
-            $this->day_att[$att['date']][] = $att;   
-          }   
+            $this->day_att[$att['date']][$att['time']] = $att;   
+          }
+        }
       }
 
         return $this->day_att;
@@ -528,7 +611,7 @@ public function displayPersons($role_status) {
                 <td><button type = "submit" class="table-button">' . $person['surname'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['id'] . '</button></td>
-                <input type = "hidden" name = "id" value = "'.$person['id'].'">
+                <input type = "hidden" name = "person_id" value = "'.$person['id'].'">
                 </form>';
 
 
@@ -646,9 +729,14 @@ public function displayStudentMarks($student_id, $school_year) {
 
 public function displayAttendance($student_id, $school_year = '', $date_from = '', $date_to = '') {
 
+  $lessons = $this->database->getLessonTimes();
   
-  echo '<table class="table" id = "attendanceTable">';
-  echo '<thead><th>date</th><th>attendance</th></thead>';
+  echo '<table class="table table-sm mt-2" id = "attendanceTable">';
+  echo '<thead class = "thead thead-light">';
+  echo '<th>Date</th>';
+    foreach ($lessons as $lesson)
+      echo '<th>'.$lesson['time'].'</th>';
+  echo '</thead>';
   echo '<tbody>';
 
     if (!empty ($school_year)) {
@@ -660,7 +748,7 @@ public function displayAttendance($student_id, $school_year = '', $date_from = '
       $this->renderAttendance($attendance, $date);
       
       foreach ($date as $dat)
-        $this->displayDayAttendance($student_id, $this->day_att[$dat['date']]);
+        $this->displayDayAttendance($student_id, $this->day_att[$dat['date']], $dat['date']);
     }
 
 
@@ -671,9 +759,10 @@ public function displayAttendance($student_id, $school_year = '', $date_from = '
       $date = $this->database->getAttendanceDays($student_id, '', $date_from, $date_to);
       
       $this->renderAttendance($attendance, $date);
-      
+
       foreach ($date as $dat)
-        $this->displayDayAttendance($student_id, $this->day_att[$dat['date']]);
+        $this->displayDayAttendance($student_id, $this->day_att[$dat['date']], $dat['date']);
+        
     }
 
   

@@ -6,9 +6,11 @@ body{
   overflow-y: scroll;
   background-color: #f0f0f0;
 }
+
 /**
 * timetable time
 */
+
 .time{
 
   font-family: 'Barlow', sans-serif;
@@ -16,7 +18,6 @@ body{
   padding: 0.8rem 0rem 0.8rem 0rem;
 
 }
-
 /**
 * timetable
 */
@@ -44,6 +45,9 @@ span.modul, span.day{
   border: none;
   margin:0;
   display:none;
+}
+#attendanceTable td, th{
+  width:11%;
 }
 
 /** 
@@ -187,7 +191,6 @@ button:focus {
   transition: 0.3s ease;
 }
 
-
 .table-sm td, tr{
     padding: 0;
     margin: 0;
@@ -234,7 +237,6 @@ width:100%;
 
 .badge{
   cursor: pointer;
-  margin-left: 0.2rem;
 }
 
 .dropdown-item:hover{

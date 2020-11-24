@@ -33,7 +33,7 @@
       <div class = "row">
         <div class = "col m-3 modul rounded shadow-sm p-3">
           <div class = "header">
-            <h2 class="display-4"><?php echo $displayer->displayPersonName($_GET['id']);?></h2>
+            <h2 class="display-4"><?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>
           </div>
  
             <ul class="nav nav-tabs" role="tablist">
@@ -53,7 +53,7 @@
       
               <div class="tab-content">
                 <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
-                  <?php $displayer->displayPersonDetails($_GET['id']);?>
+                  <?php $displayer->displayPersonDetails($_GET['person_id']);?>
                 </div>
                 <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
                   <p class="lead">Select month:</p>
@@ -69,13 +69,13 @@
                       <option value = '-11-'>november</option>
                       <option value = '-12-'>december</option>
                     </select>
-                    <?php $displayer->displayAttendance($_GET['id'], $database->getCurrentYear());?>    
+                    <?php $displayer->displayAttendance($_GET['person_id'], $database->getCurrentYear());?>    
                 </div>
                 <div class="tab-pane fade" id="marks" role="tabpanel" aria-labelledby="marks-tab">           
-                  <?php $displayer->displayStudentMarks($_GET['id'], $database->getCurrentYear());?>
+                  <?php $displayer->displayStudentMarks($_GET['person_id'], $database->getCurrentYear());?>
                 </div>
                 <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
-                  <?php $displayer->displayNotes($_GET['id'], $database->getCurrentYear());?>
+                  <?php $displayer->displayNotes($_GET['person_id'], $database->getCurrentYear());?>
                 </div>    
             </div> 
         </div>
