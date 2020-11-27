@@ -43,17 +43,19 @@
           </div>
             <div class="form-row">
               <div class="col-sm-4">
-                <select name = "value[]" form = "set_supervisor_student" class="form-control" placeholder = "Find student">
+                <label for="student">Enter student</label>
+                <select id = "student" name = "value[]" form = "set_supervisor_student" class="form-control">
                   <?php $displayer->displayPersonsSelect('student');?>
                 </select>
               </div>
               <div class="col-sm-4">
-                <select name = "value[]" form = "set_supervisor_student" class="form-control" placeholder = "Find parent">  
+                <label for="student">Enter parent</label>
+                <select id = "parent" name = "value[]" form = "set_supervisor_student" class="form-control">  
                   <?php $displayer->displayPersonsSelect('parent');?>      
                 </select>
               </div>
-              <div class="col">
-                <button form = "set_supervisor_student" class="btn btn-success rounded-0" type="submit">assign</button>
+              <div class="col align-self-end">
+                <button form = "set_supervisor_student" class="btn btn-success rounded-0 mt-1 float-right float-md-left" type="submit">assign</button>
               </div>
             </div>
         </div>

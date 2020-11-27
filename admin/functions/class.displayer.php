@@ -173,11 +173,11 @@ class Displayer{
 
 
     }
-    private function displayMarks() {
+    private function displayMarks($marks) {
 
-      echo '<td>';
-        if (is_array($this->marks))
-            foreach ($this->marks as $mark) {
+      echo '<td class = "p-2">';
+        if (is_array($marks))
+            foreach ($marks as $mark) {
                   $this->setMarkColor($mark['mark']);
                   $sum[] = $mark['mark'] * $mark['weight'];
                   $sum_weight[] = $mark['weight'];
@@ -209,7 +209,16 @@ class Displayer{
     }
     private function displayDayAttendance($student_id, $dates, $day) {   
 
-      echo '<tr><td>'.$day.'</td>';    
+      echo '
+      <tr class = "d-md-none" >
+        <th colspan="100%" class = "d-md-none border-0 ">'.$day.'</th>
+      </tr>
+      ';
+      echo '
+      <tr>
+        <th class = "d-none d-md-table-cell">'.$day.'</th>
+      ';    
+      
       $lesson_times = $this->database->getLessonTimes();
       $i = 0;
       foreach($lesson_times as $lesson) {
@@ -227,7 +236,7 @@ class Displayer{
             name = "attendance['.$day.$i.'][]" 
             type = "hidden" value = "'.$dates [$lesson['time']]['subject_id'].'" 
             form = "set_attendance" ">
-
+            
             <td class = "p-1">
               <a 
               class="badge p-0 w-100 '.$this->att_color.'" 
@@ -602,14 +611,14 @@ public function searchPersonButton($role_status) {
 public function displayPersons($role_status) {
       echo '<div class="table-responsive">';
       echo '<table class="table table-sm">';
-      echo '<thead class = "thead-light"><th>name</th><th>surname</th><th>birth date</th><th>ID</th></thead>';
+      echo '<thead class = "thead-light"><th>name</th><th>surname</th><th class="d-none d-lg-table-cell">birth date</th><th>ID</th></thead>';
       echo '<tbody>';
       foreach ($this->database->getPersons($role_status) as $person){
         echo '<tr>
                 <form action = "details_'.$role_status.'.php" method = "get">
                 <td><button type = "submit" class="table-button">' . $person['name'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['surname'] . '</button></td>
-                <td><button type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
+                <td class="d-none d-lg-table-cell"><button type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['id'] . '</button></td>
                 <input type = "hidden" name = "person_id" value = "'.$person['id'].'">
                 </form>';
@@ -626,17 +635,38 @@ public function displayPersons($role_status) {
 
 public function displayNotes($student_id, $school_year) {
 
+  $notes = $this->database->getNotes($student_id, $school_year);
  
-  echo '<table class="table table-sm mt-3">';
-  echo '<thead class = "thead-light"><th>#</th><th>teacher</th><th>content</th><th>date</th></thead>';
-  echo '<tbody>';
-  foreach ($this->database->getNotes($student_id, $school_year) as $note){
       echo '
+      <table class="table table-sm mt-3">
+        <thead class = "thead-light">
+          <th class = "nr d-none d-md-table-cell">#</th>
+          <th>teacher</th>
+          <th class = "d-none d-sm-table-cell">content</th>
+          <th>date</th>
+        </thead>
+        <tbody>';
+        foreach ($notes as $note){
+            echo '
             <tr> 
-                <th scope="row">Note</th>   
-                <td><button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button">'.  $note['teacher'].'</button></td> 
-                <td><button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button"><p class = "truncate">' . $note['description'] . '</p></button></td>
-                <td><button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button">' . $note['date'] . '</button></td>
+                <th class = "nr d-none d-md-table-cell">Note</th>   
+                <td>
+                  <button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button">
+                      '.  $note['teacher'].'
+                  </button>
+                </td> 
+                <td class = "d-none d-sm-table-cell">
+                  <button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button">
+                    <p class = "truncate">' 
+                    . $note['description'] .
+                    '</p>
+                  </button>
+                  </td>
+                <td>
+                  <button data-toggle="modal" data-target="#'. 'note' . $note['id'] .'" class="table-button">' 
+                  . $note['date'] . 
+                  '</button>
+                </td>
             </tr>';
 
       $this->displayDetails('note' . $note['id'], $note);
@@ -682,40 +712,40 @@ public function displaySupervisorStudent($supervisor_id) {
 
 public function displayStudentMarks($student_id, $school_year) {
   
+    $subjects = $this->database->getSubjects();
 
   echo '<div class = "row">
-        <div class = "col-6">
-        <table class="table">   
-        <thead><th>subject</th><th>first semester</th><th>gpa</th><th>#</th></thead>     
+        <div class = "col-md-6 mt-3">
+        <table id = "marks-table-1" class="table table-sm">   
+        <thead class = "thead thead-light"><th>subject</th><th>first semester</th><th>gpa</th><th>#</th></thead>     
         <tbody>';   
     
-            foreach ($this->database->getSubjects() as $subject){
+            foreach ($subjects as $subject){
 
-              $this->marks = $this->database->getMarks($subject['name'], $student_id, '1', $school_year);
+              $marks = $this->database->getMarks($subject['name'], $student_id, '1', $school_year);
 
-              echo '<tr><th scope="row">'.$subject['name'].'</th>';
-            
+              echo '<tr><td>'.$subject['name'].'</td>';            
 
-              $this->displayMarks();
+              $this->displayMarks($marks);
 
               echo '</tr>';
             }
   echo '</tbody>
         </table>
         </div>';
-  echo '<div class = "col-6">
-        <table class="table">
-        <thead><th>second semester</th><th>gpa</th><th>#</th><th>final</th></thead>  
+  echo '<div class = "col-md-6 mt-3">
+        <table id = "marks-table-2" class="table table-sm">
+        <thead class = "thead thead-light"><th class = "d-table-cell d-md-none">subject</th><th>second semester</th><th>gpa</th><th>#</th><th>final</th></thead>  
         <tbody>';
         
-        foreach ($this->database->getSubjects() as $subject){
-        
-          echo '<tr>';
+        foreach ($subjects as $subject) {   
 
-          $this->marks = $this->database->getMarks($subject['name'], $student_id, '2', $school_year);
-        
+          $marks = $this->database->getMarks($subject['name'], $student_id, '2', $school_year);         
+          
+          echo '<tr >
+                  <td class = "d-table-cell d-md-none">'.$subject['name'].'</td>';
 
-          $this->displayMarks();
+          $this->displayMarks($marks);
 
           echo '</tr>';
         }
@@ -733,9 +763,9 @@ public function displayAttendance($student_id, $school_year = '', $date_from = '
   
   echo '<table class="table table-sm mt-2" id = "attendanceTable">';
   echo '<thead class = "thead thead-light">';
-  echo '<th>Date</th>';
+  echo '<th class = "d-none d-md-table-cell">Date</th>';
     foreach ($lessons as $lesson)
-      echo '<th>'.$lesson['time'].'</th>';
+      echo '<th class = "d-none d-md-table-cell">'.$lesson['time'].'</th>';
   echo '</thead>';
   echo '<tbody>';
 
@@ -808,7 +838,7 @@ public function displayClasses($school_year){
 
   echo '<table class="table table-sm">';
   echo '
-    <thead class = "thead-light"><th>#</th><th>Teacher</th><th>Profile</th>
+    <thead class = "thead-light"><th class = "nr">#</th><th>Teacher</th><th>Profile</th>
     <th><button class = "btn btn-outline-danger pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
     </thead>';
   echo '<tbody>';
@@ -830,7 +860,7 @@ public function displayClasses($school_year){
 
 public function displayPersonDetails($id) {
       
-      echo '<table class="table table-sm">';
+      echo '<table id = "person-details" class="table table-sm">';
         echo '<tr> 
                 <th scope="row">id</th>     
                 <td>' . $this->person['id'] . '</td>

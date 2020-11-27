@@ -120,13 +120,13 @@ const Calendar = (id) => ({
         for(let i=0; i<5; i++){ //loop thru 35 boxes on the calendar month
             frgWeek = document.createRange().createContextualFragment(`
             <ol class="days list-unstyled" week="${d.week()}">
-                <li class="${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
-                <li class="${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
-                <li class="${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
-                <li class="${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
-                <li class="${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
-                <li class="${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
-                <li class="${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
+                <li class="float-none float-sm-left ${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><h6 class="d-block d-sm-none initials">Sun</h6><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
+                <li class="float-none float-sm-left ${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><h6 class="d-block d-sm-none initials">Mon</h6><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
+                <li class="float-none float-sm-left ${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><h6 class="d-block d-sm-none initials">Tue</h6><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
+                <li class="float-none float-sm-left ${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><h6 class="d-block d-sm-none initials">Wed</h6><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
+                <li class="float-none float-sm-left ${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><h6 class="d-block d-sm-none initials">Thu</h6><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
+                <li class="float-none float-sm-left ${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><h6 class="d-block d-sm-none initials">Fri</h6><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
+                <li class="float-none float-sm-left ${d.add(1,'d'),this.m != d.month()?' outside':'inside'}${isSameDate(d,now)?' today':''}"><h6 class="d-block d-sm-none initials">Sat</h6><div month="${d.month()}" class="date">${d.format('D')}</div><div class="events"></div></li>
             </ol>
             `);
             frgCal.querySelector('.calendar').appendChild(frgWeek);

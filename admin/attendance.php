@@ -28,7 +28,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-      <div class = "col-10 m-3 modul rounded shadow-sm p-3">
+      <div class = "col-md-10 m-3 modul rounded shadow-sm p-3">
         <form id = "get_att_period" method = "get" action = "<?php $_SERVER['REQUEST_URI']?>">
         </form>
           <div class = "header">
@@ -43,26 +43,29 @@
               ?>
           </div>
             <div class="form-row">
-              <div class="col-sm-3">
+              <div class="col-md-3">
+                <label for="person-id">Choose student</label>
                 <select name = "person_id" form = "get_att_period" class="form-control" placeholder = "Student">
                   <?php $displayer->displayPersonsSelect('student');?>
                 </select>
               </div>
-              <div class="col-sm-3">
-                <input autocomplete="off" name = "date_from" form = "get_att_period"  class="form-control" type="text" id="datepicker_from" placeholder = "From">
-              </div>  
-              <div class="col-sm-3">
-                <input autocomplete="off" name = "date_to" form = "get_att_period"  class="form-control" type="text" id="datepicker_to" placeholder = "To">
-              </div>
               <div class="col-md-3">
-                <button form = "get_att_period" class="btn btn-success rounded-0" type="submit">search</button>
-                <button form = "set_attendance" class="btn btn-success rounded-0" type="submit">save</button>
+                <label for="datepicker-from">Date from</label>
+                <input autocomplete="off" name = "date_from" form = "get_att_period"  class="form-control" type="text" id="datepicker_from">
+              </div>  
+              <div class="col-md-3">
+                <label for="datepicker-to">Date to</label>
+                <input autocomplete="off" name = "date_to" form = "get_att_period"  class="form-control" type="text" id="datepicker_to">
+              </div>
+              <div class="col-md-3 align-self-end">          
+                <button form = "set_attendance" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">save</button>
+                <button form = "get_att_period" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">search</button>
               </div>
             </div>
         </div>
       </div>
       <div class = "row justify-content-center">
-        <div class = "col-10 m-3 modul rounded shadow-sm text-center">
+        <div class = "col-lg-10 m-3 modul rounded shadow-sm text-center">
           <?php
            if (!empty ($_GET['person_id'])) {
             $displayer->displayAttendance($_GET['person_id'], '', $_GET['date_from'], $_GET['date_to']);

@@ -12,7 +12,6 @@ body{
 */
 
 .time{
-
   font-family: 'Barlow', sans-serif;
   font-size:1rem;
   padding: 0.8rem 0rem 0.8rem 0rem;
@@ -26,6 +25,7 @@ font-size: 0.7rem;
 padding:0;
 margin: 0;
 }
+
 
 .chart{
   width: 100%; 
@@ -46,9 +46,19 @@ span.modul, span.day{
   margin:0;
   display:none;
 }
-#attendanceTable td, th{
-  width:11%;
+
+#attendanceTable td, #attendanceTable th{
+  width: 11.1%;
+  font-size: 0.8rem;
 }
+
+/** 
+* no hover on sm table
+*/
+#marks-table-1 tr:hover, #marks-table-2  tr:hover, #attendanceTable tr:hover, #person-details tr:hover{
+  background-color: transparent;
+}
+
 
 /** 
 * styling for calendar delete button
@@ -160,12 +170,13 @@ a:hover{
 }
 
 .display-4{
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 table{
   font-family: 'Barlow', sans-serif;
   border: hidden;
+  font-size: 0.9rem;
 }
 
 .truncate{
@@ -237,6 +248,7 @@ width:100%;
 
 .badge{
   cursor: pointer;
+  margin-left: 0.1rem;
 }
 
 .dropdown-item:hover{

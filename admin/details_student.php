@@ -9,7 +9,7 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
  
-  
+  $controller->htmlForm('set_attendance');
 ?>
 
 
@@ -31,23 +31,56 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
+      <form id = "get_att_period" method = "get" action = "<?php $_SERVER['REQUEST_URI']?>">
+        </form>
         <div class = "col m-3 modul rounded shadow-sm p-3">
-          <div class = "header">
-            <h2 class="display-4"><?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>
-          </div>
- 
+          <div class = "header mb-3">
+            <h2 class="display-4 d-inline"><?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>
+            <button form = "set_attendance" class="btn btn-success rounded-0 float-right" type="submit">save</button>
+          </div>      
+          <?php
+                echo $controller->getForms();
+                if (!empty ($_POST['action'])) {
+                  $controller->handleRequest ($_POST['action'], '', $_POST['attendance']);
+                  $displayer->displayErrors();
+                  $displayer->displaySuccess();
+                }
+              ?>
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Details</a>
+                <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
+                  <span class = "d-none d-md-block">
+                    Details
+                  </span>
+                  <i class="fas fa-user d-md-none"></i>
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="attendance-tab" aria-selected="false">Attendance</a>
+                <a class="nav-link" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="attendance-tab" aria-selected="false">
+                  <span class = "d-none d-md-block">
+                    Attendance
+                  </span>
+                  <i class="fas fa-clipboard-list d-md-none"></i>
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="marks-tab" data-toggle="tab" href="#marks" role="tab" aria-controls="marks" aria-selected="false">Marks</a>
+                <a class="nav-link" id="marks-tab" data-toggle="tab" href="#marks" role="tab" aria-controls="marks" aria-selected="false">
+                  <span class = "d-none d-md-block">
+                    Marks
+                  </span>
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2-circle d-md-none" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                      <path fill-rule="evenodd" d="M8 2.5A5.5 5.5 0 1 0 13.5 8a.5.5 0 0 1 1 0 6.5 6.5 0 1 1-3.25-5.63.5.5 0 1 1-.5.865A5.472 5.472 0 0 0 8 2.5z"/>
+                    </svg>
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="notes-tab" data-toggle="tab" href="#notes" role="tab" aria-controls="notes" aria-selected="false">Notes</a>
+                <a class="nav-link" id="notes-tab" data-toggle="tab" href="#notes" role="tab" aria-controls="notes" aria-selected="false">
+                  <span class = "d-none d-md-block">
+                    Notes
+                  </span>
+                  <i class="fas fa-sticky-note d-md-none"></i>
+                </a>
               </li>
             </ul>
       

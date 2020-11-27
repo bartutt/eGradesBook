@@ -38,10 +38,20 @@
  
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Details</a>
+                <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
+                  <span class = "d-none d-md-block">
+                    Details
+                  </span>
+                  <i class="fas fa-user d-md-none"></i>
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="children-tab" data-toggle="tab" href="#children" role="tab" aria-controls="children-tab" aria-selected="false">Children</a>
+                <a class="nav-link" id="children-tab" data-toggle="tab" href="#children" role="tab" aria-controls="children-tab" aria-selected="false">
+                  <span class = "d-none d-md-block">
+                    Children
+                  </span>
+                  <i class="fas fa-child d-md-none"></i>
+                </a>
               </li>
             </ul>
       

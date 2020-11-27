@@ -1079,9 +1079,9 @@ public function addToClass($id_student, $id_class) {
     $values[] = $id_class;
         
         if ($this->setContent($values) === true)
-            $this->success[] = $id_student . ' is added'; 
+            $this->success[] = 'Student is added'; 
         else
-            $this->errors[] = $id_student . ' can not be add';
+            $this->errors[] = 'Student can not be add. Check if is already in class.';
 
 } 
 
@@ -1096,9 +1096,9 @@ public function removeFromClass($id_student, $id_class) {
     $values[] = $id_class;
         
         if ($this->setContent($values) === true)
-            $this->success[] = $id_student . ' is removed'; 
+            $this->success[] = 'Student is removed'; 
         else
-            $this->errors[] = $id_student . ' can not be removed';
+            $this->errors[] = 'Student can not be removed';
 
 } 
 /**

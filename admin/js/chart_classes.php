@@ -1,7 +1,6 @@
 <script type="text/javascript">
   google.load("visualization", "1", {packages:["corechart"]});
   google.setOnLoadCallback(drawClasses);
-  google.charts.setOnLoadCallback(drawClassDetails);
 
     function drawClasses() {
     var data = google.visualization.arrayToDataTable([

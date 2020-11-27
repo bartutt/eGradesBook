@@ -29,7 +29,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-      <div class = "col-10 m-3 modul rounded shadow-sm p-3">
+      <div class = "col-md-10 m-3 modul rounded shadow-sm p-3">
           <?php
           echo $controller->getForms();
 
@@ -44,25 +44,28 @@
           </div>
             <div class="form-row">
               <div class="col-sm-3">
-                <select name = "value[]" form = "add_event" class="form-control">
+                <label for="class">Choose class</label>
+                <select id = "class" name = "value[]" form = "add_event" class="form-control">
                   <?php $displayer->displayClassesSelect();?>
                 </select>
               </div>
               <div class="col-sm-3">
-                <input name = "value[]" form = "add_event" class="form-control" type="text" id = "description" placeholder = "Description">
+                <label for="event-description">Description</label>
+                <input id = "event-description" name = "value[]" form = "add_event" class="form-control" type="text" id = "description">
               </div>    
               <div class="col-sm-3">
-                <input autocomplete="off" name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker" placeholder = "Date">
+                <label for="date">Choose date</label>
+                <input id = "date" autocomplete="off" name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker">
               </div>
-              <div class="col-md-3">
-                <button form = "add_event" class="btn btn-success rounded-0" type="submit">add</button>
-                <button class = "btn btn-outline-danger rounded-0" id = "showRemove" >Edit</button>
+              <div class="col-md-3 align-self-end">
+                <button form = "add_event" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">add</button>
+                <button class = "btn btn-outline-danger rounded-0 mt-1 mx-1 float-right float-md-left" id = "showRemove" >Edit</button>
               </div>
             </div>
         </div>
       </div>
       <div class = "row justify-content-center">
-        <div class = "col-10 m-3 modul rounded shadow-sm text-center">
+        <div class = "col-md-10 m-3 modul rounded shadow-sm text-center">
             <div id="calendar"></div>
         </div>
       </div>

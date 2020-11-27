@@ -1,3 +1,9 @@
+<?php 
+  
+    $class_attendance = $database->getClassAttendance($_GET['class_id'], $database->getCurrentYear());    
+
+?>
+
 <script type="text/javascript">
   google.load("visualization", "1", {packages:["corechart"]});
   google.charts.setOnLoadCallback(drawClassDetails);
@@ -6,10 +12,16 @@
 
       var data = google.visualization.arrayToDataTable([
         ['Month', 'Presention', { role: 'style' }],
-        <?php foreach($database->getClassAttendance($_GET['class_id'], $database->getCurrentYear()) as $att){
+        <?php 
+
+          if (!empty ($class_attendance)){
+            foreach($class_attendance as $att){
                 $pr_presention = $att['present'] / $att['percent'] * 100;
                   echo "['".$att['month']."', ".$pr_presention.", 'color: green; stroke-width: 2; opacity: 0.5'],";
               }
+          
+          }else echo "['Empty', 0, 'color: green; stroke-width: 2; opacity: 0.5']";
+          
           ?>
         ]);
 

@@ -29,14 +29,14 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-        <div class = "col-sm-7 m-3 modul rounded shadow-sm p-3">
+        <div class = "col-md-7 m-3 modul rounded shadow-sm p-3">
           <div class = "header">
             <h2 class="display-4">Students</h2>
           </div>
             <p class="lead">Overview</p>
           <?php $displayer->displayPersons('student');?>
         </div>
-        <div class = "col-sm-4">
+        <div class = "col-md-4">
           <div class = "row">
             <a href = "#" class = "col m-3 modul-orange text-white rounded shadow p-3">
               <i class="fas fa-plus fa-3x float-right"></i><span class = "modul"><?php echo $database->countNewPersons('student');?> new students</span>

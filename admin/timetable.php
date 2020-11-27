@@ -28,7 +28,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-        <div class = "col-10 m-3 modul rounded shadow-sm p-3">
+        <div class = "col-md-10 m-3 modul rounded shadow-sm p-3">
           <?php
             echo $controller->getForms();
               if (!empty ($_POST['action'])) {
@@ -53,13 +53,13 @@
             </div>
               
             <div class = "col-lg-3">
-              <button form = "set_class" class = "btn btn-secondary rounded-0" >Show</button>
+              <button form = "set_class" class = "btn btn-secondary rounded-0 mt-1 mx-1 float-right float-md-left" >Show</button>
             </div>
           </div>
         </div>
       </div>
       <div class = "row justify-content-center">
-        <div class = "col-10 m-3 modul rounded shadow-sm text-center">
+        <div class = "col-md-10 m-3 modul rounded shadow-sm text-center">
           <?php 
             if (!empty($_GET['class_id']))
               $displayer->createTimetable($_GET['class_id']); 

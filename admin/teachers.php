@@ -43,23 +43,25 @@
           </div>
             <div class="form-row">
               <div class="col-sm-4">
-                <select name = "value[]" form = "set_teacher_subject" class="form-control">
+                <label for="teacher">Choose teacher</label>
+                <select name = "value[]" id = "teacher" form = "set_teacher_subject" class="form-control">
                   <?php $displayer->displayPersonsSelect('teacher');?>
                 </select>
               </div>
               <div class="col-sm-4">
-                <select name = "value[]" form = "set_teacher_subject" class="form-control">
+                <label for="student">Choose student</label>
+                <select name = "value[]" id = "student" form = "set_teacher_subject" class="form-control">
                   <?php $displayer->displaySubjectsSelect();?>
                 </select>
               </div>
-              <div class="col">
-                <button form = "set_teacher_subject" class="btn btn-success rounded-0" type="submit">assign</button>
+              <div class="col align-self-end">
+                <button form = "set_teacher_subject" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">assign</button>
               </div>
             </div>
         </div>
-        <div class = "col-sm-4 m-3">
-          <div class = "row align-self-center">
-            <a href = "#" class = "col m-3 modul-green text-white rounded shadow p-3">
+        <div class = "col-sm-4">
+          <div class = "row h-100">
+            <a href = "#" class = "col modul-green text-white rounded shadow p-3 my-auto mx-3">
               <i class="fas fa-user-friends fa-3x float-right"></i><span class = "modul"><?php echo $database->countPersons('teacher');?> teachers</span>
             </a>
           </div>
