@@ -37,9 +37,11 @@ class Displayer{
     /**
      * Contains colors mark weight
      */
-    private $mark_color = array();
+    private $mark_color;
 
-    private $att_color = array();
+    private $att_color;
+
+    private $event_color;
 
     private $person = array();
 
@@ -150,6 +152,22 @@ class Displayer{
       return $this->mark_color;
 
     }
+
+    private function colorTimetable(){
+  
+      $color = array(
+      'bg-green',
+      'bg-red',
+      'bg-cyan',
+      'bg-orange',
+      'bg-purple',
+      'bg-sky-blue'
+      );
+
+      $bg_color = $color[rand ( 0 , count($color) -1)];
+        return $bg_color;
+    }
+
     private function displayDetails($id, $note_details){
 
       echo '<div class="modal fade" id="'. $id . '" tabindex="-1" role="dialog" aria-labelledby="'. $id . '" aria-hidden="true">
@@ -353,19 +371,64 @@ class Displayer{
         return $this->day_att;
     }
   
-public function colorEvents(){
-  
-        $color = array(
-        'bg-green-alt',
-        'bg-red-alt',
-        'bg-cyan-alt',
-        'bg-orange-alt',
-        'bg-purple-alt',
-        'bg-sky-blue-alt'
-    );
+    private function colorEvents($event_title, $event_desc){
 
-	  $this->event_col = $color[rand ( 0 , count($color) -1)];
-	    return $this->event_col;
+
+        $event_title = strtolower($event_title);
+
+        $event_desc = strtolower($event_desc);
+  
+
+        if ( (preg_match("/exam|test/", $event_title)) || (( preg_match("/exam|test/", $event_desc)) ) ) {
+
+          $this->event_color = 'border-danger';
+
+        }else {
+          
+          $this->event_color = 'border-light';
+
+        }
+
+            
+  
+
+    }
+
+
+public function displayEvents($class = '') {
+
+
+
+  $events = $this->database->getEvents($class);
+  if (!empty ($events)) {
+    echo '
+        <div class="card-header bg-success text-center text-white p-2 mb-2">
+          Class: '.$events[0]['name'].' 
+        </div> 
+        ';
+  }
+
+  if (!empty ($events)) {
+    foreach($events as $event) {
+      $this->colorEvents($event['title'], $event['description']);
+      echo '
+          <div class="card mb-3 '.$this->event_color.' shadow-sm">
+            <div class="card-body">
+              <form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
+                <input type = "hidden" name = "value[]" value = "' .$event['id'].'">
+                <input type = "hidden" name = "action" value = "delete_event">
+                <button class="btn btn-danger rounded-0 event-remove" type="submit">
+                  <i class="fas fa-times"></i>
+                </button>
+              </form>                                                     
+              <h5 class="header">'.$event['title'].' - '.$event['date'].'</h5>           
+              <p class="card-text">'.$event['description'].'</p>                  
+            </div>
+          </div>
+          ';
+    }
+  } else echo 'No events';
+
 }
 
 
@@ -379,7 +442,7 @@ public function createTimetable($class_id) {
         echo '<div class = "col-md-2">'; 
           echo '<span class="d-xs-block d-sm-block d-md-none day">'.$day.'</span>'; 
           foreach ($this->lesson_times as $hour) {         
-            $color = $this->colorEvents();
+            $color = $this->colorTimetable();
               echo '<div class = "row" >';
               if (!empty ($lesson[$hour['time']])) {
                 echo '<div class = "col lesson py-2 px-0 text-white m-1 '.$color.'">';
@@ -773,12 +836,12 @@ public function displayAttendance($student_id, $school_year = '', $date_from = '
       
       $attendance = $this->database->getAttPeriod($student_id, $school_year);
       
-      $date = $this->database->getAttendanceDays($student_id, $school_year);
+      $dates = $this->database->getAttendanceDays($student_id, $school_year);
       
-      $this->renderAttendance($attendance, $date);
+      $this->renderAttendance($attendance, $dates);
       
-      foreach ($date as $dat)
-        $this->displayDayAttendance($student_id, $this->day_att[$dat['date']], $dat['date']);
+      foreach ($dates as $date)
+        $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date']);
     }
 
 
@@ -786,12 +849,12 @@ public function displayAttendance($student_id, $school_year = '', $date_from = '
       
       $attendance = $this->database->getAttPeriod($student_id, '', $date_from, $date_to);
 
-      $date = $this->database->getAttendanceDays($student_id, '', $date_from, $date_to);
+      $dates = $this->database->getAttendanceDays($student_id, '', $date_from, $date_to);
       
-      $this->renderAttendance($attendance, $date);
+      $this->renderAttendance($attendance, $dates);
 
-      foreach ($date as $dat)
-        $this->displayDayAttendance($student_id, $this->day_att[$dat['date']], $dat['date']);
+      foreach ($dates as $date)
+        $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date']);
         
     }
 

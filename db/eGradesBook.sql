@@ -82,6 +82,7 @@ CREATE TABLE `attendance` (
 CREATE TABLE `events` (
   `id` int(10) PRIMARY KEY AUTO_INCREMENT,
   `id_class` int(3) NOT NULL,
+  `title` text NOT NULL,
   `description` text NOT NULL,
   `date` date NOT NULL
 );

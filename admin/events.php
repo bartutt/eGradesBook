@@ -29,7 +29,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-      <div class = "col-md-10 m-3 modul rounded shadow-sm p-3">
+        <div class = "col m-3 modul rounded shadow-sm p-3">
           <?php
           echo $controller->getForms();
 
@@ -43,30 +43,61 @@
             <h2 class="display-4">Add event</h2>
           </div>
             <div class="form-row">
-              <div class="col-sm-3">
-                <label for="class">Choose class</label>
+              <div class="col-md-1">
+                <label for="class">Class</label>
                 <select id = "class" name = "value[]" form = "add_event" class="form-control">
                   <?php $displayer->displayClassesSelect();?>
                 </select>
               </div>
-              <div class="col-sm-3">
+              <div class="col-md-2">
+                <label for="title">Title</label>
+                <input id = "title" name = "value[]" form = "add_event" class="form-control" type="text" id = "title">
+              </div>   
+              <div class="col-md-4">
                 <label for="event-description">Description</label>
                 <input id = "event-description" name = "value[]" form = "add_event" class="form-control" type="text" id = "description">
               </div>    
-              <div class="col-sm-3">
-                <label for="date">Choose date</label>
-                <input id = "date" autocomplete="off" name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker">
+              <div class="col-md-2">
+                <label for="datepicker">Choose date</label>
+                <input autocomplete="off" name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker">
               </div>
               <div class="col-md-3 align-self-end">
-                <button form = "add_event" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">add</button>
+                <button form = "add_event" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">Add</button>
                 <button class = "btn btn-outline-danger rounded-0 mt-1 mx-1 float-right float-md-left" id = "showRemove" >Edit</button>
               </div>
             </div>
         </div>
       </div>
-      <div class = "row justify-content-center">
-        <div class = "col-md-10 m-3 modul rounded shadow-sm text-center">
-            <div id="calendar"></div>
+      <div class = "row">       
+        <div class = "col-lg-6 mx-3 modul rounded shadow-sm p-3">
+          <form id = "set_class" action = "<?php $_SERVER['REQUEST_URI'] ?>" method = "get">
+          <div class = "row px-3">       
+            <div class = "col-3 p-0">        
+              <label for="set_class">Choose class:</label>                 
+              <select name = "class_id" class = "form-control" form = "set_class">
+              <?php 
+                $displayer->displayClassesSelect($_GET['class_id']); 
+              ?>
+              </select>
+            </div>
+
+            <div class="col-3 align-self-end">
+              <button form = "set_class" class = "btn btn-secondary rounded-0 mx-0 mt-1 float-left">Show</button>
+            </div>
+          </div>   
+          </form>    
+        </div>
+      </div>
+
+      <div class = "row">
+        <div class = "col-lg-6 m-3">
+          <?php 
+          if (!empty($_GET['class_id'])) {
+           
+            $displayer->displayEvents($_GET['class_id']);
+          
+          } else echo '<b>No class choosed</b>';
+          ?>
         </div>
       </div>
     </div>
@@ -82,8 +113,5 @@
 <!-- Footer -->
 <script src = "js/datepicker.js"></script>
 <script src="js/delete_button.js"></script>
-<?php require_once 'js/calendar-js.php'?>
-<?php require_once 'js/mockData.php'?>
-<?php require_once 'js/calendar.php'?>
 </body>
 </html>

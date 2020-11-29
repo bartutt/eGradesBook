@@ -146,14 +146,18 @@ public function getCalMinMax(){
 
 }
 
-public function getEvents(){
+public function getEvents($class) {
 
-    $this->setQuery("SELECT 
-    classes.name, events.description, events.date, events.id, classes.id as class_id 
-    FROM events
-    INNER JOIN classes ON id_class = classes.id");
-       
-            $this->getContent('', 'events');
+        $this->setQuery("SELECT 
+        classes.name,events.title, events.description, events.date, events.id, classes.id as class_id 
+        FROM events
+        INNER JOIN classes ON id_class = classes.id
+        WHERE classes.id = ?
+        ");
+
+        $value[] = $class;
+            
+            $this->getContent($value, 'events');
 
             return $this->events;
 
@@ -926,17 +930,18 @@ public function addMarkCat($value) {
 */ 
 public function addEvent($values) {
     
-    $this->setQuery("INSERT INTO events (id_class, description, date) VALUES (?,?,?)");
+    $this->setQuery("INSERT INTO events (id_class, title, description, date) VALUES (?,?,?,?)");
 
     $validation = new Validator;
 
-    if ($validation->isValid ($values[1], 'description') === true){
+    if (($validation->isValid ($values[1], 'description') === true) 
+        && ($validation->isValid ($values[2], 'description') === true)) {
         
         if ($this->setContent($values) === true)
             $this->success[] = 'New event is added.'; 
         else
             $this->errors[] = 'Event can not be add';
-    }else $this->errors[] = $values[1] . ' is not valid!';
+    }else $this->errors[] = $values[1] . ' or '.$values[2].' is not valid';
 
     return $this;
 } 

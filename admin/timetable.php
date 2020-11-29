@@ -42,9 +42,10 @@
             <h2 class="display-4">Choose class</h2>
           </div>
           <div class = "form-row">
-            <div class = "col-lg-3">
+            <div class = "col-lg-3 ">
               <form id = "set_class" action = "<?php $_SERVER['REQUEST_URI'] ?>" method = "get">
-                <select name = "class_id" class = "form-control" form = "set_class">
+                <label for = "set_class>">Choose class</label>
+                <select id = "set_class" name = "class_id" class = "form-control" form = "set_class">
                   <?php 
                       $displayer->displayClassesSelect($_GET['class_id']); 
                   ?>
@@ -52,7 +53,7 @@
               </form>
             </div>
               
-            <div class = "col-lg-3">
+            <div class = "col-lg-3 align-self-end">
               <button form = "set_class" class = "btn btn-secondary rounded-0 mt-1 mx-1 float-right float-md-left" >Show</button>
             </div>
           </div>

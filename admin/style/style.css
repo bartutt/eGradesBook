@@ -59,17 +59,23 @@ span.modul, span.day{
   background-color: transparent;
 }
 
-
 /** 
 * styling for calendar delete button
 */
 .event-remove{
-  position:absolute;
-  right: 0.1rem;
-  height:100%;
+  position: absolute;
+  top:0;
+  right: 0;
   max-width:30%;
-  padding:5%;
+  max-height:3rem;
 }
+
+.card{
+  height: 6rem;
+  max-height: 6rem;
+  overflow: hidden;
+}
+
 
 /** 
 * styling editting field
@@ -108,8 +114,8 @@ h5{
 
 .form-controll{
   font-family: 'Barlow', sans-serif;
-}
 
+}
 .person-img{
   height: 4rem;
   width: 4rem;
