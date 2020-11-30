@@ -659,12 +659,12 @@ public function displayPersonsSelect($role_status, $selected = '') {
   foreach ($this->$role_status as $person) {
     if (($person['name'] .' '.  $person['surname'] !== $selected) && ($person['id'] != $selected)) {
       echo 
-              '<option value = ' . $person['id'] .'>'         
+              '<option value = "'. $person['id'] .'" >'         
               . $person['name'] .' '.  $person['surname'].                    
               '</option>';
     }else {
         echo 
-              '<option value = '. $person['id'] .' selected>'         
+              '<option value = "'. $person['id'] .'" selected>'         
               .   $person['name'] .' '.  $person['surname'].                    
               '</option>';
     }
@@ -684,19 +684,18 @@ public function displaySubjectsSelect($selected = '', $value = '') {
     foreach ($this->subjects as $subject) {
       
       if (empty ($value))
-        $value = $subject['id'];
+        $val = $subject['id'];
       else 
-        $value = $subject['name'];
+        $val = $subject['name'];
 
-
-        if ($subject['name'] !== $selected){
+        if ($subject['name'] !== $selected) {
             echo 
-              '<option value = '. $value .'>'         
+              '<option value = "'. $val .'" >'         
                 . $subject['name'].                    
               '</option>';
         }else {
             echo 
-              '<option value = '. $value .' selected>'         
+              '<option value = "'. $val .'" selected>'         
                 . $subject['name'].                    
               '</option>';
     }
@@ -882,12 +881,14 @@ public function displaySupervisorStudent($supervisor_id) {
     foreach ($this->database->getSupervisorStudent($supervisor_id) as $student){
 
     echo '<form action = "details_student.php" method = "get">    
-          <input type = "hidden" name = "id" value = "'.$student['student_id'].'">';   
+          <input type = "hidden" name = "person_id" value = "'.$student['student_id'].'">
+          <input type = "hidden" name = "tab" value = "">';   
     echo '<li><button class = "btn btn-link" type = "submit">'.$student['student'].'</button></li>';
+    echo '</form>';
       }
 
   echo '</ul>';
-  echo '</form>';
+  
 }
 
 public function displayStudentMarks($student_id, $subject = '') {
