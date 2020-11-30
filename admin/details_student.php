@@ -10,6 +10,7 @@
   $controller = new Controller ($database, $displayer);
  
   $controller->htmlForm('set_attendance');
+  $controller->htmlForm('set_marks');
 ?>
 
 
@@ -31,24 +32,27 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-      <form id = "get_att_period" method = "get" action = "<?php $_SERVER['REQUEST_URI']?>">
-        </form>
         <div class = "col m-3 modul rounded shadow-sm p-3">
           <div class = "header mb-3">
-            <h2 class="display-4 d-inline"><?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>
-            <button form = "set_attendance" class="btn btn-success rounded-0 float-right" type="submit">save</button>
+            <h2 class="display-4"><?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>
           </div>      
           <?php
-                echo $controller->getForms();
+                echo $controller->getForms();      
+
                 if (!empty ($_POST['action'])) {
-                  $controller->handleRequest ($_POST['action'], '', $_POST['attendance']);
+                  $action = explode('_', $_POST['action']);                 
+                  
+                  $controller->handleRequest ($_POST['action'], '', $_POST[$action[1]]);   
                   $displayer->displayErrors();
-                  $displayer->displaySuccess();
+                  $displayer->displaySuccess();  
+                          
+                }else {
+                      $controller->getTab($_GET['tab']);
                 }
               ?>
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
+                <a class="nav-link <?php echo $controller->tab['details'] ?>" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
                   <span class = "d-none d-md-block">
                     Details
                   </span>
@@ -56,7 +60,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="attendance-tab" aria-selected="false">
+                <a class="nav-link <?php echo $controller->tab['attendance'] ?>" id="attendance-tab" data-toggle="tab" href="#attendance" role="tab" aria-controls="attendance-tab" aria-selected="false">
                   <span class = "d-none d-md-block">
                     Attendance
                   </span>
@@ -64,7 +68,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="marks-tab" data-toggle="tab" href="#marks" role="tab" aria-controls="marks" aria-selected="false">
+                <a class="nav-link <?php echo $controller->tab['marks'] ?>" id="marks-tab" data-toggle="tab" href="#marks" role="tab" aria-controls="marks" aria-selected="false">
                   <span class = "d-none d-md-block">
                     Marks
                   </span>
@@ -75,7 +79,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="notes-tab" data-toggle="tab" href="#notes" role="tab" aria-controls="notes" aria-selected="false">
+                <a class="nav-link <?php echo $controller->tab['notes'] ?>" id="notes-tab" data-toggle="tab" href="#notes" role="tab" aria-controls="notes" aria-selected="false">
                   <span class = "d-none d-md-block">
                     Notes
                   </span>
@@ -85,30 +89,53 @@
             </ul>
       
               <div class="tab-content">
-                <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+                <div class="tab-pane fade <?php echo $controller->tab['details_show'] ?>" id="details" role="tabpanel" aria-labelledby="details-tab">
                   <?php $displayer->displayPersonDetails($_GET['person_id']);?>
                 </div>
-                <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
-                  <p class="lead">Select month:</p>
-                    <select id = "inputAttendance" name = "value" class = "form-control m-3 w-50" form = "choose_month">
-                      <option value = '-01-'>january</option>
-                      <option value = '-02-'>february</option>
-                      <option value = '-03-'>march</option>
-                      <option value = '-04-'>april</option>
-                      <option value = '-05-'>may</option>
-                      <option value = '-06-'>june</option>
-                      <option value = '-09-'>september</option>
-                      <option value = '-10-'>october</option>
-                      <option value = '-11-'>november</option>
-                      <option value = '-12-'>december</option>
-                    </select>
-                    <?php $displayer->displayAttendance($_GET['person_id'], $database->getCurrentYear());?>    
+                <div class="tab-pane fade <?php echo $controller->tab['attendance_show'] ?>" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">      
+                  
+                  <div class = "row px-3"> 
+                  <form id = "get_att_period" method = "get" action = "<?php $_SERVER['REQUEST_URI']?>">
+                    <input name = "person_id" type = "hidden" value = "<?php echo $_GET['person_id'] ?>">
+                    <input name = "tab" type = "hidden" value = "attendance">
+                  </form>      
+                    <div class = "col-md-3">    
+                      <label for="datepicker_from">Date from</label>
+                      <input 
+                        autocomplete="off" 
+                        name = "date_from" 
+                        form = "get_att_period"  
+                        class="form-control" 
+                        type="text" 
+                        id="datepicker_from"
+                        required>
+                    </div>  
+                    <div class="col-md-3">
+                      <label for="datepicker_to">Date to</label>
+                      <input 
+                        autocomplete="off" 
+                        name = "date_to" 
+                        form = "get_att_period"  
+                        class="form-control" 
+                        type="text" 
+                        id="datepicker_to"
+                        required>
+                    </div>
+                    <div class="col-md-3 p-0 align-self-end">
+                      <button form = "get_att_period" class = "btn btn-secondary rounded-0 mt-1 mx-0 float-right float-md-left">Show</button>
+                    </div>
+                  </div>
+                  <?php
+                    if (!empty ($_GET['date_from']) && !empty ($_GET['date_from'])) {
+                      $displayer->displayAttendance($_GET['person_id'], $_GET['date_from'], $_GET['date_to']);
+                      }
+                  ?> 
+                </div>  
+                <div class="tab-pane fade <?php echo $controller->tab['marks_show'] ?>" id="marks" role="tabpanel" aria-labelledby="marks-tab">           
+                  <?php $displayer->displayStudentMarks($_GET['person_id']);?>
                 </div>
-                <div class="tab-pane fade" id="marks" role="tabpanel" aria-labelledby="marks-tab">           
-                  <?php $displayer->displayStudentMarks($_GET['person_id'], $database->getCurrentYear());?>
-                </div>
-                <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
-                  <?php $displayer->displayNotes($_GET['person_id'], $database->getCurrentYear());?>
+                <div class="tab-pane fade <?php echo $controller->tab['notes_show'] ?>" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+                  <?php $displayer->displayNotes($_GET['person_id']);?>
                 </div>    
             </div> 
         </div>
@@ -125,7 +152,7 @@
 <!-- Footer -->
 
 <script src="js/tooltip.js"></script>
-<script src="js/filter_attendance.js"></script>
+<script src="js/datepicker.js"></script>
 </body>
 </html>
 

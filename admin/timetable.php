@@ -45,7 +45,7 @@
             <div class = "col-lg-3 ">
               <form id = "set_class" action = "<?php $_SERVER['REQUEST_URI'] ?>" method = "get">
                 <label for = "set_class>">Choose class</label>
-                <select id = "set_class" name = "class_id" class = "form-control" form = "set_class">
+                <select id = "set_class" name = "class_id" class = "form-control" form = "set_class" required>
                   <?php 
                       $displayer->displayClassesSelect($_GET['class_id']); 
                   ?>

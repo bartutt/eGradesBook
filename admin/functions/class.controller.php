@@ -8,13 +8,18 @@ class Controller {
     
     private $form;
 
+    /**
+     * Contains info which tab should be active after action
+     * 
+     */
+    public $tab = array();
+
     function __construct($database, $displayer) {
 
         $this->database = $database;
 
         $this->displayer = $displayer;
         
-
     }
 
     public function getForms(){
@@ -40,12 +45,24 @@ class Controller {
             echo '<input class = "form-control" form = "add_person" name = "person[]" type = "hidden" value = '.$role_status['id'] .'>';
     }
 
+    public function getTab($tab = null){
+        
+        if (empty($tab)) {
+            $this->tab['details'] = 'active';
+            $this->tab['details_show'] = 'show active';
+        
+        }else {
+        
+            $this->tab[$tab] = 'active';
+            $this->tab[$tab."_show"] = 'show active';
+        }
 
-    
+    }
+
     public function handleRequest ($action, $val_1, $val_2) {
 
         switch ($action) {
-         
+    
             case 'add_year':
                 $this->database->addYear($val_2);
                 $this->result();
@@ -99,6 +116,15 @@ class Controller {
             case 'set_attendance':
                 $this->database->setAttendance($val_2);
                 $this->result();
+                $this->tab['attendance'] = 'active';
+                $this->tab['attendance_show'] = 'show active';
+                break;
+
+            case 'set_marks':
+                $this->database->setMarks($val_2);
+                $this->result();
+                $this->tab['marks'] = 'active';
+                $this->tab['marks_show'] = 'show active';
                 break;
 
             case 'add_event':

@@ -66,6 +66,20 @@ class Displayer{
       'Friday'
     );
 
+    private $months = array(
+      '01' => 'January',
+      '02' => 'February',
+      '03' => 'March',
+      '04' => 'April',
+      '05' => 'May',
+      '06' => 'June',
+      '07' => 'July',
+      '08' => 'August',
+      '09' => 'September',
+      '10' => 'October',
+      '11' => 'November',
+      '12' => 'December');
+
     function __construct($database) {
 
         $this->database = $database;
@@ -78,7 +92,7 @@ class Displayer{
         onChange="this.className=this.options[this.selectedIndex].className" 
         form = "set_attendance" 
         name = "attendance['.$name.'][]" 
-        class="form-control form-control-sm edit-attendance" >
+        class="form-control form-control-sm edit-attendance shadow-none" >
         
         <option 
           class = "'.$this->att_color.' form-control form-control-sm edit-attendance" 
@@ -112,6 +126,34 @@ class Displayer{
       </select> 
       ';
     }
+
+    private function displayMarksSelect($name = '', $value = ''){
+
+      echo '
+          <select 
+            onChange="this.className=this.options[this.selectedIndex].className" 
+            form = "set_marks" 
+            name = "marks['.$name.'][]" 
+            class="form-control form-control-sm edit-marks shadow-none p-0 font-07" >
+        
+            <option 
+            class = "'.$this->mark_color.' form-control form-control-sm edit-marks" 
+            value = "" selected hidden>'.$value.'
+          </option>';
+
+          for ($i = 1; $i <= 6; $i++) {
+            $this->setMarkColor($i);
+
+              echo '
+                <option 
+                class = "'.$this->mark_color.' form-control form-control-sm edit-marks shadow-none p-0 font-07"
+                  value = "'.$i.'">'.$i.'
+                </option>
+                ';
+        }
+          
+      echo '</select> ';
+    }
     private function setAttColor($att){
       if ($att == 'absent') 
         $this->att_color = 'bg-danger';
@@ -127,7 +169,7 @@ class Displayer{
       return $this->att_color;
 
     }
-    private function setMarkColor($mark = '', $att = ''){
+    private function setMarkColor($mark = ''){
       if ($mark == 1) 
         $this->mark_color = 'bg-danger';
       
@@ -145,9 +187,7 @@ class Displayer{
 
       if ($mark == 6) 
         $this->mark_color = 'bg-primary';
-      
-      if ($att == 'present') 
-        $this->mark_color = 'bg-succes';
+  
       
       return $this->mark_color;
 
@@ -193,33 +233,48 @@ class Displayer{
     }
     private function displayMarks($marks) {
 
-      echo '<td class = "p-2">';
-        if (is_array($marks))
+      echo '<td class = "py-2">';
             foreach ($marks as $mark) {
                   $this->setMarkColor($mark['mark']);
+                  
                   $sum[] = $mark['mark'] * $mark['weight'];
+                  
                   $sum_weight[] = $mark['weight'];
-                 echo '<a data-toggle="tooltip" data-html="true" title="
+                 
+                  echo '
+                    
+                    <a 
+                    data-toggle="tooltip" 
+                    data-html="true" 
+                    title="
                       Teacher: '.$mark['teacher'].'<br>
                       Description: '.$mark['description'].'<br>
                       Weight: '.$mark['weight'].'<br>
                       Date: '.$mark['date'].'<br>
                       Category: '.$mark['cat'].'<br>      
-                      " class="badge '.$this->mark_color.'">' .$mark['mark']. '</a>';
-              
-                    }else echo '-';
-        echo '</td>';
-        echo '<td>'; 
+                      " class="badge p-0 '.$this->mark_color.'">'; 
+                      
+                      $this->displayMarksSelect($mark['id'], $mark['mark']);
+                      
+                    echo '</a>
+                    <input 
+                      name = "marks['.$mark['id'].'][]" 
+                      type = "hidden" value = "'.$mark['id'].'" 
+                      form = "set_marks" ">
+                    ';             
+                    } // end foreach
         
-          if (!empty($sum))
-            echo '<a class="badge '.$this->mark_color.'">'.number_format(array_sum($sum)/array_sum($sum_weight), 2, '.', '').'</a>';
-          
-        echo '</td>';
-        echo '<td>'; 
+      echo '</td>';
+      echo '<td class = "py-2">'; 
         
         if (!empty($sum))
+          echo '<a class="badge text-white '.$this->mark_color.'">'.number_format(array_sum($sum)/array_sum($sum_weight), 2, '.', '').'</a>';
+
+      echo '</td>';
+      echo '<td class = "py-2">';    
+        if (!empty($sum))
           echo '<a class="badge bg-dark text-white">'.round(array_sum($sum)/array_sum($sum_weight)).'</a>';
-        
+
       echo '</td>';
     
     
@@ -277,7 +332,7 @@ class Displayer{
           <input 
             name = "attendance['.$day.$i.'][]" type = "hidden" 
             value = "'.$dates[$lesson['time']]['date'].'" 
-            form = "set_attendance" ">';          
+            form = "set_attendance" ">';  
         $i++;
         
         }else {
@@ -367,8 +422,43 @@ class Displayer{
           }
         }
       }
+    }
 
-        return $this->day_att;
+    private function renderMarks($student_id, $subject = '') {
+
+      $school_year = $this->database->getCurrentYear();
+
+      if (empty ($subject)) {
+        
+        $this->subjects = $this->database->getSubjects();
+    
+      } else {
+    
+        $this->subjects[]['name'] = $subject;
+    
+        }
+    
+        $marks_1sem = $this->database->getMarks($student_id, '1', $school_year);
+    
+        $marks_2sem = $this->database->getMarks($student_id, '2', $school_year);
+    
+          foreach ($marks_1sem as $mark) {
+            foreach ($this->subjects as $subject) {
+              if ($mark['subject'] == $subject['name']) {       
+                $this->sem_1[$subject['name']][] = $mark;
+              }
+            }
+          }
+    
+          foreach ($marks_2sem as $mark) {
+            foreach ($this->subjects as $subject) {
+              if ($mark['subject'] == $subject['name']) {       
+                $this->sem_2[$subject['name']][] = $mark;
+              }
+            }
+          }
+
+
     }
   
     private function colorEvents($event_title, $event_desc){
@@ -394,6 +484,22 @@ class Displayer{
 
     }
 
+
+  
+public function displayMonthsSelect($selected = '') {
+
+  if (empty ($selected))
+    echo '<option selected>All</option>';
+  
+  foreach ($this->months as $number => $month) {
+    if ($number !== $selected)
+      echo '<option value = "-'.$number.'-">'.$month.'</option>';   
+    else 
+      echo '<option value = "-'.$number.'-" selected>'.$month.'</option>';
+  }
+
+
+}
 
 public function displayEvents($class = '') {
 
@@ -546,12 +652,12 @@ public function displayPersonsSelect($role_status, $selected = '') {
   if (empty ($this->$role_status))
       $this->$role_status = $this->database->getPersons($role_status);
 
-      if (empty ($selected) )
-        echo 
-          '<option value = "" hidden selected></option>';
+  if (empty ($selected) )
+    echo 
+      '<option value = "" hidden selected></option>';
 
-  foreach ($this->$role_status as $person){
-    if ($person['name'] .' '.  $person['surname'] !== $selected){
+  foreach ($this->$role_status as $person) {
+    if (($person['name'] .' '.  $person['surname'] !== $selected) && ($person['id'] != $selected)) {
       echo 
               '<option value = ' . $person['id'] .'>'         
               . $person['name'] .' '.  $person['surname'].                    
@@ -565,7 +671,8 @@ public function displayPersonsSelect($role_status, $selected = '') {
   }
 }
 
-public function displaySubjectsSelect($selected = '') {
+public function displaySubjectsSelect($selected = '', $value = '') {
+  
   
   if (empty ($this->subjects))
     $this->subjects = $this->database->getSubjects();
@@ -574,15 +681,22 @@ public function displaySubjectsSelect($selected = '') {
       echo 
         '<option value = "" hidden selected></option>';
   
-    foreach ($this->subjects as $subject){
-      if ($subject['name'] !== $selected){
-          echo 
-              '<option value = '. $subject['id'] .'>'         
+    foreach ($this->subjects as $subject) {
+      
+      if (empty ($value))
+        $value = $subject['id'];
+      else 
+        $value = $subject['name'];
+
+
+        if ($subject['name'] !== $selected){
+            echo 
+              '<option value = '. $value .'>'         
                 . $subject['name'].                    
               '</option>';
-    }else {
-          echo 
-              '<option value = '. $subject['id'] .' selected>'         
+        }else {
+            echo 
+              '<option value = '. $value .' selected>'         
                 . $subject['name'].                    
               '</option>';
     }
@@ -684,6 +798,7 @@ public function displayPersons($role_status) {
                 <td class="d-none d-lg-table-cell"><button type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['id'] . '</button></td>
                 <input type = "hidden" name = "person_id" value = "'.$person['id'].'">
+                <input type = "hidden" name = "tab" value = "">
                 </form>';
 
 
@@ -696,10 +811,12 @@ public function displayPersons($role_status) {
 }
   
 
-public function displayNotes($student_id, $school_year) {
+public function displayNotes($student_id) {
+
+  $school_year = $this->database->getCurrentYear();
 
   $notes = $this->database->getNotes($student_id, $school_year);
- 
+
       echo '
       <table class="table table-sm mt-3">
         <thead class = "thead-light">
@@ -773,57 +890,77 @@ public function displaySupervisorStudent($supervisor_id) {
   echo '</form>';
 }
 
-public function displayStudentMarks($student_id, $school_year) {
+public function displayStudentMarks($student_id, $subject = '') {
   
-    $subjects = $this->database->getSubjects();
+  $this->renderMarks($student_id, $subject);
 
   echo '<div class = "row">
         <div class = "col-md-6 mt-3">
         <table id = "marks-table-1" class="table table-sm">   
         <thead class = "thead thead-light"><th>subject</th><th>first semester</th><th>gpa</th><th>#</th></thead>     
         <tbody>';   
-    
-            foreach ($subjects as $subject){
 
-              $marks = $this->database->getMarks($subject['name'], $student_id, '1', $school_year);
+          foreach ($this->subjects as $subject) {
 
-              echo '<tr><td>'.$subject['name'].'</td>';            
+            echo '<tr>';       
+            
+            if (!empty ($this->sem_1[$subject['name']])){
+              echo '<td>'.$subject['name'].'</td>'; 
+              $this->displayMarks($this->sem_1[$subject['name']]);
 
-              $this->displayMarks($marks);
-
-              echo '</tr>';
+            }else {
+              echo '<td>'.$subject['name'].'</td>'; 
+              echo '<td class = "py-2 pl-1">-</td>';  
+              echo '<td class = "py-2 pl-1">-</td>';
+              echo '<td class = "py-2 pl-1">-</td>';           
             }
+            echo '</tr>';
+          }
+
+
   echo '</tbody>
         </table>
         </div>';
+
+        // second semester
   echo '<div class = "col-md-6 mt-3">
         <table id = "marks-table-2" class="table table-sm">
         <thead class = "thead thead-light"><th class = "d-table-cell d-md-none">subject</th><th>second semester</th><th>gpa</th><th>#</th><th>final</th></thead>  
-        <tbody>';
-        
-        foreach ($subjects as $subject) {   
+        <tbody>'; 
+             
+          foreach ($this->subjects as $subject) {
 
-          $marks = $this->database->getMarks($subject['name'], $student_id, '2', $school_year);         
-          
-          echo '<tr >
-                  <td class = "d-table-cell d-md-none">'.$subject['name'].'</td>';
+            echo '<tr>';       
+            
+            if (!empty ($this->sem_2[$subject['name']])){
+              echo '<td class = "d-table-cell d-md-none">'.$subject['name'].'</td>'; 
+              $this->displayMarks($this->sem_2[$subject['name']]);
 
-          $this->displayMarks($marks);
+            }else {
+              echo '<td class = "d-table-cell d-md-none">'.$subject['name'].'</td>'; 
+              echo '<td class = "py-2 pl-1">-</td>';    
+              echo '<td class = "py-2 pl-1">-</td>';  
+              echo '<td class = "py-2 pl-1">-</td>';        
+            }
 
-          echo '</tr>';
-        }
+              echo '</tr>';
+          }
   
   echo '</tbody>
         </table>
         </div>
         </div>';
+  
+        //show save button if marks exist
+  if (!empty ($this->sem_1))
+    echo '<button form = "set_marks" class="btn btn-success rounded-0 m-2 float-right" type="submit">save</button>';
 }
 
 
-public function displayAttendance($student_id, $school_year = '', $date_from = '', $date_to = '') {
+public function displayAttendance($student_id, $date_from = '', $date_to = '') {
 
   $lessons = $this->database->getLessonTimes();
-  
+
   echo '<table class="table table-sm mt-2" id = "attendanceTable">';
   echo '<thead class = "thead thead-light">';
   echo '<th class = "d-none d-md-table-cell">Date</th>';
@@ -832,8 +969,21 @@ public function displayAttendance($student_id, $school_year = '', $date_from = '
   echo '</thead>';
   echo '<tbody>';
 
-    if (!empty ($school_year)) {
+  if ((!empty ($date_from) && (!empty($date_to)))) {
       
+    $attendance = $this->database->getAttPeriod($student_id, '', $date_from, $date_to);
+
+    $dates = $this->database->getAttendanceDays($student_id, '', $date_from, $date_to);
+    
+    $this->renderAttendance($attendance, $dates);
+
+    foreach ($dates as $date)
+      $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date']);
+      
+  }else {
+    
+      $school_year = $this->database->getCurrentYear();
+
       $attendance = $this->database->getAttPeriod($student_id, $school_year);
       
       $dates = $this->database->getAttendanceDays($student_id, $school_year);
@@ -844,23 +994,15 @@ public function displayAttendance($student_id, $school_year = '', $date_from = '
         $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date']);
     }
 
-
-    if (!empty ($date_from) && ($date_to)) {
-      
-      $attendance = $this->database->getAttPeriod($student_id, '', $date_from, $date_to);
-
-      $dates = $this->database->getAttendanceDays($student_id, '', $date_from, $date_to);
-      
-      $this->renderAttendance($attendance, $dates);
-
-      foreach ($dates as $date)
-        $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date']);
-        
-    }
-
+    
   
-    echo '</tbody>';
+  echo '</tbody>';
   echo '</table>';
+
+  if (empty ($attendance)) 
+    echo 'Empty';
+  else
+      echo '<button form = "set_attendance" class="btn btn-success rounded-0 m-2 float-right" type="submit">save</button>';
 
 }
 
@@ -885,7 +1027,7 @@ public function displayClassDetails($class_id, $school_year = ''){
                     <form action = "details_student.php" method = "get">
                       <td class = "nr"><button type = "submit" class="table-button">' . $i . '</button></td>
                       <td><button type = "submit" class="table-button">' . $class['student'] . '</button></td>
-                      <input type = "hidden" name = "id" value = "'.$class['student_id'].'">
+                      <input type = "hidden" name = "person_id" value = "'.$class['student_id'].'">
                     </form>';
                   $this->displayRemoveButton($class['student_id'], 'student_id', 'remove_from_class');
             echo '</tr>';

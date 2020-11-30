@@ -363,24 +363,30 @@ public function getClassesQty(){
 }
 
 
-public function getMarks($subject, $student_id, $sem, $school_year) {
+public function getMarks($student_id, $sem, $school_year) {
     
     $this->setQuery(
             "SELECT 
-            CONCAT(person.name, ' ', person.surname) AS teacher, marks.mark, marks_cat.name AS cat, marks.weight, marks.description, marks.date, subjects.name 
+            CONCAT(person.name, ' ', person.surname) AS teacher, 
+            marks.id,
+            marks.mark, 
+            marks_cat.name AS cat, 
+            marks.weight, 
+            marks.description, 
+            marks.date, 
+            subjects.name as subject
             FROM marks 
             INNER JOIN person ON id_teacher = person.id 
             INNER JOIN marks_cat ON cat_id = marks_cat.id
             INNER JOIN subjects ON id_subject = subjects.id
-            WHERE id_student = ? AND subjects.name = ? AND date BETWEEN ? AND ?"
+            WHERE id_student = ? AND date BETWEEN ? AND ?"
     );
     
-    $this->$subject = null; // reset first semester
 
     $year = explode('/', $school_year);
 
     $values[] = $student_id;
-    $values[] = $subject;
+
     if ($sem == '1') {
         $values[] = $year[0].'-09-01';
         $values[] = $year[0].'-12-31';
@@ -390,9 +396,13 @@ public function getMarks($subject, $student_id, $sem, $school_year) {
         $values[] = $year[1].'-06-31';
     }
 
-    $this->getContent($values, $subject);
+    // 2 semester
+    if (!empty ($this->marks)) 
+        unset ($this->marks);
+
+        $this->getContent($values, 'marks');
             
-        return $this->$subject;
+        return $this->marks;
 
 }
 
@@ -853,7 +863,7 @@ public function setAttendance($values) {
 
 
     foreach ($values as $row) {  
-        // row 1 = subject, row 2 = teacher
+
         if ( $row['2'] !== '') {  
  
          $this->setQuery("INSERT INTO 
@@ -876,6 +886,29 @@ public function setAttendance($values) {
      
 } 
 
+public function setMarks($values) {
+
+
+    foreach ($values as $row) {  
+
+        if ( $row['0'] !== '') {  
+ 
+         $this->setQuery("UPDATE 
+         marks SET mark = ? WHERE id = ?
+         ");
+        
+             if ($this->setContent($row) === true) {
+                 if (empty ($this->success) )
+                    $this->success[] = 'Marks are saved'; 
+             
+             }else {
+                 if (empty ($this->errors) )
+                    $this->errors[] = 'Marks can not be saved';
+                 }
+        }
+    }
+     
+} 
 
 public function setTimetable($values) {
 

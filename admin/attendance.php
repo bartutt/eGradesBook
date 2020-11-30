@@ -35,7 +35,8 @@
             <h2 class="display-4">Attendance</h2>
             <?php
                 echo $controller->getForms();
-                if (!empty ($_POST['action'])) {
+                if (!empty ($_POST['action']) && (!empty ($_POST['attendance'])) ) {
+                  
                   $controller->handleRequest ($_POST['action'], '', $_POST['attendance']);
                   $displayer->displayErrors();
                   $displayer->displaySuccess();
@@ -45,20 +46,33 @@
             <div class="form-row">
               <div class="col-md-3">
                 <label for="person-id">Choose student</label>
-                <select name = "person_id" form = "get_att_period" class="form-control" placeholder = "Student">
-                  <?php $displayer->displayPersonsSelect('student');?>
+                <select name = "person_id" form = "get_att_period" class="form-control" required>
+                  <?php $displayer->displayPersonsSelect('student', $_GET['person_id']);?>
                 </select>
               </div>
               <div class="col-md-3">
                 <label for="datepicker-from">Date from</label>
-                <input autocomplete="off" name = "date_from" form = "get_att_period"  class="form-control" type="text" id="datepicker_from">
+                <input 
+                  autocomplete="off" 
+                  name = "date_from" 
+                  form = "get_att_period"  
+                  class="form-control" 
+                  type="text" 
+                  id="datepicker_from"
+                  required>
               </div>  
               <div class="col-md-3">
                 <label for="datepicker-to">Date to</label>
-                <input autocomplete="off" name = "date_to" form = "get_att_period"  class="form-control" type="text" id="datepicker_to">
+                <input 
+                  autocomplete="off" 
+                  name = "date_to" 
+                  form = "get_att_period"  
+                  class="form-control" 
+                  type="text" 
+                  id="datepicker_to"
+                  required>
               </div>
               <div class="col-md-3 align-self-end">          
-                <button form = "set_attendance" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">save</button>
                 <button form = "get_att_period" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">search</button>
               </div>
             </div>
@@ -68,7 +82,7 @@
         <div class = "col-lg-10 m-3 modul rounded shadow-sm text-center">
           <?php
            if (!empty ($_GET['person_id'])) {
-            $displayer->displayAttendance($_GET['person_id'], '', $_GET['date_from'], $_GET['date_to']);
+            $displayer->displayAttendance($_GET['person_id'], $_GET['date_from'], $_GET['date_to']);
            }
           ?>
       </div>

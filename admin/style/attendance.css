@@ -17,4 +17,24 @@
     height: 100%;
     color: white;
   }
+
+  .edit-marks{
+    position: relative;
+    margin: 0;
+    border:0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    color: white;
+  }
+  
+  .edit-marks:focus{
+    position: relative;
+    margin: 0;
+    border:0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    color: white;
+  }
  

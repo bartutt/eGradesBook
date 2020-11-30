@@ -44,13 +44,13 @@
             <div class="form-row">
               <div class="col-sm-4">
                 <label for="student">Enter student</label>
-                <select id = "student" name = "value[]" form = "set_supervisor_student" class="form-control">
+                <select id = "student" name = "value[]" form = "set_supervisor_student" class="form-control" required>
                   <?php $displayer->displayPersonsSelect('student');?>
                 </select>
               </div>
               <div class="col-sm-4">
                 <label for="student">Enter parent</label>
-                <select id = "parent" name = "value[]" form = "set_supervisor_student" class="form-control">  
+                <select id = "parent" name = "value[]" form = "set_supervisor_student" class="form-control" required>  
                   <?php $displayer->displayPersonsSelect('parent');?>      
                 </select>
               </div>

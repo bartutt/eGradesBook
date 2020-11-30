@@ -45,21 +45,21 @@
             <div class="form-row">
               <div class="col-md-1">
                 <label for="class">Class</label>
-                <select id = "class" name = "value[]" form = "add_event" class="form-control">
+                <select id = "class" name = "value[]" form = "add_event" class="form-control" required>
                   <?php $displayer->displayClassesSelect();?>
                 </select>
               </div>
               <div class="col-md-2">
                 <label for="title">Title</label>
-                <input id = "title" name = "value[]" form = "add_event" class="form-control" type="text" id = "title">
+                <input id = "title" name = "value[]" form = "add_event" class="form-control" type="text" id = "title" required>
               </div>   
               <div class="col-md-4">
                 <label for="event-description">Description</label>
-                <input id = "event-description" name = "value[]" form = "add_event" class="form-control" type="text" id = "description">
+                <input id = "event-description" name = "value[]" form = "add_event" class="form-control" type="text" id = "description" required>
               </div>    
               <div class="col-md-2">
                 <label for="datepicker">Choose date</label>
-                <input autocomplete="off" name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker">
+                <input autocomplete="off" name = "value[]" form = "add_event"  class="form-control" type="text" id="datepicker" required>
               </div>
               <div class="col-md-3 align-self-end">
                 <button form = "add_event" class="btn btn-success rounded-0 mt-1 mx-1 float-right float-md-left" type="submit">Add</button>
@@ -74,7 +74,7 @@
           <div class = "row px-3">       
             <div class = "col-3 p-0">        
               <label for="set_class">Choose class:</label>                 
-              <select name = "class_id" class = "form-control" form = "set_class">
+              <select name = "class_id" class = "form-control" form = "set_class" required>
               <?php 
                 $displayer->displayClassesSelect($_GET['class_id']); 
               ?>

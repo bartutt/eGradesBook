@@ -6,6 +6,45 @@ body{
   overflow-y: scroll;
   background-color: #f0f0f0;
 }
+.edit-attendance{
+  position: relative;
+  margin: 0;
+  border:0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  color: white;
+}
+
+.edit-attendance:focus{
+  background-color:transparent;
+  position: relative;
+  margin: 0;
+  border:0;
+  width: 100%;
+  height: 100%;
+  color: white;
+}
+
+.edit-marks{
+  position: relative;
+  margin: 0;
+  border:0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  color: white;
+}
+
+.edit-marks:focus{
+  position: relative;
+  margin: 0;
+  border:0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  color: white;
+}
 
 /**
 * timetable time
@@ -26,6 +65,9 @@ padding:0;
 margin: 0;
 }
 
+.font-07{
+  font-size: 0.7rem;
+}
 
 .chart{
   width: 100%; 

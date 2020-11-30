@@ -43,23 +43,23 @@
             <div class="form-row">
               <div class="col-sm-2">
               <label for="class-name">Class name</label>
-                <input form = "add_class" name = "class[]" id = "class-name" type="text" class="form-control">
+                <input form = "add_class" name = "class[]" id = "class-name" type="text" class="form-control" required>
               </div>
               <div class="col-sm-2">
                 <label for="teacher">Teacher</label>
-                  <select form = "add_class" name = "class[]" id="teacher" class="form-control">
+                  <select form = "add_class" name = "class[]" id="teacher" class="form-control" required>
                     <?php $displayer->displayPersonsSelect('teacher');?>
                   </select>
               </div>
               <div class="col-sm-2">
                 <label for="profile">Profile</label>
-                  <select form = "add_class" name = "class[]" id="profile" class="form-control">
+                  <select form = "add_class" name = "class[]" id="profile" class="form-control" required>
                     <?php $displayer->displayProfilesSelect();?>
                   </select>
               </div>  
               <div class="col-sm-2">
                 <label for="year">School year</label>
-                  <select form = "add_class" name = "class[]" id="year" class="form-control">
+                  <select form = "add_class" name = "class[]" id="year" class="form-control" required>
                     <?php $displayer->displayYearsSelect();?>
                   </select>
               </div>
