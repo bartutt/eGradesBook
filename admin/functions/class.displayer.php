@@ -735,16 +735,25 @@ public function displayYearsSelect($selected = '') {
     $this->years = $this->database->getYears();
 
 
-  if (empty ($selected) )
+  if (empty ($selected) ){
     echo 
       '<option value = "" hidden selected></option>';
-
-            foreach ($this->years as $year)
+  }
+            
+        foreach ($this->years as $year){
+            
+            if ($year['years'] !== $selected) {
                 echo 
-                '<option value = '. $year['years'] .'>'         
+                  '<option value = '. $year['years'] .'>'         
                      . $year['years'] .                       
+                  '</option>';
+            }else {        
+              echo 
+                '<option value = '. $year['years'] .' selected>'         
+                   . $year['years'] .                       
                 '</option>';
-    
+            }         
+        }
     
 }
 

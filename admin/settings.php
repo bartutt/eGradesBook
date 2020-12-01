@@ -43,6 +43,7 @@
   $controller->htmlForm('add_role_status');
   $controller->htmlForm('add_subject');
   $controller->htmlForm('add_profile');
+  $curr_year = $database->getCurrentYear();
 
   echo $controller->getForms();
 
@@ -71,7 +72,7 @@
                   <div class="col-sm-6">
                     <p class="lead">Set current year</p>
                       <select class = "form-control" form = "set_year" name = "value" >
-                        <?php $displayer->displayYearsSelect();?>
+                        <?php $displayer->displayYearsSelect($curr_year);?>
                       </select>
                       <button class="button" form = "set_year" >set</button>
                   </div>
