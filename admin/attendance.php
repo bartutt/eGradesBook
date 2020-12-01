@@ -28,7 +28,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-      <div class = "col-md-10 m-3 modul rounded shadow-sm p-3">
+      <div class = "col-md-10 m-1 m-md-3 modul rounded shadow-sm p-3">
         <form id = "get_att_period" method = "get" action = "<?php $_SERVER['REQUEST_URI']?>">
         </form>
           <div class = "header">
@@ -79,7 +79,7 @@
         </div>
       </div>
       <div class = "row justify-content-center">
-        <div class = "col-lg-10 m-3 modul rounded shadow-sm text-center">
+        <div class = "col-lg-10 m-1 m-md-3 modul rounded shadow-sm text-center">
           <?php
            if (!empty ($_GET['person_id'])) {
             $displayer->displayAttendance($_GET['person_id'], $_GET['date_from'], $_GET['date_to']);

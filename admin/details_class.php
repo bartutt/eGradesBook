@@ -25,7 +25,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-        <div class = "col-md-6 m-3 modul rounded shadow-sm p-3 ">  
+        <div class = "col-md-6 m-1 m-md-3 modul rounded shadow-sm p-3 ">  
           <?php 
                 if (!empty ($_POST['action'])) {
                   $controller->handleRequest ($_POST['action'], $_GET['class_id'], $_POST['student_id']);
@@ -35,7 +35,7 @@
             $displayer->displayClassDetails($_GET['class_id']);
             ?>
         </div> 
-        <div class = "col-md-5 m-3">
+        <div class = "col-md-5 m-1 m-md-3">
           <div class = "row">
             <div class = "col p-3 modul rounded shadow-sm chart-col">         
               <div class = "header">

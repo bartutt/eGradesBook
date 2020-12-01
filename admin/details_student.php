@@ -159,14 +159,14 @@
                 </div> 
                 <div class="tab-pane fade <?php echo $controller->tab['lessons_show'] ?>" id="lessons" role="tabpanel" aria-labelledby="lessons-tab">
                   <div class = "row justify-content-center"> 
-                    <div class = "col m-3 text-center">
+                    <div class = "col mt-3 text-center">
                       <?php $displayer->createTimetable($class[0]['id']);?> 
                     </div>        
                   </div> 
                 </div> 
                 <div class="tab-pane fade <?php echo $controller->tab['events_show'] ?>" id="events" role="tabpanel" aria-labelledby="events-tab">
                   <div class = "row"> 
-                    <div class = "col m-3">
+                    <div class = "col mt-3 p-0 p-md-3">
                       <?php $displayer->displayEvents($class[0]['id']);?>   
                     </div>
                   </div>        

@@ -24,7 +24,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-        <div class = "col m-3 modul rounded shadow-sm p-3">
+        <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
           <div class = "header">
             <h2 class="display-4">Settings</h2>
             <small class="text-muted">Here you can add new year, change lesson times, manage person status, marks categories or change current year.</small>

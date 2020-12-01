@@ -29,7 +29,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
-        <div class = "col m-3 modul rounded shadow-sm p-3">
+        <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
           <?php
           echo $controller->getForms();
 
@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class = "row">       
-        <div class = "col-lg-6 mx-3 modul rounded shadow-sm p-3">
+        <div class = "col-lg-6 m-1 mx-md-3 modul rounded shadow-sm p-3">
           <form id = "set_class" action = "<?php $_SERVER['REQUEST_URI'] ?>" method = "get">
           <div class = "row px-3">       
             <div class = "col-3 p-0">        
@@ -90,7 +90,7 @@
       </div>
 
       <div class = "row">
-        <div class = "col-lg-6 m-3">
+        <div class = "col-lg-6 p-1 p-md-3 mx-md-3">
           <?php 
           if (!empty($_GET['class_id'])) {
            
