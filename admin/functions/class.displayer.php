@@ -450,24 +450,25 @@ class Displayer{
 
     private function renderMarks($student_id, $subject = '') {
 
+       
       $school_year = $this->database->getCurrentYear();
 
       if (empty ($subject)) {
         
-        $this->subjects = $this->database->getSubjects();
+        $subjects = $this->database->getSubjects();
     
       } else {
     
-        $this->subjects[]['name'] = $subject;
+        $subjects[]['name'] = $subject;
     
         }
-    
+
         $marks_1sem = $this->database->getMarks($student_id, '1', $school_year);
     
         $marks_2sem = $this->database->getMarks($student_id, '2', $school_year);
     
           foreach ($marks_1sem as $mark) {
-            foreach ($this->subjects as $subject) {
+            foreach ($subjects as $subject) {
               if ($mark['subject'] == $subject['name']) {       
                 $this->sem_1[$subject['name']][] = $mark;
               }
@@ -475,14 +476,14 @@ class Displayer{
           }
     
           foreach ($marks_2sem as $mark) {
-            foreach ($this->subjects as $subject) {
+            foreach ($subjects as $subject) {
               if ($mark['subject'] == $subject['name']) {       
                 $this->sem_2[$subject['name']][] = $mark;
               }
             }
           }
 
-
+          $this->subjects = $subjects;
     }
   
     private function colorEvents($event_title, $event_desc){
