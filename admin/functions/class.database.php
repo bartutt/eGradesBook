@@ -72,6 +72,11 @@ class DataBase{
         private $timetable = array();
 
         /**    
+        *	containts class where student is in current year 
+        */ 
+        private $student_curr_class;
+
+        /**    
         *	containts list dates where student exist
         */ 
         private $attendance_days = array();
@@ -114,7 +119,25 @@ class DataBase{
 
 
 
+public function getStudentCurrentClass($id_student) {
 
+    $curr_year = $this->getCurrentYear();
+
+    $this->setQuery("SELECT classes.name, classes.id
+    FROM student_class
+    INNER JOIN classes ON classes.id = id_class
+    WHERE id_student = ? AND classes.years = ?");
+    
+    $values[] = $id_student;
+    $values[] = $curr_year;
+    
+            $this->getContent($values, 'student_curr_class');
+
+            return $this->student_curr_class;
+
+    
+
+}
 public function getTimetable($class_id){
 
     $this->setQuery("SELECT

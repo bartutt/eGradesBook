@@ -542,7 +542,7 @@ public function displayEvents($class = '') {
     foreach($events as $event) {
       $this->colorEvents($event['title'], $event['description']);
       echo '
-          <div class="card mb-3 '.$this->event_color.' shadow-sm">
+          <div class="card mb-3 '.$this->event_color.' shadow-sm rounded-0">
             <div class="card-body">
               <form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
                 <input type = "hidden" name = "value[]" value = "' .$event['id'].'">
@@ -567,10 +567,12 @@ public function createTimetable($class_id) {
    $this->displayTimetableFrame();
 
    $this->renderTimetableContent($class_id);
-    $i = 0;
+    
+   $i = 0;
     foreach ($this->lessons as $day => $lesson) {    
         echo '<div class = "col-md-2">'; 
           echo '<span class="d-xs-block d-sm-block d-md-none day">'.$day.'</span>'; 
+          
           foreach ($this->lesson_times as $hour) {         
             $color = $this->colorTimetable();
               echo '<div class = "row" >';
@@ -588,30 +590,30 @@ public function createTimetable($class_id) {
                     echo '</div>';
                     }
                 echo '<div class = "col py-2 px-1 m-1 hide text-white '.$color.'">';   
-                    echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$class_id.'" form = "set_timetable" ">';
+                    echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$class_id.'" form = "set_timetable">';
                     echo '<p class="d-xs-block d-sm-block d-md-none">'.$hour['time'].'</p>';
                     echo '<p class="timetable">';
-                    echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable"</li>';
+                    echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable">';
                       echo '<option value = "Null"></option>';                      
                           $this->displaySubjectsSelect($lesson[$hour['time']]);
                       echo '</select>';
                     echo '</p>';
                     echo '<p class="timetable">';
-                    echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable"</li>';
+                    echo '<select name = "timetable['.$i.'][]" class = "edit-field" form = "set_timetable">';
                       echo '<option value = "Null" ></option>';                
                           $this->displayPersonsSelect('teacher', $this->teachers[$day][$hour['time']]);
                     echo '</select>';
-                     echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$hour['id'].'" form = "set_timetable" ">';
+                     echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$hour['id'].'" form = "set_timetable">';
                     echo '<input name = "timetable['.$i.'][]" type = "hidden" value = "'.$day.'" form = "set_timetable">';          
                     echo '</p>';
                   echo'</div>';
               echo'</div>'; 
               $i ++;         
-            }            
+            }  
+
           echo '</div>';
           } 
         echo '</div>';
-      echo '</div>';
 }
 
 
@@ -949,7 +951,7 @@ public function displayTeacherClasses($teacher_id) {
 
   echo '<ul class = "pt-2">';
   foreach ($this->database->getTeacherClasses($teacher_id) as $class){
-      echo '<li class = "p-1"><a href = "details_class.php?class_id='.$class['id'].'">'.$class['name'].' '. $class['years'].'</a></li>';
+      echo '<li class = "p-"><a href = "details_class.php?class_id='.$class['id'].'">'.$class['name'].' '. $class['years'].'</a></li>';
       }
   echo '</ul>';
 }
@@ -1109,6 +1111,7 @@ public function displayClassDetails($class_id, $school_year = ''){
                       <td class = "nr"><button type = "submit" class="table-button">' . $i . '</button></td>
                       <td><button type = "submit" class="table-button">' . $class['student'] . '</button></td>
                       <input type = "hidden" name = "person_id" value = "'.$class['student_id'].'">
+                      <input type = "hidden" name = "tab" value = "">
                     </form>';
                   $this->displayRemoveButton($class['student_id'], 'student_id', 'remove_from_class');
             echo '</tr>';

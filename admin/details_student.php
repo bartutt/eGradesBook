@@ -11,6 +11,8 @@
  
   $controller->htmlForm('set_attendance');
   $controller->htmlForm('set_marks');
+  $controller->htmlForm('set_timetable');
+  $class = $database->getStudentCurrentClass($_GET['person_id']); 
 ?>
 
 
@@ -34,7 +36,9 @@
       <div class = "row">
         <div class = "col m-3 modul rounded shadow-sm p-3">
           <div class = "header mb-3">
-            <h2 class="display-4"><?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>
+            <h2 class="display-4">Student: <?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>  
+            <h2 class="display-4">Class: <?php echo $class[0]['name']?></h2>
+          
           </div>      
           <?php
                 echo $controller->getForms();      
@@ -84,6 +88,22 @@
                     Notes
                   </span>
                   <i class="fas fa-sticky-note d-md-none"></i>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link <?php echo $controller->tab['lessons'] ?>" id="lessons-tab" data-toggle="tab" href="#lessons" role="tab" aria-controls="lessons" aria-selected="false">
+                  <span class = "d-none d-md-block">
+                    Lesson plan
+                  </span>
+                  <i class="fas fa-chalkboard-teacher d-md-none"></i>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link <?php echo $controller->tab['events'] ?>" id="events-tab" data-toggle="tab" href="#events" role="tab" aria-controls="events" aria-selected="false">
+                  <span class = "d-none d-md-block">
+                    Events
+                  </span>
+                  <i class="far fa-calendar-check d-md-none"></i>
                 </a>
               </li>
             </ul>
@@ -136,7 +156,21 @@
                 </div>
                 <div class="tab-pane fade <?php echo $controller->tab['notes_show'] ?>" id="notes" role="tabpanel" aria-labelledby="notes-tab">
                   <?php $displayer->displayNotes($_GET['person_id']);?>
-                </div>    
+                </div> 
+                <div class="tab-pane fade <?php echo $controller->tab['lessons_show'] ?>" id="lessons" role="tabpanel" aria-labelledby="lessons-tab">
+                  <div class = "row justify-content-center"> 
+                    <div class = "col m-3 text-center">
+                      <?php $displayer->createTimetable($class[0]['id']);?> 
+                    </div>        
+                  </div> 
+                </div> 
+                <div class="tab-pane fade <?php echo $controller->tab['events_show'] ?>" id="events" role="tabpanel" aria-labelledby="events-tab">
+                  <div class = "row"> 
+                    <div class = "col m-3">
+                      <?php $displayer->displayEvents($class[0]['id']);?>   
+                    </div>
+                  </div>        
+                </div>  
             </div> 
         </div>
       </div>
@@ -153,6 +187,7 @@
 
 <script src="js/tooltip.js"></script>
 <script src="js/datepicker.js"></script>
+<script src="js/edit_field.js"></script>
 </body>
 </html>
 

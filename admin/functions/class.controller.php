@@ -116,6 +116,8 @@ class Controller {
             case 'set_timetable':
                 $this->database->setTimetable($val_1);
                 $this->result();
+                $this->tab['lessons'] = 'active';
+                $this->tab['lessons_show'] = 'show active';
                 break;
             
             case 'set_attendance':
