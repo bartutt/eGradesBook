@@ -37,7 +37,7 @@
                 echo $controller->getForms();
                 if (!empty ($_POST['action']) && (!empty ($_POST['attendance'])) ) {
                   
-                  $controller->handleRequest ($_POST['action'], '', $_POST['attendance']);
+                  $controller->handleRequest ($_POST['action'], $_POST['attendance']);
                   $displayer->displayErrors();
                   $displayer->displaySuccess();
                 }

@@ -48,7 +48,7 @@
 
 
   if (!empty ($_POST)){
-    $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['value']);
+    $controller->handleRequest ($_POST['action'], $_POST['value'], $_POST['old_value']);
     $displayer->displayErrors();
     $displayer->displaySuccess();
   }

@@ -28,7 +28,7 @@
         <div class = "col-md-6 m-3 modul rounded shadow-sm p-3 ">  
           <?php 
                 if (!empty ($_POST['action'])) {
-                  $controller->handleRequest ($_POST['action'], $_POST['student_id'], $_GET['class_id']);
+                  $controller->handleRequest ($_POST['action'], $_GET['class_id'], $_POST['student_id']);
                   $displayer->displayErrors();
                   $displayer->displaySuccess();
                 }          

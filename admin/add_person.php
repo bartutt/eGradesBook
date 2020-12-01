@@ -38,7 +38,7 @@
               echo $controller->getForms();
 
                 if (!empty ($_POST['action'])){
-                  $controller->handleRequest ($_POST['action'], $_POST['old_value'], $_POST['person']);
+                  $controller->handleRequest ($_POST['action'], $_POST['person']);
                   $displayer->displayErrors();
                   $displayer->displaySuccess();
                 }

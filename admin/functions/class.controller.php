@@ -59,17 +59,17 @@ class Controller {
 
     }
 
-    public function handleRequest ($action, $val_1, $val_2) {
+    public function handleRequest ($action, $val_1 = null, $val_2 = null) {
 
         switch ($action) {
     
             case 'add_year':
-                $this->database->addYear($val_2);
+                $this->database->addYear($val_1);
                 $this->result();
                 break;
 
             case 'set_year':  
-                $this->database->setYear($val_2);
+                $this->database->setYear($val_1);
                 $this->result();
                 break;
             
@@ -84,7 +84,7 @@ class Controller {
                 break;
             
             case 'add_mark_cat':  
-                $this->database->addMarkCat($val_2);
+                $this->database->addMarkCat($val_1);
                 $this->result();
                 break;
 
@@ -104,61 +104,61 @@ class Controller {
                 break;
 
             case 'set_teacher_subject':
-                $this->database->setTeacherSubject($val_2);
+                $this->database->setTeacherSubject($val_1);
                 $this->result();
                 break;
             
             case 'set_timetable':
-                $this->database->setTimetable($val_2);
+                $this->database->setTimetable($val_1);
                 $this->result();
                 break;
             
             case 'set_attendance':
-                $this->database->setAttendance($val_2);
+                $this->database->setAttendance($val_1);
                 $this->result();
                 $this->tab['attendance'] = 'active';
                 $this->tab['attendance_show'] = 'show active';
                 break;
 
             case 'set_marks':
-                $this->database->setMarks($val_2);
+                $this->database->setMarks($val_1);
                 $this->result();
                 $this->tab['marks'] = 'active';
                 $this->tab['marks_show'] = 'show active';
                 break;
 
             case 'add_event':
-                $this->database->addEvent($val_2);
+                $this->database->addEvent($val_1);
                 $this->result();
                 break;
                 
             case 'set_supervisor_student':
-                $this->database->setSupervisorStudent($val_2); // $val_1 = ID student, $val_2 = ID parent
+                $this->database->setSupervisorStudent($val_1);
                 $this->result();
                 break;
     
             case 'add_role_status':  
-                $this->database->addRoleStatus($val_2);
+                $this->database->addRoleStatus($val_1);
                 $this->result();
                 break;
 
             case 'add_person':
-                $this->database->addPerson($val_2);
+                $this->database->addPerson($val_1);
                 $this->result();
                 break;
             
             case 'add_subject':
-                $this->database->addSubject($val_2);
+                $this->database->addSubject($val_1);
                 $this->result();
                 break;
             
             case 'add_profile':
-                $this->database->addProfile($val_2);
+                $this->database->addProfile($val_1);
                 $this->result();
                 break;
 
             case 'add_class':
-                $this->database->addClass($val_2);
+                $this->database->addClass($val_1);
                 $this->result();
                 break;
 
@@ -168,17 +168,17 @@ class Controller {
                 break;
         
             case 'delete_class':
-                $this->database->deleteClass($val_1, $val_2); // $val_1 = class name
+                $this->database->deleteClass($val_1, $val_2); // $val_1 = id class, $val_2 = class name
                 $this->result();
                 break;    
 
             case 'delete_event':
-                $this->database->deleteEvent($val_2);
+                $this->database->deleteEvent($val_1);
                 $this->result();
                 break;    
         
             case 'remove_from_class':
-                $this->database->removeFromClass($val_1, $val_2); // $val_1 = id_class, $val_2 = ID student
+                $this->database->removeFromClass($val_1, $val_2); // $val_1 = ID student, $val_2 = id_class
                 $this->result();
                 break;    
             }

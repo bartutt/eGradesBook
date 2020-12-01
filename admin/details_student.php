@@ -42,7 +42,7 @@
                 if (!empty ($_POST['action'])) {
                   $action = explode('_', $_POST['action']);                 
                   
-                  $controller->handleRequest ($_POST['action'], '', $_POST[$action[1]]);   
+                  $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);   
                   $displayer->displayErrors();
                   $displayer->displaySuccess();  
                           

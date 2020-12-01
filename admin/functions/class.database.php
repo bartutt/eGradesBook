@@ -715,14 +715,14 @@ public function setYear($year) {
 /**
 *     
 */ 
-public function setLessonTime($old_value, $new_value) {
+public function setLessonTime($new_value, $old_value) {
     $this->setQuery("UPDATE lesson_times SET time = ? WHERE time = ?");
 
     $this->connectDB();
 
     $values[] = $new_value;
     $values[] = $old_value;
-
+    
     $validation = new Validator;
 
     if ($validation->isValid ($new_value, 'lesson_time') === true){
@@ -739,7 +739,7 @@ public function setLessonTime($old_value, $new_value) {
 /**
 *     
 */ 
-public function setSubject($old_value, $new_value) {
+public function setSubject($new_value, $old_value) {
 
     $this->setQuery("UPDATE subjects SET name = ? WHERE name = ?");
 
@@ -748,6 +748,7 @@ public function setSubject($old_value, $new_value) {
     $values[] = $new_value;
     $values[] = $old_value;
     
+    
     $validation = new Validator;
 
     if ($validation->isValid ($new_value, 'char_space') === true){
@@ -764,14 +765,15 @@ public function setSubject($old_value, $new_value) {
 /**
 *     
 */ 
-public function setProfile($old_value, $new_value) {
+public function setProfile($new_value, $old_value) {
 
     $this->setQuery("UPDATE profiles SET name = ? WHERE name = ?");
 
     $this->connectDB();
 
     $values[] = $new_value;
-    $values[] = $old_value;
+    $values[] = $old_value;;
+    
     
     $validation = new Validator;
 
@@ -788,14 +790,15 @@ public function setProfile($old_value, $new_value) {
 /**
 *     
 */ 
-public function setMarkCat($old_value, $new_value) {
+public function setMarkCat($new_value, $old_value) {
 
     $this->setQuery("UPDATE marks_cat SET name = ? WHERE name = ?");
 
     $this->connectDB();
-
+    
     $values[] = $new_value;
     $values[] = $old_value;
+    
     
     $validation = new Validator;
 
@@ -812,12 +815,13 @@ public function setMarkCat($old_value, $new_value) {
 /**
 *     
 */ 
-public function setRoleStatus($old_value, $new_value) {
+public function setRoleStatus($new_value, $old_value) {
     
     $this->setQuery("UPDATE role_status SET name = ? WHERE name = ?");
 
     $this->connectDB();
 
+    
     $values[] = $new_value;
     $values[] = $old_value;
 
@@ -1109,12 +1113,13 @@ public function addClass($value) {
 /**
 *     
 */ 
-public function addToClass($id_student, $id_class) {
+public function addToClass($id_class, $id_student) {
     
     $this->setQuery("INSERT INTO student_class (id_student, id_class) VALUES (?,?)");
 
     $values[] = $id_student;
     $values[] = $id_class;
+    
         
         if ($this->setContent($values) === true)
             $this->success[] = 'Student is added'; 
@@ -1126,7 +1131,7 @@ public function addToClass($id_student, $id_class) {
 /**
 *     
 */ 
-public function removeFromClass($id_student, $id_class) {
+public function removeFromClass($id_class, $id_student) {
 
     $this->setQuery("DELETE FROM student_class WHERE id_student = ? AND id_class = ?");
 
@@ -1142,7 +1147,7 @@ public function removeFromClass($id_student, $id_class) {
 /**
 *     
 */ 
-public function deleteClass($class_name, $id_class) {
+public function deleteClass($id_class, $class_name) {
 
 
     $this->setQuery("DELETE FROM classes WHERE id = ?");

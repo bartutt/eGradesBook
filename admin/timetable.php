@@ -33,7 +33,7 @@
             echo $controller->getForms();
               if (!empty ($_POST['action'])) {
                     
-                $controller->handleRequest ($_POST['action'], '', $_POST['timetable']);
+                $controller->handleRequest ($_POST['action'], $_POST['timetable']);
                 $displayer->displayErrors();
                 $displayer->displaySuccess();
                 }
