@@ -75,6 +75,10 @@ class DataBase{
         *	containts list dates where student exist
         */ 
         private $attendance_days = array();
+        /**    
+        *	containts current year information board
+        */ 
+        private $information_board;
         
     
     /**    
@@ -541,7 +545,27 @@ public function getSubjects(){
 
 }
 
+public function getInformationBoard($school_year){
 
+
+
+    $this->setQuery(
+        "SELECT title, content, time_added, time_when, id
+        FROM information_board 
+        WHERE time_when BETWEEN ? AND ?"
+    );
+
+    $year = explode('/', $school_year);
+
+    $values[] = $year[0].'-09-01';
+    $values[] = $year[1].'-06-31';
+
+    $this->getContent($values, 'information_board');
+
+    return $this->information_board;
+
+
+}
 
 
 /** 
@@ -691,6 +715,28 @@ public function addYear($year) {
         
     }
     else $this->errors[] = 'Year is not valid!';
+
+    return $this;
+
+}
+
+public function addInformation($value) {
+
+    $this->setQuery("INSERT INTO information_board (title, content, time_when) VALUES (?, ?, ?)");
+
+
+    $validation = new Validator;
+
+    if ( ($validation->isValid($value[0], 'description') === true) 
+        && ($validation->isValid($value[1], 'description') === true) ) {
+     
+        if ($this->setContent($value) === true)
+            $this->success[] = 'Information is saved'; 
+        else
+            $this->errors[] = 'Information can not be saved';
+        
+    }
+    else $this->errors[] = 'Information is not valid!';
 
     return $this;
 
@@ -1173,6 +1219,19 @@ public function deleteEvent($ev_id) {
             $this->success[] = 'Event is deleted'; 
         else
             $this->errors[] = 'Event can not be deleted';
+
+} 
+
+public function deleteInformation($inf_id) {
+
+
+    $this->setQuery("DELETE FROM information_board WHERE id = ?");
+
+        
+        if ($this->setContent($inf_id) === true)
+            $this->success[] = 'Information is deleted'; 
+        else
+            $this->errors[] = 'Information can not be deleted';
 
 } 
 

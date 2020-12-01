@@ -62,6 +62,11 @@ class Controller {
     public function handleRequest ($action, $val_1 = null, $val_2 = null) {
 
         switch ($action) {
+            
+            case 'add_information':
+                $this->database->addInformation($val_1);
+                $this->result();
+                break;
     
             case 'add_year':
                 $this->database->addYear($val_1);
@@ -176,6 +181,11 @@ class Controller {
                 $this->database->deleteEvent($val_1);
                 $this->result();
                 break;    
+
+            case 'delete_information':
+                $this->database->deleteInformation($val_1);
+                $this->result();
+                break; 
         
             case 'remove_from_class':
                 $this->database->removeFromClass($val_1, $val_2); // $val_1 = ID student, $val_2 = id_class

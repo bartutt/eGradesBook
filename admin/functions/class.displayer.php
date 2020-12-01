@@ -126,7 +126,31 @@ class Displayer{
       </select> 
       ';
     }
+    private function displayEditInformation(){
 
+      echo ' 
+      <div class="modal fade" id="addInformation" tabindex="-1" role="dialog" aria-labelledby="addInformationLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addInformationLabel">Add information</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input form = "add_information" type = "text" class="form-control border-0 shadow-none m-2" name = "value[]" placeholder = "title" required>
+              <input form = "add_information" type = "text" class="form-control border-0 shadow-none m-2" name = "value[]" placeholder = "content" required>
+              <input form = "add_information" autocomplete="off"class="form-control border-0 shadow-none m-2" type="text" id="datepicker" name = "value[]" placeholder = "date" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Close</button>
+              <button form = "add_information" type="submit" class="btn btn-success rounded-0">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>';
+    }
     private function displayMarksSelect($name = '', $value = ''){
 
       echo '
@@ -627,6 +651,53 @@ public function displaySuccess(){
      
 }
 
+public function displayInformationBoard(){
+
+  $school_year = $this->database->getCurrentYear();
+
+  $informations = $this->database->getInformationBoard($school_year);
+
+    echo '
+      <table id = "informationBoard" class="table table-sm mt-3">
+        <thead class = "thead-light">
+          <th>Title</th>
+          <th>Content</th>
+          <th>date</th>
+          <th class = "d-none d-md-table-cell">added</th>
+          <th></th>
+        </thead>
+        <tbody>';
+        foreach ($informations as $information){
+            echo '
+            <tr>   
+                <td>      
+                      '.  $information['title'] .'
+                </td> 
+                <td>
+                      '. $information['content'] .'
+                </td>
+                <td>
+                      '. $information['time_when'] .'
+                </td>
+                <td class = "d-none d-md-table-cell"> 
+                '. $information['time_added'] . '
+                </td>
+                <td>
+                <form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
+                  <input name = "value[]" type = "hidden" value = "'. $information['id'] . '">
+                  <input name = "action" type = "hidden" value = "delete_information">
+                  <button class="btn btn-danger rounded-0 py-0 font-07" type="submit">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </form>
+                </td>           
+            </tr>';
+      }
+  echo '</tbody>';
+  echo '</table>';
+  
+  $this->displayEditInformation();
+}
 
 public function displayProfilesSelect($selected = '') {
 
@@ -1155,8 +1226,8 @@ public function displayContentAsButton($source, $as, $index, $id, $action_value)
                     <div class="modal-body">          
                       <div class="form-group">
                         <input type = "text" class="form-control" name = "value" placeholder = "'. $as[$index] . '" required>
-                          <input type = "hidden" name = "action" value = "' . $action_value . '">
-                          <input name = "old_value" type = "hidden" value = "' . $as[$index] . '">
+                        <input type = "hidden" name = "action" value = "' . $action_value . '">
+                        <input name = "old_value" type = "hidden" value = "' . $as[$index] . '">
                       </div>
                     </div>
 

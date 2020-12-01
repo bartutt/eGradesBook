@@ -61,7 +61,7 @@
         </div>
         <div class = "col-sm-4">
           <div class = "row h-100">
-            <a href = "#" class = "col modul-green text-white rounded shadow p-3 my-auto mx-3">
+            <a href = "index.php" class = "col modul-green text-white rounded shadow-sm p-3 my-auto mx-3">
               <i class="fas fa-user-friends fa-3x float-right"></i><span class = "modul"><?php echo $database->countPersons('teacher');?> teachers</span>
             </a>
           </div>

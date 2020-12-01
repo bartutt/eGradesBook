@@ -118,13 +118,12 @@ CREATE TABLE `supervisor_student` (
   `id_supervisor` bigint(11) NOT NULL
 );
 
-CREATE TABLE `message` (
+CREATE TABLE `information_board` (
   `id` int(10) PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(20),
-  `sender` bigint(11),
-  `receiver` bigint(11),
   `content` text,
-  `time` timestamp
+  `time_when` date,
+  `time_added` timestamp
 );
 
 ALTER TABLE `person` ADD FOREIGN KEY (`role_status_id`) REFERENCES `role_status` (`id`);
@@ -174,10 +173,6 @@ ALTER TABLE `teacher_subject` ADD FOREIGN KEY (`id_subject`) REFERENCES `subject
 ALTER TABLE `supervisor_student` ADD FOREIGN KEY (`id_student`) REFERENCES `person` (`id`);
 
 ALTER TABLE `supervisor_student` ADD FOREIGN KEY (`id_supervisor`) REFERENCES `person` (`id`);
-
-ALTER TABLE `message` ADD FOREIGN KEY (`sender`) REFERENCES `person` (`id`);
-
-ALTER TABLE `message` ADD FOREIGN KEY (`receiver`) REFERENCES `person` (`id`);
 
 ALTER TABLE classes ADD CONSTRAINT student_class UNIQUE(id_student, id_class);
 

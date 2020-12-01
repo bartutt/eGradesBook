@@ -3,7 +3,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 body{
-  overflow-y: scroll;
   background-color: #f0f0f0;
 }
 .edit-attendance{
@@ -97,7 +96,11 @@ span.modul, span.day{
 /** 
 * no hover on sm table
 */
-#marks-table-1 tr:hover, #marks-table-2  tr:hover, #attendanceTable tr:hover, #person-details tr:hover{
+#marks-table-1 tr:hover, 
+#marks-table-2  tr:hover, 
+#attendanceTable tr:hover,
+#informationBoard tr:hover, 
+#person-details tr:hover{
   background-color: transparent;
 }
 
