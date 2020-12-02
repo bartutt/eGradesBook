@@ -35,7 +35,7 @@
                 echo $controller->getForms();
 
                 if (!empty ($_POST['action'])) {
-                  $controller->handleRequest ($_POST['action'], $_POST['class']);
+                  $controller->handleRequest ($_POST['action'], $_POST['class'], $_POST['class_removed']);
                   $displayer->displayErrors();
                   $displayer->displaySuccess();
                 }
@@ -75,7 +75,7 @@
             <h2 class="display-4">Classes <?php echo $database->getCurrentYear();?></h2>
           </div>
           <p class="lead">Overview</p>
-          <?php $displayer->displayClasses($database->getCurrentYear());?>
+          <?php $displayer->displayClasses();?>
         </div>
           <div class = "col-md-3 m-1 m-md-3 modul rounded shadow-sm p-0 chart-col">
             <div id="chartClasses" class = "chart"></div>

@@ -383,7 +383,7 @@ class Displayer{
       echo '<form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
             <input type = "hidden" name = "'.$name.'" value = "'.$value.'">
             <input type = "hidden" name = "action" value = "'.$action_value.'">
-            <input type = "hidden" name = "old_value" value = "'.$name_removed.'">
+            <input type = "hidden" name = "class_removed" value = "'.$name_removed.'">
             <td><button class="btn btn-danger rounded-0 pt-0 pb-0 float-right" type="submit"><i class="fas fa-trash-alt"></i></button></td>
           </form>';
 
@@ -1124,7 +1124,9 @@ public function displayClassDetails($class_id, $school_year = ''){
 }
 
 
-public function displayClasses($school_year){
+public function displayClasses() {
+
+  $school_year = $this->database->getCurrentYear();
 
   echo '<table class="table table-sm">';
   echo '
