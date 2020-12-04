@@ -1168,6 +1168,26 @@ public function addMarkCat($value) {
 /**
 *     
 */ 
+public function addNote($values) {
+    
+    $this->setQuery("INSERT INTO notes (id_student, id_teacher, description, date) VALUES (?,?,?,?)");
+
+    $validation = new Validator;
+
+    if ($validation->isValid ($values[2], 'description') === true)  {
+        
+        if ($this->setContent($values) === true)
+            $this->success[] = 'Note is added.'; 
+        else
+            $this->errors[] = 'Note can not be add';
+    }else $this->errors[] = $values[2] .' is not valid';
+
+    return $this;
+} 
+
+/**
+*     
+*/ 
 public function addEvent($values) {
     
     $this->setQuery("INSERT INTO events (id_class, title, description, date) VALUES (?,?,?,?)");

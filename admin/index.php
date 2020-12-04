@@ -31,7 +31,7 @@
         <div class = "col">
           <div class = "row">
             <div class = "header col m-1 m-md-3 modul rounded shadow-sm p-3">
-              <h2 class="display-4">Dashboard</h2>        
+              <h2 class="display-4 m-0">Dashboard</h2>        
                   <?php
                     echo $controller->getForms();
                       if (!empty ($_POST['action'])){

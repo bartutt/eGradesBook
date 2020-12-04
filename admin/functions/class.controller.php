@@ -101,6 +101,12 @@ class Controller {
             $this->displayer->addMark($_SESSION['class'], $_SESSION['subject']);
         }
     }
+    public function addNote() {
+        
+        if (isset ($_SESSION['class']) && (isset ($_SESSION['subject']))) {
+            $this->displayer->addNote($_SESSION['class'], $_SESSION['subject']);
+        }
+    }
     
     public function startLesson() {      
 
@@ -207,6 +213,11 @@ class Controller {
                 
             case 'add_marks':
                 $this->database->addMark($val_1);
+                $this->result();
+                break;
+
+            case 'add_note':
+                $this->database->addNote($val_1);
                 $this->result();
                 break;
 

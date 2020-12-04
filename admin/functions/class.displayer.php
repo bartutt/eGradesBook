@@ -598,6 +598,7 @@ class Displayer{
     }
     private function displayStudentsClassSelect($class, $selected = '') {
 
+    if (empty ($this->students))
       $this->students = $this->database->getStudentsInClass($class);
 
       
@@ -723,12 +724,14 @@ public function createTimetable($class_id) {
 public function addMark($class, $subject, $teacher = '') {
   $today = date("Y-m-d");   
 
-  echo '
-    <div class = "row">
-      <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">';
-        $this->displayHeader('Add mark');
-  echo  
-        '<div class="form-row">
+  echo 
+  '<button aria-controls="mark" class="list-group-item list-group-item-action mt-1 header" data-toggle="collapse" data-target="#mark" aria-expanded="false">
+        Add mark
+  </button>
+
+    <div id="mark" class="row collapse">
+      <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
+        <div class="form-row">
           <div class="col-md-2">
             <label for="student">Student</label>
             <select id = "student" name = "marks[0][]" form = "add_marks" class="form-control" required>';
@@ -783,10 +786,54 @@ public function addMark($class, $subject, $teacher = '') {
       </div>
     </div>
     ';
+}
+
+public function addNote($class, $subject, $teacher = '') {
+  $today = date("Y-m-d");   
+
+  echo 
+
+    '<button aria-controls="note" class="list-group-item list-group-item-action mt-1 header" data-toggle="collapse" data-target="#note" aria-expanded="false">
+        Add note
+    </button>
+
+    <div id="note" class="row collapse">
+      <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
+        <div class="form-row">
+          <div class="col-md-2">
+            <label for="student">Student</label>
+            <select id = "student" name = "note[]" form = "add_note" class="form-control" required>';
+              $this->displayStudentsClassSelect($class);
+  echo 
+            '</select>
+          </div>
+          <div class="col-md-2">
+            <label for="teacher">Teacher</label>
+            <select id = "teacher" name = "note[]" form = "add_note" class="form-control" required>';
+              $this->displayPersonsSelect('teacher');
+  echo 
+            '</select>
+          </div> 
+
+          <div class="col-md-3">
+            <label for="description">Description</label>
+            <input name = "note[]" class="form-control" form = "add_note" type = "text" required>
+          </div>
+        
+          <input name = "note[]"  form = "add_note" type = "hidden" value = "'. $today .'">
+
+          <div class="col-md-1 align-self-end">
+            <button form = "add_note" class="btn btn-success rounded-0 mt-2 float-right float-md-left" type="submit">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    ';
 
 
 
 }
+
 public function displayClassMarks($class, $subject) {
 
   $class_name = $this->database->getClassDetails($class);

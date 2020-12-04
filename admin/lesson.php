@@ -11,6 +11,7 @@
   $controller->htmlForm('add_marks');
   $controller->htmlForm('set_marks');
   $controller->htmlForm('finish_lesson', 'lesson');
+  $controller->htmlForm('add_note');
 
 ?>
 
@@ -39,6 +40,7 @@
             $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);            
           }     
             $controller->addMark(); 
+            $controller->addNote(); 
         ?>
       <div class = "row justify-content-center">
         <div class = "col-md-10 m-1 m-md-3 modul rounded shadow-sm p-3">
