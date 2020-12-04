@@ -138,10 +138,15 @@ public function getStudentCurrentClass($id_student) {
     
             $this->getContent($values, 'student_curr_class');
 
+            if (empty ($this->student_curr_class)){
+                $this->student_curr_class[0]['id'] = '';
+                $this->student_curr_class[0]['name'] = 'No class';
+
+            }
+                
             return $this->student_curr_class;
 
     
-
 }
 
 public function checkTimetable($values) {
@@ -506,7 +511,7 @@ public function getMarks($student_id, $sem, $school_year) {
 
     // 2 semester
     if (!empty ($this->marks)) 
-        unset ($this->marks);
+        $this->marks = null;
 
         $this->getContent($values, 'marks');
             

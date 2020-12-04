@@ -510,7 +510,7 @@ class Displayer{
         
         $subjects = $this->database->getSubjects();
     
-      } else {
+      }else {
     
         $subjects[]['name'] = $subject;
     
@@ -528,6 +528,7 @@ class Displayer{
             }
           }
     
+        if (!empty ($marks_2sem)) {
           foreach ($marks_2sem as $mark) {
             foreach ($subjects as $subject) {
               if ($mark['subject'] == $subject['name']) {       
@@ -535,6 +536,7 @@ class Displayer{
               }
             }
           }
+        }
 
           $this->subjects = $subjects;
     }
@@ -1365,7 +1367,7 @@ public function displayStudentMarks($student_id, $subject = '') {
 
             echo '<tr>';       
             
-            if (!empty ($this->sem_2[$subject['name']])){
+            if (!empty ($this->sem_2[$subject['name']])) {
               echo '<td class = "d-table-cell d-md-none">'.$subject['name'].'</td>'; 
               $this->displayMarks($this->sem_2[$subject['name']]);
 
