@@ -71,6 +71,11 @@ class DataBase{
 
         private $timetable = array();
 
+        /**
+         * Contain subject name fetched by ID
+         */
+        private $subject_name = array();
+
         /**    
         *	containts class where student is in current year 
         */ 
@@ -138,6 +143,32 @@ public function getStudentCurrentClass($id_student) {
     
 
 }
+
+public function checkTimetable($values) {
+
+    $this->setQuery("SELECT
+    CONCAT(teacher.name, ' ', teacher.surname) AS teacher,
+    classes.name as class, subjects.name as subject, lesson_times.time,lesson_times.id as time_id,
+    week_day
+
+    FROM class_subject
+    INNER JOIN classes ON id_class = classes.id
+    INNER JOIN subjects ON id_subject = subjects.id
+    INNER JOIN lesson_times ON id_lesson_time = lesson_times.id
+    INNER JOIN person teacher ON class_subject.id_teacher = teacher.id
+    WHERE classes.id = ? AND subjects.id = ? AND week_day = ?");
+    
+
+            $this->getContent($values, 'timetable');
+
+            if (!empty ($this->timetable) )
+                return $this->timetable[0]['time_id'];
+
+
+}
+
+
+
 public function getTimetable($class_id){
 
     $this->setQuery("SELECT
@@ -306,6 +337,7 @@ public function getProfiles(){
 
 public function getStudentsInClass($class_id){
 
+
     $this->setQuery(
         "SELECT 
         CONCAT(student.name, ' ', student.surname) AS student,
@@ -319,8 +351,7 @@ public function getStudentsInClass($class_id){
 
         $this->getContent($values, 'students_class');
             
-            return $this->students_class;
-
+                return $this->students_class;
 
 }
 
@@ -389,6 +420,56 @@ public function getClassesQty(){
         return $this->classes_qty;
 }
 
+
+public function getClassMarks($class, $subject, $sem, $school_year) {
+    
+    
+    $this->setQuery(
+            "SELECT 
+            CONCAT(teacher.name, ' ', teacher.surname) AS teacher,
+            CONCAT(student.name, ' ', student.surname) AS student,
+            marks.id,
+            marks.mark, 
+            marks_cat.name AS cat, 
+            marks.weight, 
+            marks.description, 
+            marks.date, 
+            subjects.name as subject,
+            subjects.id as subject_id,
+            student_class.id_class
+            FROM marks 
+            INNER JOIN person teacher ON id_teacher = teacher.id
+            INNER JOIN person student ON marks.id_student = student.id 
+            INNER JOIN marks_cat ON cat_id = marks_cat.id
+            INNER JOIN subjects ON id_subject = subjects.id
+            INNER JOIN student_class ON marks.id_student = student_class.id_student
+            WHERE student_class.id_class = ? AND subjects.id = ? AND date BETWEEN ? AND ?"
+    );
+    
+
+    $year = explode('/', $school_year);
+
+    $values[] = $class;
+    $values[] = $subject;
+
+    if ($sem == '1') {
+        $values[] = $year[0].'-09-01';
+        $values[] = $year[0].'-12-31';
+    }
+    if ($sem == '2') {
+        $values[] = $year[1].'-01-01';
+        $values[] = $year[1].'-06-31';
+    }
+
+    // 2 semester
+    if (!empty ($this->marks)) 
+            unset ($this->marks);
+
+        $this->getContent($values, 'marks');
+            
+        return $this->marks;
+
+}
 
 public function getMarks($student_id, $sem, $school_year) {
     
@@ -555,16 +636,28 @@ public function getNotes($student_id, $school_year){
 
 }
 
-public function getSubjects(){
+public function getSubjects() {
 
     if (empty ($this->subjects)) {
 
-    $this->setQuery("SELECT * FROM subjects");
+        $this->setQuery("SELECT * FROM subjects");
 
-    $this->getContent('', 'subjects');
+        $this->getContent('', 'subjects');
     }
 
         return $this->subjects;
+
+}
+
+public function getSubjectName($id) {
+
+        $val[] = $id;
+
+        $this->setQuery("SELECT subjects.name FROM subjects WHERE id = ?");
+
+        $this->getContent($val, 'subject_name');
+
+        return $this->subject_name;
 
 }
 
@@ -590,7 +683,24 @@ public function getInformationBoard($school_year){
 
 }
 
+public function getCurrentSem($school_year){
 
+    $year = explode('/', $school_year);
+
+    $today = date("Y-m-d"); 
+
+    $y1 = $year[0].'-09-01';
+    $y2 = $year[0].'-12-31';
+    $y3 = $year[0].'-01-01';
+    $y4 = $year[0].'-06-31';
+
+
+    if ( ($y1 <= $today) && ($y2 >= $today) ) 
+        return 1;
+    
+    if ( ($y3 >= $today) && ($y4 <= $today) ) 
+        return 2;
+}
 /** 
 * return person details
 *
@@ -659,7 +769,7 @@ public function getMarksCat(){
     
     $this->connectDB();
 
-    $this->readTable('marks_cat', 'name');
+    $this->readTable('marks_cat', '*');
     
     return $this->marks_cat;
 }
@@ -958,6 +1068,30 @@ public function setAttendance($values) {
     }
      
 } 
+
+public function addMark($values) {
+
+    $this->setQuery("INSERT INTO 
+    marks (id_student, id_teacher, id_subject, mark, cat_id, weight, description, date) 
+    VALUES (?,?,?,?,?,?,?,?)
+    ");
+
+    $val = $values[0];
+
+    $validation = new Validator;
+
+    if ($validation->isValid ($val[6], 'description') === true) {
+        
+        if ($this->setContent($val) === true)
+            $this->success[] = 'Mark is added.'; 
+        else
+            $this->errors[] = 'Mark can not be add';
+    
+    }else $this->errors[] = $val[6].' is not valid';
+
+        return $this;
+
+}
 
 public function setMarks($values) {
 

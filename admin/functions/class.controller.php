@@ -8,6 +8,10 @@ class Controller {
     
     private $form;
 
+    private $errors;
+
+    private $success;
+
     /**
      * Contains info which tab should be active after action
      * 
@@ -21,19 +25,51 @@ class Controller {
         $this->displayer = $displayer;
         
     }
+    private function result(){
+
+        $this->errors = $this->database->getErrors();
+        $this->success = $this->database->getSuccess();
+
+    }
+
+    private function setClassSubject() {
+
+        if ( (empty ($this->lesson_class)) && (empty($this->lesson_subject)) ){
+
+                $this->displayer->startLesson();
+
+                return false;
+        }
+            
+    }
+
+    private function checkTimetable($class, $subject = '', $week_day = '') {
+
+        $values[] = $class;
+        $values[] = $subject;
+        $values[] = $week_day;
+
+        $lesson_time = $this->database->checkTimetable($values);
+
+        return $lesson_time;
+    }
 
     public function getForms(){
 
         return $this->form;
 
     }
-    
-    public function htmlForm($id){
+    /**
+     * creates html form
+     * @param id - form id
+     * @param param - send empty param when variable doesn't exist
+     */
+    public function htmlForm($id, $param = ''){
         
         $this->form .= '
             <form id = "'. $id .'" action = "'.$_SERVER['REQUEST_URI'].'" method = "post" >
                 <input type = "hidden" name = "action" value = "'. $id .'">
-                <input type = "hidden" name = "old_value" value = "">
+                <input type = "hidden" name = "'.$param.'" value = "">
             </form >';
 
     }
@@ -59,9 +95,45 @@ class Controller {
 
     }
 
+    public function addMark() {
+        
+        if (isset ($_SESSION['class']) && (isset ($_SESSION['subject']))) {
+            $this->displayer->addMark($_SESSION['class'], $_SESSION['subject']);
+        }
+    }
+    
+    public function startLesson() {      
+
+        $week_day = date("l");
+
+        if (isset ($_SESSION['class']) && (isset ($_SESSION['subject']))){
+            $this->displayer->displayClassMarks($_SESSION['class'], $_SESSION['subject']);
+     
+        }else {
+
+            if ($this->setClassSubject() !== false) {
+                
+                $lesson_time = $this->checkTimetable($this->lesson_class, $this->lesson_subject, $week_day);
+                    
+                $this->displayer->checkAttendance($this->lesson_class, $this->lesson_subject, $lesson_time);
+            }
+        }
+
+       
+    }
     public function handleRequest ($action, $val_1 = null, $val_2 = null) {
 
         switch ($action) {
+
+            case 'start_lesson':
+                $this->lesson_class = $val_1[0];
+                $this->lesson_subject = $val_1[1];
+                break;
+
+            case 'finish_lesson':
+                unset($_SESSION['class']);
+                unset($_SESSION['subject']);
+                break;
             
             case 'add_information':
                 $this->database->addInformation($val_1);
@@ -121,10 +193,21 @@ class Controller {
                 break;
             
             case 'set_attendance':
+                //if attendance checked, go to marks view
+                if (!empty ($_POST['lesson'])) {
+                    $_SESSION['class'] = $_POST['lesson'][0];
+                    $_SESSION['subject'] = $_POST['lesson'][1];
+                }
+
                 $this->database->setAttendance($val_1);
                 $this->result();
                 $this->tab['attendance'] = 'active';
                 $this->tab['attendance_show'] = 'show active';
+                break;
+                
+            case 'add_marks':
+                $this->database->addMark($val_1);
+                $this->result();
                 break;
 
             case 'set_marks':
@@ -198,12 +281,7 @@ class Controller {
 
     }
 
-    private function result(){
-
-        $this->database->getErrors();
-        $this->database->getSuccess();
-
-    }
+   
 
 }// EOC
 

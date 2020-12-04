@@ -36,7 +36,6 @@
             <?php
                 echo $controller->getForms();
                 if (!empty ($_POST['action']) && (!empty ($_POST['marks'])) ) {
-                  
                   $controller->handleRequest ($_POST['action'], $_POST['marks']);
                   $displayer->displayErrors();
                   $displayer->displaySuccess();
