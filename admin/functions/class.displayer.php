@@ -598,15 +598,15 @@ class Displayer{
     }
     private function displayStudentsClassSelect($class, $selected = '') {
 
-    if (empty ($this->students))
-      $this->students = $this->database->getStudentsInClass($class);
+      if (empty ($this->students))
+        $this->students = $this->database->getStudentsInClass($class);
 
       
-      if (empty ($selected) )
+        if (empty ($selected) )
           echo 
             '<option value = "" hidden selected></option>';
   
-      foreach ($this->students as $student) {
+        foreach ($this->students as $student) {
             echo 
               '<option value = "'. $student['student_id'] .'">'       
               .   $student['student'] .                   
@@ -725,7 +725,7 @@ public function addMark($class, $subject, $teacher = '') {
   $today = date("Y-m-d");   
 
   echo 
-  '<button aria-controls="mark" class="list-group-item list-group-item-action mt-1 header" data-toggle="collapse" data-target="#mark" aria-expanded="false">
+  '<button aria-controls="mark" class="list-group-item list-group-item-action mt-1 mx-0 header" data-toggle="collapse" data-target="#mark" aria-expanded="false">
         Add mark
   </button>
 
