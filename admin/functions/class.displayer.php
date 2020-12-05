@@ -140,7 +140,7 @@ class Displayer{
       </select> 
       ';
     }
-    private function displayEditInformation(){
+    private function displayAddEventModal(){
 
       echo ' 
       <div class="modal fade" id="addInformation" tabindex="-1" role="dialog" aria-labelledby="addInformationLabel" aria-hidden="true">
@@ -164,6 +164,72 @@ class Displayer{
           </div>
         </div>
       </div>';
+    }
+
+    private function inputForm($form, $type, $class, $name, $value, $required = '') {
+
+      echo '<input 
+        form = "'.$form.'" 
+        type = "'.$type.'" 
+        class = "'.$class.'" 
+        name = "'.$name.'" 
+        value = "'.$value.'"
+        '.$required.'
+        >';
+
+    }
+
+    private function inputSelect($function, $form, $class, $name, $selected = '', $required = '') {
+
+      echo '<select form = "'.$form.'" class = "'.$class.'" name = "'.$name.'">';
+
+        $this->$function($selected);
+
+      echo '</select>';
+    }
+    private function button($form, $type, $class, $value, $modal = '') {
+
+      echo '<button 
+        form = "'.$form.'" 
+        type = "'.$type.'"
+        class = "'.$class.'"
+        '.$modal.'
+        >
+        '.$value.'
+        </button>';
+    }
+
+    private function displayEditPersonModal($id, $hidden_value, $input, $row, $selected_value = '', $func_select = '') {
+
+      echo ' 
+        <form id = "person'.$id.'" action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
+          <div class="modal fade" id="'.$id.'" tabindex="-1" role="dialog" aria-labelledby="'.$id.'Label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="'.$id.'Label">Edit</h5>';
+                  $this->button('', "button", "close", '<span aria-hidden="true">&times;</span>' , 'data-dismiss="modal" aria-label="Close"');
+          echo' </div>
+                <div class="modal-body">';
+                  $this->inputForm('person'.$id, "hidden", "", "action", "set_person");   
+                if (empty ($selected_value)) {            
+                  $this->inputForm('person'.$id, "text", "form-control border-0 shadow-none m-2", "person[]", $input, 'required'); 
+                }else {
+                  $this->inputSelect($func_select,'person'.$id, "form-control border-0 shadow-none", "person[]", $selected_value, 'required');
+                }
+                  
+                  $this->inputForm('person'.$id, "hidden", "", "person[]", $hidden_value); 
+                  $this->inputForm('person'.$id, "hidden", "", "person[]", $row);     
+          echo' </div>
+                <div class="modal-footer">';
+                  $this->button('person'.$id, "button", "btn btn-secondary rounded-0", "Close" , 'data-dismiss="modal"');
+                  $this->button('person'.$id, "submit", "btn btn-success rounded-0", "Save");              
+          echo '</div>
+              </div>
+            </div>
+          </div>
+        </form>';
+      
     }
     private function displayMarksSelect($form = '', $name = '', $value = '', $class = '') {
 
@@ -598,6 +664,31 @@ class Displayer{
              . $cat['name'] .                       
         '</option>';
     }
+    private function displayGenderSelect($selected = ''){
+
+      $gender = array(
+          'male',
+          'female',
+          'other'
+      );
+
+      if (empty ($this->marks_cat))
+        $this->marks_cat = $this->database->getMarksCat();
+  
+      if (empty ($selected) )
+          echo 
+            '<option value = "" hidden selected></option>';
+  
+      foreach ($gender as $g) {
+        
+        if ($g !== $selected) {
+          echo '<option value = "'. $g .'" >'. $g .'</option>';
+        }else {
+          
+          echo '<option value = "'. $g .'" selected>'. $g .'</option>';
+        }
+      }   
+    }
     private function displayStudentsClassSelect($class, $selected = '') {
 
       if (empty ($this->students))
@@ -616,8 +707,6 @@ class Displayer{
           }
     }
 
-
-  
 public function displayMonthsSelect($selected = '') {
 
   if (empty ($selected))
@@ -1049,7 +1138,7 @@ public function displayInformationBoard(){
   echo '</tbody>';
   echo '</table>';
   
-  $this->displayEditInformation();
+  $this->displayAddEventModal();
 }
 
 public function displayProfilesSelect($selected = '') {
@@ -1122,8 +1211,8 @@ public function displaySubjectsSelect($selected = '', $value = '') {
               '<option value = "'. $val .'" selected>'         
                 . $subject['name'].                    
               '</option>';
-    }
-  }
+          }
+      }
 }
 
 public function displayClassesSelect($selected = '') {
@@ -1190,11 +1279,24 @@ public function displayRoleStatusSelect($selected = '') {
         echo 
           '<option value = "" hidden selected></option>';
 
-  foreach ($this->role_status as $role_status)
+
+          
+  foreach ($this->role_status as $role_status){
+    if ($role_status['name'] !== $selected){
       echo 
-      '<option value = '. $role_status['id'] .'>'         
-           . $role_status['name'] .                       
-      '</option>';
+        '<option value = '. $role_status['id'] .'>'         
+        . $role_status['name'] .                       
+        '</option>';
+
+    }else{
+        '<option value = '. $role_status['id'] .' selected>'         
+        . $role_status['name'] .                       
+        '</option>';
+
+      }
+
+  }
+      
 }
 
   
@@ -1501,54 +1603,80 @@ public function displayClasses() {
 
 }
 
-public function displayPersonDetails($id) {
-      
-      echo '<table id = "person-details" class="table table-sm">';
+public function displayPersonDetails($person_id) {
+
+  $this->displayEditPersonModal('editName', $this->person['id'], $this->person['name'], 'name');
+  $this->displayEditPersonModal('editSurname', $this->person['id'], $this->person['surname'], 'surname');
+  $this->displayEditPersonModal('editRoleStatus', $this->person['id'], $this->person['role_status_id'], 'role_status_id', $this->person['role_status_name'], 'displayRoleStatusSelect');
+  
+        echo '<table class="table table-sm">';
         echo '<tr> 
-                <th scope="row">id</th>     
-                <td>' . $this->person['id'] . '</td>
-              </tr>
+                 
+                <th class = "p-2 not-allowed">ID</th>               
+                <td class = "p-2 not-allowed">' . $this->person['id'] . '</td>';
+        echo' </tr>
               <tr>
-                <th scope="row">birth date</th> 
-                <td>' . $this->person['birth_date'] . '</td>
-              </tr>
-              <th scope="row">gender</th> 
-                <td>' . $this->person['gender'] . '</td>
+            
+                <th class = "p-2">Birth date</th> 
+                <td><button data-toggle="modal" data-target="#editBirth" type = "button" class = "table-button" >' . $this->person['birth_date'] . '</button></td>';
+                $this->displayEditPersonModal('editBirth', $this->person['id'], $this->person['birth_date'], 'birth_date');
+        echo' </tr>
+             
+                <th class = "p-2">Gender</th> 
+                <td><button data-toggle="modal" data-target="#editGender" type = "button" class = "table-button" >' . $this->person['gender'] . '</button></td>';
+                $this->displayEditPersonModal('editGender', $this->person['id'], $this->person['gender'], 'gender', $this->person['gender'], 'displayGenderSelect');
+        echo' </tr>
+             
+                <th class = "p-2">Telephone</th> 
+                <td><button <button data-toggle="modal" data-target="#editTel" type = "button" class = "table-button" >' . $this->person['tel'] . '</button></td>';
+                $this->displayEditPersonModal('editTel', $this->person['id'], $this->person['tel'], 'tel');
+        echo' </tr>
               <tr>
-                <th scope="row">tel</th> 
-                <td>' . $this->person['tel'] . '</td>
-              </tr >
+             
+                <th class = "p-2">E-mail</th>   
+                <td><button data-toggle="modal" data-target="#editEmail" type = "button" class = "table-button" >' . $this->person['e_mail'] . '</button></td>';
+                $this->displayEditPersonModal('editEmail', $this->person['id'], $this->person['e_mail'], 'e_mail');
+        echo' </tr>          
               <tr>
-                <th scope="row">e-mail</th>   
-                <td>' . $this->person['e_mail'] . '</td>
-              </tr >           
+              
+                <th class = "p-2">City</th> 
+                <td><button data-toggle="modal" data-target="#editCity" type = "button" class = "table-button" >' . $this->person['city'] . '</button></td>';
+                $this->displayEditPersonModal('editCity', $this->person['id'], $this->person['city'], 'city');
+        echo' </tr>
               <tr>
-                <th scope="row">city</th> 
-                <td>' . $this->person['city'] . '</td>
-              </tr >
+            
+                <th class = "p-2">Post code</th>     
+                <td><button data-toggle="modal" data-target="#editCode" type = "button" class = "table-button" >' . $this->person['code'] . '</button></td>';
+                $this->displayEditPersonModal('editCode', $this->person['id'], $this->person['code'], 'code');
+        echo' </tr>
               <tr>
-                <th scope="row">post code</th>     
-                <td>' . $this->person['code'] . '</td>
-              </tr >
+           
+                <th class = "p-2">Street</th> 
+                <td><button data-toggle="modal" data-target="#editStreet" type = "button" class = "table-button" >' . $this->person['street'] . '</button></td>';
+                $this->displayEditPersonModal('editStreet', $this->person['id'], $this->person['street'], 'street');
+        echo' </tr>          
               <tr>
-                <th scope="row">street</th> 
-                <td>' . $this->person['street'] . '</td>
-              </tr >            
-              <tr>
-                <th scope="row">house</th>
-                <td>' . $this->person['house_nr'] . '</td>
-              </tr >';
+            
+                <th class = "p-2">House nr</th>
+                <td><button data-toggle="modal" data-target="#editHouse" type = "button" class = "table-button" >' . $this->person['house_nr'] . '</button></td>';
+                $this->displayEditPersonModal('editHouse', $this->person['id'], $this->person['house_nr'], 'house_nr');
+        echo' </tr>';
       echo '</table>';
-        
 
 }
  
 
 public function displayPersonName($id) {
+  
     
     $this->person = $this->database->getPersonDetails($id);
 
-    return $this->person['name'] . ' '. $this->person['surname'];
+    echo '
+        <button data-toggle="modal" data-target="#editName" type = "button" class = "btn btn-link mb-1 p-0" >' 
+          . $this->person['name'] . ' </button>
+        <button data-toggle="modal" data-target="#editSurname" type = "button" class = "btn btn-link mb-1 p-0 " >'
+          . $this->person['surname'] . '
+        </button>';
 
 }
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
   session_start();
   require_once './functions/class.controller.php';
   require_once './functions/class.displayer.php';
@@ -13,6 +13,13 @@
   $controller->htmlForm('set_marks');
   $controller->htmlForm('set_timetable');
   $class = $database->getStudentCurrentClass($_GET['person_id']); 
+  
+  if (!empty ($_POST['action'])) {
+    $action = explode('_', $_POST['action']);             
+    $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);         
+  }else {
+        $controller->getTab($_GET['tab']);
+  }
 ?>
 
 
@@ -36,23 +43,18 @@
       <div class = "row">
         <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
           <div class = "header mb-3">
-            <h2 class="display-4">Student: <?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>  
+            <h2 class="display-4 pointer">
+              Student: <?php $displayer->displayPersonName($_GET['person_id']);?>
+              <button data-toggle="modal" data-target="#editRoleStatus" form = "set_person" type = "button" class="btn btn-outline-secondary border-0 fas fa-edit"></button>
+            </h2>  
             <h2 class="display-4">Class: <?php echo $class[0]['name']?></h2>
           
           </div>      
-          <?php
-                echo $controller->getForms();      
-
-                if (!empty ($_POST['action'])) {
-                  $action = explode('_', $_POST['action']);                 
-                  
-                  $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);   
+          <?php   
+                  echo $controller->getForms();      
                   $displayer->displayErrors();
                   $displayer->displaySuccess();  
                           
-                }else {
-                      $controller->getTab($_GET['tab']);
-                }
               ?>
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item">

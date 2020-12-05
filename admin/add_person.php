@@ -43,61 +43,65 @@
                   $displayer->displaySuccess();
                 }
               ?>
-
-          <p class="lead">Fill up form:</p>
             <table class = "table table-sm" >
               <tr>
 		            <td >ID number</td >
-		            <td ><input class = "form-control form-control-sm mt-1 mb-1"  form ="add_person"  type = "text" name = "person[]" value = "<?php echo rand(10000000000,99999999999); ?>" required></td >
+                <td >
+                  <input class = "form-control form-control-sm mt-1 mb-1"  form ="add_person"  type = "text" name = "person[]" required>
+                  <small id="emailHelp" class="form-text text-muted">11 digits</small>
+                </td >
 	            </tr >
 	            <tr >
-		            <td >name</td >
-		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person" type = "text" value = "<?php echo $person->setName(); ?>" name = "person[]" required></td >
+		            <td >Name</td >
+		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person" type = "text" name = "person[]" required></td >
 	            </tr >
 	            <tr >
-		            <td >surname</td >
-		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" value = "<?php echo $person->setSurname();?>" name = "person[]" required></td >
+		            <td >Surname</td >
+		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required></td >
               </tr >   
                     <?php $controller->addPerson($_GET['person']); ?>
 	            <tr >
-		            <td >gender</td >
+		            <td >Gender</td >
 		            <td >
                   <select class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required>
-                    <option>male</option>
-                    <option>female</option>
-                    <option>other</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
                   </select>
                 </td >
 	            </tr >
 	            <tr >
-		            <td >telephone</td >
-		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" value ="<?php echo '+47 ' . rand(100,999) . '-' . rand(100,999). '-' .rand(10,99) ?> " required></td >
+		            <td >Telephone</td >
+		            <td >
+                  <input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required>
+                  <small id="telephone" class="form-text text-muted">Format: +xx xxx-xxx-xx</small>
+                </td >
               </tr >
               <tr >
-		            <td >birth date</td >
+		            <td >Birth date</td >
 		            <td >
-                  <input class = "form-control form-control-sm mt-1 mb-1" form = "add_person" type="text" placeholder="yyyy-mm-dd" name = "person[]" required>       
+                <input autocomplete="off" name = "person[]" form ="add_person"  class="form-control" type="text" id="birth_date" required>      
                 </td >
 	            </tr >
 	            <tr >
-		            <td >e-mail</td >
-		          <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" value = "<?php echo $person->setEmail();?>" name = "person[]" required></td >
+		            <td >E-mail</td >
+		          <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required></td >
 	            </tr >
 	            <tr >
-		            <td >city</td >
-		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" value = "<?php echo $person->setCity();?>" name = "person[]" required></td >
+		            <td >City</td >
+		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required></td >
 	            </tr >
 	            <tr >
-		            <td >post code</td >
-		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" value = "<?php echo rand(1000,9999)?>" required></td >
+		            <td >Post code</td >
+		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required></td >
 	              </tr >
 	            <tr >
-		            <td >street</td >
-		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" value = "<?php echo $person->setStreet();?>" name = "person[]" required></td >
+		            <td >Street</td >
+		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required></td >
 	            </tr >
 	            <tr >
-		            <td >house nr</td >
-		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" value = "<?php echo rand(0,999)?>" required><?php rand(0,999)?></td >
+		            <td >House nr</td >
+		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required></td >
               </tr >
                 <input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "hidden" name = "person[]" value = "123" required>
 	            <tr >
@@ -115,6 +119,7 @@
 
 <!-- Footer -->
 <?php include './div/footer.html'?>
+<script src = "js/datepicker.js"></script>
 <!-- Footer -->
 </body>
 </html>

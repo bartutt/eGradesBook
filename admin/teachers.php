@@ -49,8 +49,8 @@
                 </select>
               </div>
               <div class="col-sm-4">
-                <label for="student">Choose student</label>
-                <select name = "value[]" id = "student" form = "set_teacher_subject" class="form-control" required>
+                <label for="subject">Choose subject</label>
+                <select name = "value[]" id = "subject" form = "set_teacher_subject" class="form-control" required>
                   <?php $displayer->displaySubjectsSelect();?>
                 </select>
               </div>

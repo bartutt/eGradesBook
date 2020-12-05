@@ -9,6 +9,12 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
  
+  if (!empty ($_POST['action'])) {
+    $action = explode('_', $_POST['action']);             
+    $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);         
+  }else {
+        $controller->getTab($_GET['tab']);
+  }
   
 ?>
 
@@ -33,9 +39,17 @@
       <div class = "row">
         <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
           <div class = "header">
-            <h2 class="display-4"><?php echo $displayer->displayPersonName($_GET['person_id']);?></h2>
+            <h2 class="display-4">
+              Parent: <?php $displayer->displayPersonName($_GET['person_id']);?>
+              <button data-toggle="modal" data-target="#editRoleStatus" form = "set_person" type = "button" class="btn btn-outline-secondary border-0 fas fa-edit"></button>
+          </h2>
           </div>
- 
+          <?php   
+                  echo $controller->getForms();      
+                  $displayer->displayErrors();
+                  $displayer->displaySuccess();  
+                          
+              ?>
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">

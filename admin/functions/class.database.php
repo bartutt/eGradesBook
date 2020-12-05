@@ -714,7 +714,23 @@ public function getCurrentSem($school_year){
 */
 public function getPersonDetails($id){
 
-    $this->setQuery("SELECT * FROM person WHERE id = ?");
+    $this->setQuery("SELECT 
+    person.id,
+    person.name, 
+    person.surname, 
+    person.role_status_id,
+    person.gender,
+    person.tel,
+    person.birth_date,
+    person.e_mail,
+    person.city,
+    person.code,
+    person.street,
+    person.house_nr,
+    role_status.name as role_status_name
+    FROM person
+        INNER JOIN role_status ON role_status_id = role_status.id
+    WHERE person.id = ?");
 
     $values[] = $id;
 
@@ -1097,6 +1113,48 @@ public function addMark($values) {
         return $this;
 
 }
+
+public function updatePerson($values) {
+
+    $validation = new Validator;
+    // check which column will be updated
+    if (   ($values[2] === 'name') 
+        || ($values[2] === 'surname') 
+        || ($values[2] === 'city')
+        || ($values[2] === 'street')) 
+        {$valid = 'char_space';}
+
+    if  ($values[2] === 'tel') {$valid = 'tel';}
+    if  ($values[2] === 'birth_date') {$valid = 'birth_date';}
+    if  ($values[2] === 'code') {$valid = 'code';}
+    if  ($values[2] === 'house_nr') {$valid = 'house_nr';}
+          
+    if (!empty ($valid))
+        if ($validation->isValid ($values[0], $valid)!== true)
+            $this->errors[] = $values[0] . ' is not valid.';
+    
+    if  ($values[2] === 'e_mail')
+        if (!filter_var($values[0], FILTER_VALIDATE_EMAIL))
+            $this->errors[] = "E-mail address is not valid<br>";	
+
+    if (empty ($this->errors)) {
+        
+        $this->setQuery("UPDATE 
+        person SET $values[2] = ? WHERE id = ?
+        ");
+
+        //row name, unset because to many parameter
+        unset ($values[2]);
+             if ($this->setContent($values) === true) {
+                
+                $this->success[] = 'Person is updated'; 
+                           
+             }else {
+                    $this->errors[] = 'Person can not be updated';
+                 }
+    }
+  
+} 
 
 public function setMarks($values) {
 

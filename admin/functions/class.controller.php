@@ -1,16 +1,26 @@
 <?php 
-
+/**
+* Controller      
+* 
+* @author Bartlomiej Witkowski
+* 
+* This is class which control action sent from forms
+* Add, change, remove etc...
+*/
 class Controller {
 
     private $database;
 
-    private $displayer;
-    
-    private $form;
-
     private $errors;
 
     private $success;
+
+    private $displayer;
+
+    /**
+    * Contains forms
+    */
+    private $form;
 
     /**
      * Contains info which tab should be active after action
@@ -25,6 +35,16 @@ class Controller {
         $this->displayer = $displayer;
         
     }
+
+    /**
+     * 
+     * PRIVATE METHODS
+     *
+     */
+
+    /**
+     * Gives a result of request in variable
+     */
     private function result(){
 
         $this->errors = $this->database->getErrors();
@@ -32,6 +52,10 @@ class Controller {
 
     }
 
+    /**
+     * Shows start lesson view
+     * Return false if class and subject is not set
+     */
     private function setClassSubject() {
 
         if ( (empty ($this->lesson_class)) && (empty($this->lesson_subject)) ){
@@ -43,6 +67,10 @@ class Controller {
             
     }
 
+    /**
+     * Check if lesson in choosed day exist
+     * Return lesson time
+     */
     private function checkTimetable($class, $subject = '', $week_day = '') {
 
         $values[] = $class;
@@ -54,11 +82,22 @@ class Controller {
         return $lesson_time;
     }
 
+    /**
+     * 
+     * PUBLIC METHODS
+     *
+     */
+
+
+    /**
+     * Return all forms
+     */
     public function getForms(){
 
         return $this->form;
 
     }
+
     /**
      * creates html form
      * @param id - form id
@@ -74,13 +113,21 @@ class Controller {
 
     }
     
-    public function addPerson($person) {
+    /**
+     * This function set role/status ID in add person form
+     */
+    public function addPerson($type) {
 
-        foreach ($this->database->getRoleStatus() as $role_status)
-          if ($role_status['name'] == $person)
-            echo '<input class = "form-control" form = "add_person" name = "person[]" type = "hidden" value = '.$role_status['id'] .'>';
+        $role_status = $this->database->getRoleStatus();
+
+        foreach ($role_status as $role)
+          if ($role['name'] == $type)
+            echo '<input class = "form-control" form = "add_person" name = "person[]" type = "hidden" value = '.$role['id'] .'>';
     }
 
+    /**
+     * This function set active tab about person, default details
+     */
     public function getTab($tab = null){
         
         if (empty($tab)) {
@@ -95,12 +142,19 @@ class Controller {
 
     }
 
+    /**
+     * 
+     */
     public function addMark() {
         
         if (isset ($_SESSION['class']) && (isset ($_SESSION['subject']))) {
             $this->displayer->addMark($_SESSION['class'], $_SESSION['subject']);
         }
     }
+
+    /**
+     * 
+     */
     public function addNote() {
         
         if (isset ($_SESSION['class']) && (isset ($_SESSION['subject']))) {
@@ -108,6 +162,10 @@ class Controller {
         }
     }
     
+    /**
+     * This function control view under lesson
+     * If attendance checked correct go to marks view and stay until finish lesson
+     */
     public function startLesson() {      
 
         $week_day = date("l");
@@ -127,6 +185,14 @@ class Controller {
 
        
     }
+    /**
+     * This function handles all request sent via forms
+     * 
+     * @param action - name of action/form
+     * @param val_1 - value sent from form
+     * @param val_2 - value sent from form
+     */
+
     public function handleRequest ($action, $val_1 = null, $val_2 = null) {
 
         switch ($action) {
@@ -199,16 +265,16 @@ class Controller {
                 break;
             
             case 'set_attendance':
-                //if attendance checked, go to marks view
-                if (!empty ($_POST['lesson'])) {
-                    $_SESSION['class'] = $_POST['lesson'][0];
-                    $_SESSION['subject'] = $_POST['lesson'][1];
-                }
-
                 $this->database->setAttendance($val_1);
                 $this->result();
                 $this->tab['attendance'] = 'active';
                 $this->tab['attendance_show'] = 'show active';
+
+                //if attendance checked, go to marks view
+                if (!empty ($_POST['lesson']) && (!empty ($this->success))) {
+                    $_SESSION['class'] = $_POST['lesson'][0];
+                    $_SESSION['subject'] = $_POST['lesson'][1];
+                }
                 break;
                 
             case 'add_marks':
@@ -246,6 +312,13 @@ class Controller {
             case 'add_person':
                 $this->database->addPerson($val_1);
                 $this->result();
+                break;
+
+            case 'set_person':
+                $this->database->updatePerson($val_1);
+                $this->result();
+                $this->tab['details'] = 'active';
+                $this->tab['details_show'] = 'show active';
                 break;
             
             case 'add_subject':
