@@ -37,18 +37,18 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
 
-  $controller->htmlForm('add_year');
-  $controller->htmlForm('set_year');
-  $controller->htmlForm('add_mark_cat');
-  $controller->htmlForm('add_role_status');
-  $controller->htmlForm('add_subject');
-  $controller->htmlForm('add_profile');
+  $controller->htmlForm('add_year', 'old_value');
+  $controller->htmlForm('set_year', 'old_value');
+  $controller->htmlForm('add_mark_cat', 'old_value');
+  $controller->htmlForm('add_role_status', 'old_value');
+  $controller->htmlForm('add_subject', 'old_value');
+  $controller->htmlForm('add_profile', 'old_value');
   $curr_year = $database->getCurrentYear();
 
   echo $controller->getForms();
 
 
-  if (!empty ($_POST)){
+  if (!empty ($_POST)) {
     $controller->handleRequest ($_POST['action'], $_POST['value'], $_POST['old_value']);
     $displayer->displayErrors();
     $displayer->displaySuccess();

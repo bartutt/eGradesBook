@@ -1674,7 +1674,7 @@ public function displayPersonName($id) {
     echo '
         <button data-toggle="modal" data-target="#editName" type = "button" class = "btn btn-link mb-1 p-0" >' 
           . $this->person['name'] . ' </button>
-        <button data-toggle="modal" data-target="#editSurname" type = "button" class = "btn btn-link mb-1 p-0 " >'
+        <button data-toggle="modal" data-target="#editSurname" type = "button" class = "btn btn-link mb-1 p-0" >'
           . $this->person['surname'] . '
         </button>';
 

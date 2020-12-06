@@ -6,7 +6,7 @@ body{
   background-color: #f0f0f0;
 }
 
-a{font-family: 'Open Sans', sans-serif;}
+a{color: inherit; font-family: 'Open Sans', sans-serif;}
 a:hover{color: inherit;}
 
 .not-allowed:hover {cursor: not-allowed;}
