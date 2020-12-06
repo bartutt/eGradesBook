@@ -12,35 +12,15 @@ require_once './functions/class.validator.php';
 
 class DataBase{
     
-    
-  /**    
-    *	contain errors wchich came while processing
-    *
-    * @var array
-    */    
-
+ 
         private $errors = array();
     
-  /**    
-    *	contain information what was done
-    *
-    * @var array
-    */ 
         private $success = array();
 
-
-  /**    
-    *	containts list of years
-    *
-    */ 
         private $years = array();
  
         private $current_year = array();
 
-  /**    
-    *	containts list of years
-    *
-    */ 
         private $lesson_times = array();
 
         private $category_name = array();
@@ -121,9 +101,10 @@ class DataBase{
 
 //PUBLIC METHODS
 
-
-
-
+/**
+ * Get student actual class based on school year
+ * @param id_student
+ */
 public function getStudentCurrentClass($id_student) {
 
     $curr_year = $this->getCurrentYear();
@@ -149,6 +130,10 @@ public function getStudentCurrentClass($id_student) {
     
 }
 
+/**
+ * Check if lesson exist on current day and choosed class
+ * @param values - array - id class, id subject, week day
+ */
 public function checkTimetable($values) {
 
     $this->setQuery("SELECT
@@ -172,8 +157,10 @@ public function checkTimetable($values) {
 
 }
 
-
-
+/**
+ * Get timetable for choosed class
+ * @param class_id
+ */
 public function getTimetable($class_id){
 
     $this->setQuery("SELECT
@@ -196,20 +183,11 @@ public function getTimetable($class_id){
 
 }
 
-public function getCalMinMax(){
-
-    $this->setQuery("SELECT 
-    YEAR(min(date)) AS min, 
-    YEAR(max(date)) as max
-    from events");
-
-        $this->getContent('', 'calendar_min_max');
-
-        return $this->calendar_min_max[0];
-
-}
-
-public function getEvents($class) {
+/**
+ * Get events for choosed class
+ * @param class_id
+ */
+public function getEvents($class_id) {
 
         $this->setQuery("SELECT 
         classes.name,events.title, events.description, events.date, events.id, classes.id as class_id 
@@ -225,8 +203,10 @@ public function getEvents($class) {
             return $this->events;
 
 }
+
 /** 
-* return new students
+* Return new persons added on current year based on role - i.e student
+* @param role_status
 */
 public function countNewPersons($role_status){
     
@@ -249,9 +229,9 @@ public function countNewPersons($role_status){
             return $this->new_persons[0]['qty'];
 }
 
-
 /** 
-* return students quantity
+* Return persons based on role - i.e student
+* @param role_status
 */
 public function countPersons($role_status){
     
@@ -270,9 +250,9 @@ public function countPersons($role_status){
         return $this->$role_status[0]['qty'];
 }
 
-
 /** 
-* return teacher subjects
+* Return classes where teacher is a main teacher
+* @param teacher_id
 */
 public function getTeacherClasses($teacher_id){
     
@@ -290,7 +270,8 @@ public function getTeacherClasses($teacher_id){
 }
 
 /** 
-* return teacher subjects
+* Return subjects which teacher can learn
+* @param teacher_id
 */
 public function getTeacherSubjects($teacher_id){
     
@@ -308,7 +289,8 @@ public function getTeacherSubjects($teacher_id){
 }
 
 /** 
-* return teacher subjects
+* Return children of parent
+* @param supervisor_id
 */
 public function getSupervisorStudent($supervisor_id){
     
@@ -329,7 +311,7 @@ public function getSupervisorStudent($supervisor_id){
 }
 
 /** 
-* return profiles
+* Return available profiles
 */
 public function getProfiles(){
     
@@ -340,6 +322,10 @@ public function getProfiles(){
     return $this->profiles;
 }
 
+/** 
+* Get students in class
+* @param class_id
+*/
 public function getStudentsInClass($class_id){
 
 
@@ -360,6 +346,10 @@ public function getStudentsInClass($class_id){
 
 }
 
+/** 
+* Get class details
+* @param class_id
+*/
 public function getClassDetails($class_id){
     
     $this->setQuery(
@@ -384,6 +374,10 @@ public function getClassDetails($class_id){
 
 }
 
+/** 
+* Get classes based on school year
+* @param school_year
+*/
 public function getClasses($school_year){
     
     
@@ -409,6 +403,9 @@ public function getClasses($school_year){
 
 }
 
+/** 
+* Get classes quantity gruped by year - for chart
+*/
 public function getClassesQty(){
         
         $this->setQuery(
@@ -425,7 +422,13 @@ public function getClassesQty(){
         return $this->classes_qty;
 }
 
-
+/** 
+* Get marks on class view
+* @param class - class id
+* @param subject
+* @param sem - semester
+* @param school_year
+*/
 public function getClassMarks($class, $subject, $sem, $school_year) {
     
     
@@ -476,6 +479,12 @@ public function getClassMarks($class, $subject, $sem, $school_year) {
 
 }
 
+/** 
+* Get marks on student view
+* @param student_id
+* @param sem - semester
+* @param school_year
+*/
 public function getMarks($student_id, $sem, $school_year) {
     
     $this->setQuery(
@@ -519,7 +528,13 @@ public function getMarks($student_id, $sem, $school_year) {
 
 }
 
-
+/** 
+* Get attendance - based on school year or selected date
+* @param student_id
+* @param school_year
+* @param date_from
+* @param date_to
+*/
 public function getAttPeriod($student_id, $school_year = '', $date_from = '', $date_to = '') {
     
 
@@ -561,6 +576,13 @@ public function getAttPeriod($student_id, $school_year = '', $date_from = '', $d
 
 }
 
+/** 
+* Count days for rendering, based on year or selected date
+* @param student_id
+* @param school_year
+* @param date_from
+* @param date_to
+*/
 public function getAttendanceDays($student_id, $school_year = '', $date_from = '', $date_to = '') {
     
 
@@ -591,6 +613,11 @@ public function getAttendanceDays($student_id, $school_year = '', $date_from = '
 
 }
 
+/** 
+* Class attendance - for chart
+* @param class_id
+* @param school_year
+*/
 public function getClassAttendance($class_id, $school_year) {
 
     $this->setQuery(
@@ -619,7 +646,11 @@ public function getClassAttendance($class_id, $school_year) {
         return $this->month_attendance;
 }
 
-
+/** 
+* Student notes based on school year
+* @param student_id
+* @param school_year
+*/
 public function getNotes($student_id, $school_year){
     
     $this->setQuery(
@@ -641,6 +672,9 @@ public function getNotes($student_id, $school_year){
 
 }
 
+/** 
+* Return available subjects
+*/
 public function getSubjects() {
 
     if (empty ($this->subjects)) {
@@ -654,6 +688,10 @@ public function getSubjects() {
 
 }
 
+/** 
+* Return subject name based on subject id
+* @param id
+*/
 public function getSubjectName($id) {
 
         $val[] = $id;
@@ -666,6 +704,10 @@ public function getSubjectName($id) {
 
 }
 
+/** 
+* Return information board based on school year
+* @param school_year
+*/
 public function getInformationBoard($school_year){
 
 
@@ -688,6 +730,11 @@ public function getInformationBoard($school_year){
 
 }
 
+
+/** 
+* Return semester based on real date 
+* @param school_year
+*/
 public function getCurrentSem($school_year){
 
     $year = explode('/', $school_year);
@@ -706,10 +753,10 @@ public function getCurrentSem($school_year){
     if ( ($y3 >= $today) && ($y4 <= $today) ) 
         return 2;
 }
+
+
 /** 
 * return person details
-*
-* @param type - i.e student, teacher etc
 * @param id 
 */
 public function getPersonDetails($id){
@@ -740,9 +787,9 @@ public function getPersonDetails($id){
 }
 
 /** 
-* return person list
+* return persons list based on role - i.e student
+* @param role_status
 */
-
 public function getPersons($role_status){
     
     unset($this->$role_status);
@@ -772,8 +819,9 @@ public function getPersons($role_status){
 
         return $this->$role_status;
 }
+
 /** 
-* return status/role
+* Return available status/roles
 */
 public function getRoleStatus(){
     
@@ -783,8 +831,9 @@ public function getRoleStatus(){
     
     return $this->role_status;
 }
+
 /** 
-* return marks categories
+* Return available marks categories
 */
 public function getMarksCat(){
     
@@ -796,7 +845,7 @@ public function getMarksCat(){
 }
 
 /** 
-* return current year
+* Return current year
 */
 public function getCurrentYear(){
     
@@ -808,7 +857,7 @@ public function getCurrentYear(){
 }
 
 /** 
-* return years list
+* Return available years
 */
 public function getYears(){
     
@@ -818,8 +867,9 @@ public function getYears(){
     
     return $this->years;
 }
+
 /** 
-* return lesson times list
+* Return lesson times list
 */
 public function getLessonTimes(){
     
@@ -832,25 +882,28 @@ public function getLessonTimes(){
     
             return $this->lesson_times;
 }
+
 /** 
-* return errors
+* Return errors
 */
 public function getErrors(){
 
     return $this->errors;
 
 }
+
 /** 
-* return success
+* Return success
 */
 public function getSuccess(){
 
     return $this->success;
 
 }
+
 /**   
 *
-* @param string year 
+* @param year
 */ 
 public function addYear($year) {
 
@@ -874,6 +927,10 @@ public function addYear($year) {
 
 }
 
+/**   
+* Add information to inf board
+* @param value - array title, content, date
+*/ 
 public function addInformation($value) {
 
     $this->setQuery("INSERT INTO information_board (title, content, time_when) VALUES (?, ?, ?)");
@@ -895,9 +952,10 @@ public function addInformation($value) {
     return $this;
 
 }
+
 /**
-*     
-* @param string year
+* Set current year
+* @param year
 */ 
 public function setYear($year) {
 
@@ -912,8 +970,11 @@ public function setYear($year) {
 
     return $this;
 } 
+
 /**
-*     
+* Change time lessons rings
+* @param new_value
+* @param old_value 
 */ 
 public function setLessonTime($new_value, $old_value) {
     $this->setQuery("UPDATE lesson_times SET time = ? WHERE time = ?");
@@ -937,8 +998,10 @@ public function setLessonTime($new_value, $old_value) {
 } 
 
 /**
-*     
-*/ 
+* Change subject name
+* @param new_value
+* @param old_value 
+*/
 public function setSubject($new_value, $old_value) {
 
     $this->setQuery("UPDATE subjects SET name = ? WHERE name = ?");
@@ -963,8 +1026,10 @@ public function setSubject($new_value, $old_value) {
 } 
 
 /**
-*     
-*/ 
+* Change profile name
+* @param new_value
+* @param old_value 
+*/
 public function setProfile($new_value, $old_value) {
 
     $this->setQuery("UPDATE profiles SET name = ? WHERE name = ?");
@@ -987,9 +1052,12 @@ public function setProfile($new_value, $old_value) {
 
     return $this;
 } 
+
 /**
-*     
-*/ 
+* Change mark category name
+* @param new_value
+* @param old_value 
+*/
 public function setMarkCat($new_value, $old_value) {
 
     $this->setQuery("UPDATE marks_cat SET name = ? WHERE name = ?");
@@ -1012,9 +1080,12 @@ public function setMarkCat($new_value, $old_value) {
 
     return $this;
 } 
+
 /**
-*     
-*/ 
+* Change role/status name
+* @param new_value
+* @param old_value 
+*/
 public function setRoleStatus($new_value, $old_value) {
     
     $this->setQuery("UPDATE role_status SET name = ? WHERE name = ?");
@@ -1039,8 +1110,9 @@ public function setRoleStatus($new_value, $old_value) {
 } 
 
 /**
-*     
-*/ 
+* Assign subject to teacher
+* @param values - array id teacher and id subject
+*/
 public function setTeacherSubject($values) {
     
     $this->setQuery("INSERT INTO teacher_subject (id_teacher, id_subject) VALUES (?, ?)");
@@ -1050,9 +1122,11 @@ public function setTeacherSubject($values) {
         else
             $this->errors[] = 'Subject can not be assigned';
 } 
+
 /**
-*     
-*/ 
+* Assign parent to student
+* @param values - array id teacher and id parent
+*/
 public function setSupervisorStudent($values) {
 
     $this->setQuery("INSERT INTO supervisor_student (id_student, id_supervisor) VALUES (?, ?)");
@@ -1063,6 +1137,11 @@ public function setSupervisorStudent($values) {
             $this->errors[] = 'Student can not be assigned';
 } 
 
+/**
+* Set attendance, if date does not exist then insert new value
+* Update on existing values
+* @param values - array id student, id subject, type, lesson time, date
+*/
 public function setAttendance($values) {
 
 
@@ -1090,6 +1169,10 @@ public function setAttendance($values) {
      
 } 
 
+/**
+* Add new mark
+* @param values - array id student, id teacher, id subject, mark, cat id, weight, desc, date
+*/
 public function addMark($values) {
 
     $this->setQuery("INSERT INTO 
@@ -1114,6 +1197,10 @@ public function addMark($values) {
 
 }
 
+/**
+* Update person info
+* @param values - array new value, person id, row in DB which be updated
+*/
 public function updatePerson($values) {
 
     $validation = new Validator;
@@ -1156,6 +1243,10 @@ public function updatePerson($values) {
   
 } 
 
+/**
+* Update marks
+* @param values - array mark, id
+*/
 public function setMarks($values) {
 
 
@@ -1180,6 +1271,11 @@ public function setMarks($values) {
      
 } 
 
+/**
+* Set timetable, if lesson does not exist then insert new value
+* Update on existing values
+* @param values - array id class, id subject, id teacher, id lesson time, week day
+*/
 public function setTimetable($values) {
 
    foreach ($values as $row) {  
@@ -1206,8 +1302,11 @@ public function setTimetable($values) {
         }
     }
 } 
+
+
 /**
-*     
+* Add new mark category
+* @param value - name    
 */ 
 public function addMarkCat($value) {
     
@@ -1229,7 +1328,8 @@ public function addMarkCat($value) {
 } 
 
 /**
-*     
+* Add note
+* @param values - array id_student, id_teacher, description, date
 */ 
 public function addNote($values) {
     
@@ -1249,7 +1349,8 @@ public function addNote($values) {
 } 
 
 /**
-*     
+* Add event
+* @param values - array id class, tite, desc, date
 */ 
 public function addEvent($values) {
     
@@ -1268,8 +1369,10 @@ public function addEvent($values) {
 
     return $this;
 } 
+
 /**
-*     
+* Add subject
+* @param value - name
 */ 
 public function addSubject($value) {
     
@@ -1289,8 +1392,10 @@ public function addSubject($value) {
 
     return $this;
 } 
+
 /**
-*     
+* Add profile
+* @param value - name
 */ 
 public function addProfile($value) {
     
@@ -1312,7 +1417,8 @@ public function addProfile($value) {
 } 
 
 /**
-*     
+* Add role/status
+* @param value - name
 */ 
 public function addRoleStatus($value) {
 
@@ -1332,8 +1438,10 @@ public function addRoleStatus($value) {
 
     return $this;
 }
+
 /**
-*     
+* Add new person
+* @param value - array - person info
 */ 
 public function addPerson($value) {
     
@@ -1377,8 +1485,10 @@ public function addPerson($value) {
     }     
 
 } 
+
 /**
-*     
+* Add class
+* @param value - array - name, id teacher, id profile, years
 */ 
 public function addClass($value) {
 
@@ -1396,9 +1506,12 @@ public function addClass($value) {
 
     return $this;
 }
+
 /**
-*     
-*/ 
+* Assign student to class
+* @param id_class
+* @param id_student
+*/  
 public function addToClass($id_class, $id_student) {
     
     $this->setQuery("INSERT INTO student_class (id_student, id_class) VALUES (?,?)");
@@ -1415,8 +1528,10 @@ public function addToClass($id_class, $id_student) {
 } 
 
 /**
-*     
-*/ 
+* Remove student from class
+* @param id_class
+* @param id_student
+*/  
 public function removeFromClass($id_class, $id_student) {
 
     $this->setQuery("DELETE FROM student_class WHERE id_student = ? AND id_class = ?");
@@ -1430,8 +1545,11 @@ public function removeFromClass($id_class, $id_student) {
             $this->errors[] = 'Student can not be removed';
 
 } 
+
 /**
-*     
+* Delete class
+* @param id_class
+* @param class_name - this is for result display which class was removed
 */ 
 public function deleteClass($id_class, $class_name) {
 
@@ -1446,8 +1564,10 @@ public function deleteClass($id_class, $class_name) {
             $this->errors[] = $class_name . ' can not be removed';
 
 } 
+
 /**
-*     
+* Delete event
+* @param ev_id - event id
 */ 
 public function deleteEvent($ev_id) {
 
@@ -1462,6 +1582,10 @@ public function deleteEvent($ev_id) {
 
 } 
 
+/**
+* Delete information from board
+* @param inf_id - information id
+*/ 
 public function deleteInformation($inf_id) {
 
 
@@ -1474,6 +1598,10 @@ public function deleteInformation($inf_id) {
             $this->errors[] = 'Information can not be deleted';
 
 } 
+
+
+
+
 
 //PRIVATE METHODS 
 
@@ -1502,7 +1630,6 @@ private function setQuery($query){
 
     return $this->query;
 }
-
 
 /**   
 * prepared statement for insert person
@@ -1554,13 +1681,12 @@ private function insertPerson($value){
             $this->conn->close();
 }
 
-
 /**    
-* This function 
+* Read table
 *
 * @param table - name of the table
 * @param col - name of column 
-* @param var - name of variable which will holds info
+* @param var - name of variable where content will be set
 */ 
 private function readTable($table, $col, $var = null){
 
@@ -1584,12 +1710,11 @@ private function readTable($table, $col, $var = null){
     
 }
 
-
 /**    
-* This function
+* This fetch content from DB
 *
-* @param values - array
-* @param var 
+* @param values - array - 
+* @param var - name of variable where content will be set
 */ 
 private function getContent($values = null, $var = null){
 
@@ -1629,12 +1754,11 @@ private function getContent($values = null, $var = null){
 
 }
 /**    
-* This function
+* Set content in DB
 *
 * @param values - array
-* @param var 
 */ 
-private function setContent($values, $var = null){
+private function setContent($values) {
 
     $this->connectDB();
 
