@@ -3,7 +3,18 @@
   require_once './functions/class.controller.php';
   require_once './functions/class.displayer.php';
   require_once './functions/class.database.php';
+  $database = new DataBase();
+  $displayer = new Displayer ($database);
+  $controller = new Controller ($database, $displayer);
 
+  $controller->htmlForm('add_year', 'old_value');
+  $controller->htmlForm('set_year', 'old_value');
+  $controller->htmlForm('add_mark_cat', 'old_value');
+  $controller->htmlForm('add_role_status', 'old_value');
+  $controller->htmlForm('add_subject', 'old_value');
+  $controller->htmlForm('add_profile', 'old_value');
+  $curr_year = $database->getCurrentYear();
+  $controller->redirect('value', 'old_value');
 ?>
 
 <!DOCTYPE html>
@@ -32,29 +43,10 @@
               
 
 <!-- CONTROLLER -->
-<?php
-  $database = new DataBase();
-  $displayer = new Displayer ($database);
-  $controller = new Controller ($database, $displayer);
-
-  $controller->htmlForm('add_year', 'old_value');
-  $controller->htmlForm('set_year', 'old_value');
-  $controller->htmlForm('add_mark_cat', 'old_value');
-  $controller->htmlForm('add_role_status', 'old_value');
-  $controller->htmlForm('add_subject', 'old_value');
-  $controller->htmlForm('add_profile', 'old_value');
-  $curr_year = $database->getCurrentYear();
-
+<?php 
   echo $controller->getForms();
-
-
-  if (!empty ($_POST)) {
-    $controller->handleRequest ($_POST['action'], $_POST['value'], $_POST['old_value']);
-    $displayer->displayErrors();
-    $displayer->displaySuccess();
-  }
-
-?>
+  $displayer->displayResult();
+?> 
 <!-- CONTROLLER -->
             <div class = "list-group m-4">
 <!-- years settings -->

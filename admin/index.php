@@ -1,13 +1,13 @@
 <?php 
    session_start();
-   require_once './functions/class.controller.php';
+   require_once './functions/class.controller.php'; 
    require_once './functions/class.displayer.php';
    require_once './functions/class.database.php';
    $database = new DataBase();
    $displayer = new Displayer ($database);
    $controller = new Controller ($database, $displayer);
-
    $controller->htmlForm('add_information');
+   $controller->redirect('value');
 ?>
 
 <!DOCTYPE html>
@@ -31,15 +31,11 @@
         <div class = "col">
           <div class = "row">
             <div class = "header col m-1 m-md-3 modul rounded shadow-sm p-3">
-              <h2 class="display-4 m-0">Dashboard</h2>        
-                  <?php
+              <h2 class="display-4 m-0">Dashboard</h2>     
+              <?php 
                     echo $controller->getForms();
-                      if (!empty ($_POST['action'])){
-                      $controller->handleRequest ($_POST['action'], $_POST['value']);
-                      $displayer->displayErrors();
-                      $displayer->displaySuccess();
-                      }
-                  ?>
+                    $displayer->displayResult();
+              ?>          
             </div>
           </div>
 

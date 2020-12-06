@@ -7,6 +7,7 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
   $controller->htmlForm('add_class');
+  $controller->redirect('class', 'class_removed');
 ?>
 
 <!DOCTYPE html>
@@ -31,15 +32,10 @@
           <div class = "header">
             <h2 class="display-4">Add class</h2>
           </div>
-            <?php
-                echo $controller->getForms();
-
-                if (!empty ($_POST['action'])) {
-                  $controller->handleRequest ($_POST['action'], $_POST['class'], $_POST['class_removed']);
-                  $displayer->displayErrors();
-                  $displayer->displaySuccess();
-                }
-              ?>
+          <?php 
+                    echo $controller->getForms();
+                    $displayer->displayResult();
+              ?>  
             <div class="form-row">
               <div class="col-sm-2">
               <label for="class-name">Class name</label>

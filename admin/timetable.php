@@ -8,6 +8,8 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
   $controller->htmlForm('set_timetable');
+
+  $controller->redirect('timetable');
 ?>
 
 <!DOCTYPE html>
@@ -29,15 +31,10 @@
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
         <div class = "col-md-10 m-1 m-md-3 modul rounded shadow-sm p-3">
-          <?php
-            echo $controller->getForms();
-              if (!empty ($_POST['action'])) {
-                    
-                $controller->handleRequest ($_POST['action'], $_POST['timetable']);
-                $displayer->displayErrors();
-                $displayer->displaySuccess();
-                }
-              ?>
+        <?php 
+                    echo $controller->getForms();
+                    $displayer->displayResult();
+              ?>     
           <div class = "header">
             <h2 class="display-4">Choose class</h2>
           </div>

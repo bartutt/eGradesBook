@@ -8,8 +8,8 @@
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
-  $person = new RandomPerson;
   $controller->htmlForm('add_person');
+  $controller->redirect('person');
 ?>
 
 <!DOCTYPE html>
@@ -34,15 +34,10 @@
           <div class = "header ">
             <h2 class="display-4">Add <?php echo $_GET['person']?></h2>
           </div>
-            <?php
-              echo $controller->getForms();
-
-                if (!empty ($_POST['action'])){
-                  $controller->handleRequest ($_POST['action'], $_POST['person']);
-                  $displayer->displayErrors();
-                  $displayer->displaySuccess();
-                }
-              ?>
+          <?php 
+                    echo $controller->getForms();
+                    $displayer->displayResult();
+              ?> 
             <table class = "table table-sm" >
               <tr>
 		            <td >ID number</td >

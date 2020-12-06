@@ -8,6 +8,7 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
   $controller->htmlForm('set_marks');
+  $controller->redirect();
 ?>
 
 <!DOCTYPE html>
@@ -33,14 +34,10 @@
         </form>
           <div class = "header">
             <h2 class="display-4">Marks</h2>
-            <?php
-                echo $controller->getForms();
-                if (!empty ($_POST['action']) && (!empty ($_POST['marks'])) ) {
-                  $controller->handleRequest ($_POST['action'], $_POST['marks']);
-                  $displayer->displayErrors();
-                  $displayer->displaySuccess();
-                }
-              ?>
+            <?php 
+                    echo $controller->getForms();
+                    $displayer->displayResult();
+              ?>  
           </div>
             <div class="form-row">
               <div class="col-md-3">

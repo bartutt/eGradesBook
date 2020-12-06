@@ -1062,12 +1062,25 @@ public function startLesson(){
 
 }
 
-public function displayErrors(){
+public function displayResult(){
+ 
+    $this->displayErrors();
+    $this->displaySuccess();
+
+    unset($_SESSION['result']);
+    unset($_SESSION['type']);
+
+}
+
+
+private function displayErrors(){
   
-  $errors = $this->database->getErrors();
+  if (isset ($_SESSION['type']) &&  $_SESSION['type'] === 'error' )
+    $errors = $_SESSION['result'];
+  else $errors = $this->database->getErrors();
   
   if (!empty ($errors) ){ 
-
+    
     echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
     echo '<h4 class="alert-heading">Error</h4>';
     echo '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
@@ -1076,13 +1089,15 @@ public function displayErrors(){
       foreach ($errors as $error)
           echo '<hr>' . $error;            
     echo '<br></div>';
+
   }
 }
 
-
-public function displaySuccess(){
+private function displaySuccess(){
   
-  $success = $this->database->getSuccess();
+  if (isset ($_SESSION['type']) &&  $_SESSION['type'] === 'success' )
+    $success = $_SESSION['result'];
+  else $success = $this->database->getSuccess();
   
   if (!empty ($success ) ){
 
@@ -1094,7 +1109,8 @@ public function displaySuccess(){
       foreach ($success as $suc)
           echo '<hr>' . $suc;            
     echo '<br></div>';
-  }     
+
+  }
      
 }
 
@@ -1355,7 +1371,6 @@ public function displayPersons($role_status) {
                 <td class="d-none d-lg-table-cell"><button type = "submit" class="table-button">' . $person['birth_date'] . '</button></td>
                 <td><button type = "submit" class="table-button">' . $person['id'] . '</button></td>
                 <input type = "hidden" name = "person_id" value = "'.$person['id'].'">
-                <input type = "hidden" name = "tab" value = "">
                 </form>';
 
 

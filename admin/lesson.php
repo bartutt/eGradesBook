@@ -45,8 +45,7 @@
       <div class = "row justify-content-center">
         <div class = "col-md-10 m-1 m-md-3 modul rounded shadow-sm p-3">
           <?php 
-            $displayer->displayErrors();
-            $displayer->displaySuccess();       
+            $displayer->displayResult(); 
             $controller->startLesson(); 
           ?>          
         </div>

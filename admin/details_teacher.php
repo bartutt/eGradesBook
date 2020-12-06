@@ -8,13 +8,9 @@
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
- 
-  if (!empty ($_POST['action'])) {
-    $action = explode('_', $_POST['action']);             
-    $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);         
-  }else {
-        $controller->getTab($_GET['tab']);
-  }
+  $controller->getTab();
+  
+  $controller->redirect();
 ?>
 
 
@@ -43,12 +39,10 @@
               <button data-toggle="modal" data-target="#editRoleStatus" form = "set_person" type = "button" class="btn btn-outline-secondary border-0 fas fa-edit"></button>
             </h2>
           </div>
-          <?php   
-                  echo $controller->getForms();      
-                  $displayer->displayErrors();
-                  $displayer->displaySuccess();  
-                          
-              ?>
+          <?php 
+                    echo $controller->getForms();
+                    $displayer->displayResult();
+              ?> 
             <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">

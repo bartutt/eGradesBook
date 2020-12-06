@@ -13,13 +13,9 @@
   $controller->htmlForm('set_marks');
   $controller->htmlForm('set_timetable');
   $class = $database->getStudentCurrentClass($_GET['person_id']); 
+  $controller->getTab();
   
-  if (!empty ($_POST['action'])) {
-    $action = explode('_', $_POST['action']);             
-    $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);         
-  }else {
-        $controller->getTab($_GET['tab']);
-  }
+  $controller->redirect();
 ?>
 
 
@@ -50,12 +46,10 @@
             <h2 class="display-4">Class: <?php echo $class[0]['name']?></h2>
           
           </div>      
-          <?php   
-                  echo $controller->getForms();      
-                  $displayer->displayErrors();
-                  $displayer->displaySuccess();  
-                          
-              ?>
+          <?php 
+                    echo $controller->getForms();
+                    $displayer->displayResult();
+              ?> 
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item">
                 <a class="nav-link <?php echo $controller->tab['details'] ?>" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">

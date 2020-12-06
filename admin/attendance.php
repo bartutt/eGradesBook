@@ -8,6 +8,7 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
   $controller->htmlForm('set_attendance');
+  $controller->redirect('attendance');
 ?>
 
 <!DOCTYPE html>
@@ -33,15 +34,10 @@
         </form>
           <div class = "header">
             <h2 class="display-4">Attendance</h2>
-            <?php
-                echo $controller->getForms();
-                if (!empty ($_POST['action']) && (!empty ($_POST['attendance'])) ) {
-                  
-                  $controller->handleRequest ($_POST['action'], $_POST['attendance']);
-                  $displayer->displayErrors();
-                  $displayer->displaySuccess();
-                }
-              ?>
+            <?php 
+                    echo $controller->getForms();
+                    $displayer->displayResult();
+              ?> 
           </div>
             <div class="form-row">
               <div class="col-md-3">

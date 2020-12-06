@@ -43,12 +43,23 @@ class Controller {
      */
 
     /**
-     * Gives a result of request in variable
+     * Gives a result of request in SESSION var, because of resubmitting forms
      */
     private function result(){
 
         $this->errors = $this->database->getErrors();
         $this->success = $this->database->getSuccess();
+        
+        if (!empty ($this->success)){
+            $_SESSION['result'] = $this->success;
+            $_SESSION['type'] = 'success';
+        }
+            
+        if (!empty ($this->errors)){
+            $_SESSION['result'] = $this->errors;
+            $_SESSION['type'] = 'error';
+        }
+            
 
     }
 
@@ -83,12 +94,44 @@ class Controller {
     }
 
     /**
+     * Set active tab
+     */
+    private function setTab($tab = null) {
+      
+        if (empty($tab)) {
+            $_SESSION['tab'] = 'details';
+
+        }else {
+            $_SESSION['tab'] = $tab;
+        }
+    }
+
+    /**
      * 
      * PUBLIC METHODS
      *
      */
 
 
+     /**
+     * redirect after action to prevent resubmit forms
+     */
+    public function redirect($index = '', $index2 = '') {
+
+        if (!empty ($_POST['action'])) {
+            
+            $action = explode('_', $_POST['action']);   
+            if (empty ($index)) 
+                $index = $action[1];
+         
+            if (!empty ($_REQUEST[$index])) { 
+                $this->handleRequest ($_POST['action'], $_REQUEST[$index], $_REQUEST[$index2]);
+                header( "Location: {$_SERVER['REQUEST_URI']}", true, 303 );
+                exit();
+            }
+        }
+
+    }
     /**
      * Return all forms
      */
@@ -125,21 +168,21 @@ class Controller {
             echo '<input class = "form-control" form = "add_person" name = "person[]" type = "hidden" value = '.$role['id'] .'>';
     }
 
-    /**
-     * This function set active tab about person, default details
-     */
-    public function getTab($tab = null){
-        
-        if (empty($tab)) {
-            $this->tab['details'] = 'active';
-            $this->tab['details_show'] = 'show active';
-        
-        }else {
-        
-            $this->tab[$tab] = 'active';
-            $this->tab[$tab."_show"] = 'show active';
-        }
+    
 
+    /**
+     * Read active tab from session
+     */
+    public function getTab() {
+
+        if (isset ($_SESSION['tab'])) {
+            $this->tab[$_SESSION['tab']] = 'active';
+            $this->tab[$_SESSION['tab']."_show"] = 'show active';
+        }else {
+            $this->tab['details'] = 'active';
+            $this->tab['details_show'] = 'active show';
+
+        }
     }
 
     /**
@@ -260,15 +303,13 @@ class Controller {
             case 'set_timetable':
                 $this->database->setTimetable($val_1);
                 $this->result();
-                $this->tab['lessons'] = 'active';
-                $this->tab['lessons_show'] = 'show active';
+                $this->setTab('lessons');
                 break;
             
             case 'set_attendance':
                 $this->database->setAttendance($val_1);
                 $this->result();
-                $this->tab['attendance'] = 'active';
-                $this->tab['attendance_show'] = 'show active';
+                $this->setTab('attendance');
 
                 //if attendance checked, go to marks view
                 if (!empty ($_POST['lesson']) && (!empty ($this->success))) {
@@ -290,8 +331,7 @@ class Controller {
             case 'set_marks':
                 $this->database->setMarks($val_1);
                 $this->result();
-                $this->tab['marks'] = 'active';
-                $this->tab['marks_show'] = 'show active';
+                $this->setTab('marks');
                 break;
 
             case 'add_event':
@@ -317,8 +357,7 @@ class Controller {
             case 'set_person':
                 $this->database->updatePerson($val_1);
                 $this->result();
-                $this->tab['details'] = 'active';
-                $this->tab['details_show'] = 'show active';
+                $this->setTab('details');
                 break;
             
             case 'add_subject':
