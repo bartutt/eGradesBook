@@ -336,19 +336,24 @@ class Displayer{
         return $bg_color;
     }
 
-    private function displayDetails($id, $note_details){
+    private function displayDetails($id, $details, $title = '', $title_2 = '', $content = ''){
 
+      if (empty ($title_2)){
+        $details[$title_2] = '';
+      }
+     
+    
       echo '<div class="modal fade" id="'. $id . '" tabindex="-1" role="dialog" aria-labelledby="'. $id . '" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="'. $id . '">'.$note_details['teacher'].' '.$note_details['date'].':</h5>
+            <h5 class="modal-title" id="'. $id . '">'.$details[$title].' '.$details[$title_2].':</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-          '.$note_details['description'].'
+          '.$details[$content].'
           </div>
           <div class="modal-footer">
             <button type="button" class="button" data-dismiss="modal">Close</button>
@@ -1100,7 +1105,7 @@ public function displayInformationBoard(){
   $informations = $this->database->getInformationBoard($school_year);
 
     echo '
-      <table id = "informationBoard" class="table table-sm mt-3">
+      <table class="table table-sm mt-3">
         <thead class = "thead-light">
           <th>Title</th>
           <th>Content</th>
@@ -1109,20 +1114,33 @@ public function displayInformationBoard(){
           <th></th>
         </thead>
         <tbody>';
-        foreach ($informations as $information){
+        if (!empty ($informations)) {
+          foreach ($informations as $information) {
             echo '
             <tr>   
                 <td>      
-                      '.  $information['title'] .'
+                  <button data-toggle="modal" data-target="#'. 'information' . $information['id'] .'" class="table-button">'
+                  . $information['title'] .
+                  '</button>
                 </td> 
                 <td>
-                      '. $information['content'] .'
+                  <button data-toggle="modal" data-target="#'. 'information' . $information['id'] .'" class="table-button">
+                  <p class = "truncate">' 
+                  . $information['content'] .
+                  '</p>
+                  </button>
                 </td>
                 <td>
-                      '. $information['time_when'] .'
+                  <button data-toggle="modal" data-target="#'. 'information' . $information['id'] .'" class="table-button">'
+                  . $information['time_when'] .
+                  '</button>
                 </td>
                 <td class = "d-none d-md-table-cell"> 
-                '. $information['time_added'] . '
+                  <button data-toggle="modal" data-target="#'. 'information' . $information['id'] .'" class="table-button">
+                  <p class = "truncate">' 
+                  . $information['time_added'] .
+                  '</p>
+                  </button>
                 </td>
                 <td>
                 <form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
@@ -1134,7 +1152,12 @@ public function displayInformationBoard(){
                 </form>
                 </td>           
             </tr>';
-      }
+            $this->displayDetails('information' . $information['id'], $information, 'title', 'time_when', 'content');
+          }
+        }else {
+          echo '<tr><td>Empty</td></tr>';
+        }
+
   echo '</tbody>';
   echo '</table>';
   
@@ -1383,7 +1406,7 @@ public function displayNotes($student_id) {
                 </td>
             </tr>';
 
-      $this->displayDetails('note' . $note['id'], $note);
+      $this->displayDetails('note' . $note['id'], $note, 'teacher', 'date', 'description');
       }
 
   echo '</tbody>';
