@@ -39,9 +39,6 @@ class Displayer{
      */
     private $role_status = array();
 
-    /**
-     * Contains colors mark weight
-     */
     private $mark_color;
 
     private $att_color;
@@ -92,6 +89,154 @@ class Displayer{
         $this->database = $database;
 
     }
+
+    /**************
+     * COLORS
+     ***************/
+    private function setAttColor($att){
+      if ($att == 'absent') 
+        $this->att_color = 'bg-danger';
+      if ($att == 'execused') 
+        $this->att_color = 'bg-primary';
+      if ($att == 'unexecused') 
+        $this->att_color = 'bg-warning';
+      if ($att == 'late') 
+        $this->att_color = 'bg-secondary';  
+      if ($att == 'present') 
+        $this->att_color = 'bg-success';
+      
+      return $this->att_color;
+
+    }
+    private function setMarkColor($mark = ''){
+      if ($mark == 1) 
+        $this->mark_color = 'bg-danger';
+      
+      if ($mark == 2) 
+        $this->mark_color = 'bg-secondary';
+      
+      if ($mark == 3) 
+        $this->mark_color = 'bg-warning';
+      
+      if ($mark == 4) 
+        $this->mark_color = 'bg-info';
+
+      if ($mark == 5) 
+        $this->mark_color = 'bg-success';
+
+      if ($mark == 6) 
+        $this->mark_color = 'bg-primary';
+  
+      
+      return $this->mark_color;
+
+    }
+    private function colorTimetable(){
+  
+      $color = array(
+      'bg-green',
+      'bg-red',
+      'bg-cyan',
+      'bg-orange',
+      'bg-purple',
+      'bg-sky-blue'
+      );
+
+      $bg_color = $color[rand ( 0 , count($color) -1)];
+        return $bg_color;
+    }
+    private function colorEvents($event_title, $event_desc){
+
+
+      $event_title = strtolower($event_title);
+
+      $event_desc = strtolower($event_desc);
+
+
+      if ( (preg_match("/exam|test/", $event_title)) || (( preg_match("/exam|test/", $event_desc)) ) ) {
+
+        $this->event_color = 'border-danger';
+
+      }else {
+        
+        $this->event_color = 'border-light';
+
+      }
+
+          
+
+
+    }
+
+    /**************
+     * FORMS
+     ***************/
+    
+     /**
+     * Hided button, shows after Edit is cliced, control by JS
+     */  
+    private function displayRemoveButton($value, $name, $action_value, $name_removed = ''){
+      echo '<form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
+            <input type = "hidden" name = "'.$name.'" value = "'.$value.'">
+            <input type = "hidden" name = "action" value = "'.$action_value.'">
+            <input type = "hidden" name = "class_removed" value = "'.$name_removed.'">
+            <td><button class="btn btn-danger rounded-0 pt-0 pb-0 float-right" type="submit"><i class="fas fa-trash-alt"></i></button></td>
+          </form>';
+
+    }
+     /**
+     * Creates form input
+     */  
+    private function inputForm($form, $type, $class, $name, $value, $required = '') {
+
+      echo '<input 
+        form = "'.$form.'" 
+        type = "'.$type.'" 
+        class = "'.$class.'" 
+        name = "'.$name.'" 
+        value = "'.$value.'"
+        '.$required.'
+        >';
+
+    }
+
+    /**
+     * Creates select input
+     */
+    private function inputSelect($function, $form, $class, $name, $selected = '', $required = '') {
+
+      echo '<select form = "'.$form.'" class = "'.$class.'" name = "'.$name.'">';
+
+        $this->$function($selected);
+
+      echo '</select>';
+    }
+
+    /**
+     * Creates button
+     */
+    private function button($form, $type, $class, $value, $modal = '') {
+
+      echo '<button 
+        form = "'.$form.'" 
+        type = "'.$type.'"
+        class = "'.$class.'"
+        '.$modal.'
+        >
+        '.$value.'
+        </button>';
+    }
+
+
+    /*****************
+     * SELECT FORMS
+     ******************/
+
+     /**
+     * Attendance
+     * @param name - parameter name
+     * @param value - selected hidden value
+     */
     private function displayAttendanceSelect($name = '', $value = ''){
 
       if (empty ($value)) 
@@ -140,97 +285,14 @@ class Displayer{
       </select> 
       ';
     }
-    private function displayAddEventModal(){
 
-      echo ' 
-      <div class="modal fade" id="addInformation" tabindex="-1" role="dialog" aria-labelledby="addInformationLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addInformationLabel">Add information</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <input form = "add_information" type = "text" class="form-control border-0 shadow-none m-2" name = "value[]" placeholder = "title" required>
-              <input form = "add_information" type = "text" class="form-control border-0 shadow-none m-2" name = "value[]" placeholder = "content" required>
-              <input form = "add_information" autocomplete="off"class="form-control border-0 shadow-none m-2" type="text" id="datepicker" name = "value[]" placeholder = "date" required>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Close</button>
-              <button form = "add_information" type="submit" class="btn btn-success rounded-0">Save</button>
-            </div>
-          </div>
-        </div>
-      </div>';
-    }
-
-    private function inputForm($form, $type, $class, $name, $value, $required = '') {
-
-      echo '<input 
-        form = "'.$form.'" 
-        type = "'.$type.'" 
-        class = "'.$class.'" 
-        name = "'.$name.'" 
-        value = "'.$value.'"
-        '.$required.'
-        >';
-
-    }
-
-    private function inputSelect($function, $form, $class, $name, $selected = '', $required = '') {
-
-      echo '<select form = "'.$form.'" class = "'.$class.'" name = "'.$name.'">';
-
-        $this->$function($selected);
-
-      echo '</select>';
-    }
-    private function button($form, $type, $class, $value, $modal = '') {
-
-      echo '<button 
-        form = "'.$form.'" 
-        type = "'.$type.'"
-        class = "'.$class.'"
-        '.$modal.'
-        >
-        '.$value.'
-        </button>';
-    }
-
-    private function displayEditPersonModal($id, $hidden_value, $input, $row, $selected_value = '', $func_select = '') {
-
-      echo ' 
-        <form id = "person'.$id.'" action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
-          <div class="modal fade" id="'.$id.'" tabindex="-1" role="dialog" aria-labelledby="'.$id.'Label" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="'.$id.'Label">Edit</h5>';
-                  $this->button('', "button", "close", '<span aria-hidden="true">&times;</span>' , 'data-dismiss="modal" aria-label="Close"');
-          echo' </div>
-                <div class="modal-body">';
-                  $this->inputForm('person'.$id, "hidden", "", "action", "set_person");   
-                if (empty ($selected_value)) {            
-                  $this->inputForm('person'.$id, "text", "form-control border-0 shadow-none m-2", "person[]", $input, 'required'); 
-                }else {
-                  $this->inputSelect($func_select,'person'.$id, "form-control border-0 shadow-none", "person[]", $selected_value, 'required');
-                }
-                  
-                  $this->inputForm('person'.$id, "hidden", "", "person[]", $hidden_value); 
-                  $this->inputForm('person'.$id, "hidden", "", "person[]", $row);     
-          echo' </div>
-                <div class="modal-footer">';
-                  $this->button('person'.$id, "button", "btn btn-secondary rounded-0", "Close" , 'data-dismiss="modal"');
-                  $this->button('person'.$id, "submit", "btn btn-success rounded-0", "Save");              
-          echo '</div>
-              </div>
-            </div>
-          </div>
-        </form>';
-      
-    }
+    /**
+     * Marks
+     * @param form - form name
+     * @param name - parameter name
+     * @param value - selected hidden value
+     * @param class
+     */
     private function displayMarksSelect($form = '', $name = '', $value = '', $class = '') {
 
       if (empty ($class)) {
@@ -269,7 +331,6 @@ class Displayer{
           
       echo '</select> ';
     }
-
     private function displayWeightSelect($selected = ''){
  
       
@@ -281,61 +342,290 @@ class Displayer{
         echo '<option value = "'.$i.'">'.$i.' </option>';  
       }
     }
+    private function displayMarksCatSelect($selected = ''){
 
-    private function setAttColor($att){
-      if ($att == 'absent') 
-        $this->att_color = 'bg-danger';
-      if ($att == 'execused') 
-        $this->att_color = 'bg-primary';
-      if ($att == 'unexecused') 
-        $this->att_color = 'bg-warning';
-      if ($att == 'late') 
-        $this->att_color = 'bg-secondary';  
-      if ($att == 'present') 
-        $this->att_color = 'bg-success';
-      
-      return $this->att_color;
-
-    }
-    private function setMarkColor($mark = ''){
-      if ($mark == 1) 
-        $this->mark_color = 'bg-danger';
-      
-      if ($mark == 2) 
-        $this->mark_color = 'bg-secondary';
-      
-      if ($mark == 3) 
-        $this->mark_color = 'bg-warning';
-      
-      if ($mark == 4) 
-        $this->mark_color = 'bg-info';
-
-      if ($mark == 5) 
-        $this->mark_color = 'bg-success';
-
-      if ($mark == 6) 
-        $this->mark_color = 'bg-primary';
+      if (empty ($this->marks_cat))
+        $this->marks_cat = $this->database->getMarksCat();
   
-      
-      return $this->mark_color;
-
-    }
-
-    private function colorTimetable(){
+      if (empty ($selected) )
+          echo 
+            '<option value = "" hidden selected></option>';
   
-      $color = array(
-      'bg-green',
-      'bg-red',
-      'bg-cyan',
-      'bg-orange',
-      'bg-purple',
-      'bg-sky-blue'
+      foreach ($this->marks_cat as $cat)
+        echo 
+        '<option value = "'. $cat['id'] .'" >'         
+             . $cat['name'] .                       
+        '</option>';
+    }
+    private function displayGenderSelect($selected = ''){
+
+      $gender = array(
+          'male',
+          'female',
+          'other'
       );
 
-      $bg_color = $color[rand ( 0 , count($color) -1)];
-        return $bg_color;
+      if (empty ($this->marks_cat))
+        $this->marks_cat = $this->database->getMarksCat();
+  
+      if (empty ($selected) )
+          echo 
+            '<option value = "" hidden selected></option>';
+  
+      foreach ($gender as $g) {
+        
+        if ($g !== $selected) {
+          echo '<option value = "'. $g .'" >'. $g .'</option>';
+        }else {
+          
+          echo '<option value = "'. $g .'" selected>'. $g .'</option>';
+        }
+      }   
+    }
+    private function displayStudentsClassSelect($class, $selected = '') {
+
+      if (empty ($this->students))
+        $this->students = $this->database->getStudentsInClass($class);
+
+      
+        if (empty ($selected) )
+          echo 
+            '<option value = "" hidden selected></option>';
+  
+        foreach ($this->students as $student) {
+            echo 
+              '<option value = "'. $student['student_id'] .'">'       
+              .   $student['student'] .                   
+              '</option>';
+          }
+    }
+    public function displayMonthsSelect($selected = '') {
+
+      if (empty ($selected))
+        echo '<option selected>All</option>';
+  
+      foreach ($this->months as $number => $month) {
+        if ($number !== $selected)
+          echo '<option value = "-'.$number.'-">'.$month.'</option>';   
+        else 
+          echo '<option value = "-'.$number.'-" selected>'.$month.'</option>';
+      }
+
+
+    }
+    public function displayProfilesSelect($selected = '') {
+
+      if (empty ($this->profiles))
+        $this->profiles = $this->database->getProfiles();
+    
+    
+      if (empty ($selected) )
+        echo 
+          '<option value = "" hidden selected></option>';
+    
+      foreach ($this->profiles as $profile)
+          echo 
+          '<option value = '. $profile['id'] .'>'         
+               . $profile['name'] .                       
+          '</option>';
+    
+    
+    }  
+    public function displayPersonsSelect($role_status, $selected = '') {
+    
+      if (empty ($this->$role_status))
+          $this->$role_status = $this->database->getPersons($role_status);
+    
+      if (empty ($selected) )
+        echo 
+          '<option value = "" hidden selected></option>';
+    
+      foreach ($this->$role_status as $person) {
+        if (($person['name'] .' '.  $person['surname'] !== $selected) && ($person['id'] != $selected)) {
+          echo 
+                  '<option value = "'. $person['id'] .'" >'         
+                  . $person['name'] .' '.  $person['surname'].                    
+                  '</option>';
+        }else {
+            echo 
+                  '<option value = "'. $person['id'] .'" selected>'         
+                  .   $person['name'] .' '.  $person['surname'].                    
+                  '</option>';
+        }
+      }
+    }
+    public function displaySubjectsSelect($selected = '', $value = '') {
+      
+      
+      if (empty ($this->subjects))
+        $this->subjects = $this->database->getSubjects();
+        
+        if (empty ($selected) )
+          echo 
+            '<option value = "" hidden selected></option>';
+      
+        foreach ($this->subjects as $subject) {
+          
+          if (empty ($value))
+            $val = $subject['id'];
+          else 
+            $val = $subject['name'];
+    
+            if ($subject['name'] !== $selected) {
+                echo 
+                  '<option value = "'. $val .'" >'         
+                    . $subject['name'].                    
+                  '</option>';
+            }else {
+                echo 
+                  '<option value = "'. $val .'" selected>'         
+                    . $subject['name'].                    
+                  '</option>';
+              }
+          }
+    }
+    public function displayClassesSelect($selected = '') {
+    
+      $school_year = $this->database->getCurrentYear();
+    
+      if (empty ($this->classes))
+        $this->classes = $this->database->getClasses($school_year);
+    
+      if (empty ($selected) )
+            echo 
+              '<option value = "" hidden selected></option>';
+    
+      foreach ($this->classes as $class) {
+        if ($class['id'] != $selected) {
+          echo 
+                '<option value = ' . $class['id'] .'>'         
+                  .$class['name'].                    
+                '</option>';
+          }else {
+            echo 
+                '<option value = '.$class['id'].' selected>'         
+                  .$class['name'].                    
+                '</option>';
+          }
+        }
+    
+    } 
+    public function displayYearsSelect($selected = '') {
+    
+      if (empty ($this->years))
+        $this->years = $this->database->getYears();
+    
+    
+      if (empty ($selected) ){
+        echo 
+          '<option value = "" hidden selected></option>';
+      }
+                
+            foreach ($this->years as $year){
+                
+                if ($year['years'] !== $selected) {
+                    echo 
+                      '<option value = '. $year['years'] .'>'         
+                         . $year['years'] .                       
+                      '</option>';
+                }else {        
+                  echo 
+                    '<option value = '. $year['years'] .' selected>'         
+                       . $year['years'] .                       
+                    '</option>';
+                }         
+            }
+        
+    }
+    public function displayRoleStatusSelect($selected = '') {
+    
+      if (empty ($this->role_status))
+        $this->role_status = $this->database->getRoleStatus();
+    
+      if (empty ($selected) )
+            echo 
+              '<option value = "" hidden selected></option>';
+    
+    
+              
+      foreach ($this->role_status as $role_status){
+        if ($role_status['name'] !== $selected){
+          echo 
+            '<option value = '. $role_status['id'] .'>'         
+            . $role_status['name'] .                       
+            '</option>';
+    
+        }else{
+            '<option value = '. $role_status['id'] .' selected>'         
+            . $role_status['name'] .                       
+            '</option>';
+    
+          }
+    
+      }
+          
     }
 
+    /****************
+     * MODALS
+     ****************/
+    private function displayAddEventModal(){
+
+      echo ' 
+      <div class="modal fade" id="addInformation" tabindex="-1" role="dialog" aria-labelledby="addInformationLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addInformationLabel">Add information</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input form = "add_information" type = "text" class="form-control border-0 shadow-none m-2" name = "value[]" placeholder = "title" required>
+              <input form = "add_information" type = "text" class="form-control border-0 shadow-none m-2" name = "value[]" placeholder = "content" required>
+              <input form = "add_information" autocomplete="off"class="form-control border-0 shadow-none m-2" type="text" id="datepicker" name = "value[]" placeholder = "date" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Close</button>
+              <button form = "add_information" type="submit" class="btn btn-success rounded-0">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>';
+    }
+    private function displayEditPersonModal($id, $hidden_value, $input, $row, $selected_value = '', $func_select = '') {
+
+      echo ' 
+        <form id = "person'.$id.'" action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
+          <div class="modal fade" id="'.$id.'" tabindex="-1" role="dialog" aria-labelledby="'.$id.'Label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="'.$id.'Label">Edit</h5>';
+                  $this->button('', "button", "close", '<span aria-hidden="true">&times;</span>' , 'data-dismiss="modal" aria-label="Close"');
+          echo' </div>
+                <div class="modal-body">';
+                  $this->inputForm('person'.$id, "hidden", "", "action", "set_person");   
+                if (empty ($selected_value)) {            
+                  $this->inputForm('person'.$id, "text", "form-control border-0 shadow-none m-2", "person[]", $input, 'required'); 
+                }else {
+                  $this->inputSelect($func_select,'person'.$id, "form-control border-0 shadow-none", "person[]", $selected_value, 'required');
+                }
+                  
+                  $this->inputForm('person'.$id, "hidden", "", "person[]", $hidden_value); 
+                  $this->inputForm('person'.$id, "hidden", "", "person[]", $row);     
+          echo' </div>
+                <div class="modal-footer">';
+                  $this->button('person'.$id, "button", "btn btn-secondary rounded-0", "Close" , 'data-dismiss="modal"');
+                  $this->button('person'.$id, "submit", "btn btn-success rounded-0", "Save");              
+          echo '</div>
+              </div>
+            </div>
+          </div>
+        </form>';
+      
+    }
     private function displayDetails($id, $details, $title = '', $title_2 = '', $content = ''){
 
       if (empty ($title_2)){
@@ -364,6 +654,12 @@ class Displayer{
 
 
     }
+
+   
+
+    /****************
+     * MARKS AND ATTENDANCE
+     ****************/
     private function displayMarks($marks) {
       if (!empty ($marks)) {
        echo '<td class = "py-2">';
@@ -477,6 +773,10 @@ class Displayer{
     
     }
 
+
+    /****************
+     * HEADERS
+     ****************/
     private function displayClassHeader($id) {
     
       $this->class = $this->database->getClassDetails($id);
@@ -488,7 +788,6 @@ class Displayer{
         echo '</ul>';
 
     }
-
     private function displayHeader($val_1 = '', $val_2 = '', $val_3 = '') {
    
       echo '<div class = "header"><h2 class="display-4">'.$val_1.'</h2></div>';
@@ -503,15 +802,9 @@ class Displayer{
 
     }
 
-    private function displayRemoveButton($value, $name, $action_value, $name_removed = ''){
-      echo '<form action = "'.$_SERVER['REQUEST_URI'].'" method = "post">
-            <input type = "hidden" name = "'.$name.'" value = "'.$value.'">
-            <input type = "hidden" name = "action" value = "'.$action_value.'">
-            <input type = "hidden" name = "class_removed" value = "'.$name_removed.'">
-            <td><button class="btn btn-danger rounded-0 pt-0 pb-0 float-right" type="submit"><i class="fas fa-trash-alt"></i></button></td>
-          </form>';
-
-    }
+    /****************
+     * RENDERING
+     ****************/
     private function displayTimetableFrame() {
 
       $this->lesson_times = $this->database->getLessonTimes();
@@ -571,7 +864,26 @@ class Displayer{
         }
       }
     }
+    private function renderClassMarks($class, $subject) {
 
+      $school_year = $this->database->getCurrentYear();
+
+      $this->curr_sem = $this->database->getCurrentSem($school_year);
+
+      $students = $this->students;
+
+      $marks_sem = $this->database->getClassMarks($class, $subject, $this->curr_sem, $school_year);
+
+
+      foreach ($marks_sem as $mark) {
+        foreach ($students as $student) {
+          if ($mark['student'] == $student['student']) {       
+            $this->sem[$student['student']][] = $mark;
+          }
+        }
+      }
+      
+    }
     private function renderMarks($student_id, $subject = '') {
 
        
@@ -612,124 +924,12 @@ class Displayer{
           $this->subjects = $subjects;
     }
   
-    private function renderClassMarks($class, $subject) {
-
-      $school_year = $this->database->getCurrentYear();
-
-      $this->curr_sem = $this->database->getCurrentSem($school_year);
-
-      $students = $this->students;
-
-      $marks_sem = $this->database->getClassMarks($class, $subject, $this->curr_sem, $school_year);
-
-
-      foreach ($marks_sem as $mark) {
-        foreach ($students as $student) {
-          if ($mark['student'] == $student['student']) {       
-            $this->sem[$student['student']][] = $mark;
-          }
-        }
-      }
-      
-    }
-    private function colorEvents($event_title, $event_desc){
-
-
-        $event_title = strtolower($event_title);
-
-        $event_desc = strtolower($event_desc);
-  
-
-        if ( (preg_match("/exam|test/", $event_title)) || (( preg_match("/exam|test/", $event_desc)) ) ) {
-
-          $this->event_color = 'border-danger';
-
-        }else {
-          
-          $this->event_color = 'border-light';
-
-        }
-
-            
-  
-
-    }
-    private function displayMarksCatSelect($selected = ''){
-
-      if (empty ($this->marks_cat))
-        $this->marks_cat = $this->database->getMarksCat();
-  
-      if (empty ($selected) )
-          echo 
-            '<option value = "" hidden selected></option>';
-  
-      foreach ($this->marks_cat as $cat)
-        echo 
-        '<option value = "'. $cat['id'] .'" >'         
-             . $cat['name'] .                       
-        '</option>';
-    }
-    private function displayGenderSelect($selected = ''){
-
-      $gender = array(
-          'male',
-          'female',
-          'other'
-      );
-
-      if (empty ($this->marks_cat))
-        $this->marks_cat = $this->database->getMarksCat();
-  
-      if (empty ($selected) )
-          echo 
-            '<option value = "" hidden selected></option>';
-  
-      foreach ($gender as $g) {
-        
-        if ($g !== $selected) {
-          echo '<option value = "'. $g .'" >'. $g .'</option>';
-        }else {
-          
-          echo '<option value = "'. $g .'" selected>'. $g .'</option>';
-        }
-      }   
-    }
-    private function displayStudentsClassSelect($class, $selected = '') {
-
-      if (empty ($this->students))
-        $this->students = $this->database->getStudentsInClass($class);
-
-      
-        if (empty ($selected) )
-          echo 
-            '<option value = "" hidden selected></option>';
-  
-        foreach ($this->students as $student) {
-            echo 
-              '<option value = "'. $student['student_id'] .'">'       
-              .   $student['student'] .                   
-              '</option>';
-          }
-    }
-
-public function displayMonthsSelect($selected = '') {
-
-  if (empty ($selected))
-    echo '<option selected>All</option>';
-  
-  foreach ($this->months as $number => $month) {
-    if ($number !== $selected)
-      echo '<option value = "-'.$number.'-">'.$month.'</option>';   
-    else 
-      echo '<option value = "-'.$number.'-" selected>'.$month.'</option>';
-  }
-
-
-}
-
+   
+/**
+ * Display events for choosed class
+ * @param class - class id
+ */
 public function displayEvents($class = '') {
-
-
 
   $events = $this->database->getEvents($class);
   if (!empty ($events)) {
@@ -763,7 +963,10 @@ public function displayEvents($class = '') {
 
 }
 
-
+/**
+ * Display timetable for choosed class
+ * @param class - class id
+ */
 public function createTimetable($class_id) {
 
    $this->displayTimetableFrame();
@@ -817,6 +1020,13 @@ public function createTimetable($class_id) {
           } 
         echo '</div>';
 }
+
+/**
+ * Modal for adding mark during lesson
+ * @param class - class id
+ * @param subject
+ * @param teacher 
+ */
 public function addMark($class, $subject, $teacher = '') {
   $today = date("Y-m-d");   
 
@@ -884,6 +1094,12 @@ public function addMark($class, $subject, $teacher = '') {
     ';
 }
 
+/**
+ * Modal for adding note during lesson
+ * @param class - class id
+ * @param subject
+ * @param teacher 
+ */
 public function addNote($class, $subject, $teacher = '') {
   $today = date("Y-m-d");   
 
@@ -930,6 +1146,11 @@ public function addNote($class, $subject, $teacher = '') {
 
 }
 
+/**
+ * Display marks in class view
+ * @param class
+ * @param subject
+ */
 public function displayClassMarks($class, $subject) {
 
   $class_name = $this->database->getClassDetails($class);
@@ -981,7 +1202,12 @@ public function displayClassMarks($class, $subject) {
     } 
 }
 
-
+/**
+ * Display check attendance view when lesson started
+ * @param class
+ * @param subject
+ * @param lesson_time
+ */
 public function checkAttendance($class, $subject, $lesson_time) {
 
   $students = $this->database->getStudentsInClass($class);
@@ -1043,6 +1269,12 @@ public function checkAttendance($class, $subject, $lesson_time) {
     } 
 }
 
+/**
+ * Display start lesson view
+ * @param class
+ * @param subject
+ * @param lesson_time
+ */
 public function startLesson(){
 
   echo '
@@ -1062,6 +1294,9 @@ public function startLesson(){
 
 }
 
+/*************
+ * RESULTS
+ **************/
 public function displayResult(){
  
     $this->displayErrors();
@@ -1071,8 +1306,6 @@ public function displayResult(){
     unset($_SESSION['type']);
 
 }
-
-
 private function displayErrors(){
   
   if (isset ($_SESSION['type']) &&  $_SESSION['type'] === 'error' )
@@ -1092,7 +1325,6 @@ private function displayErrors(){
 
   }
 }
-
 private function displaySuccess(){
   
   if (isset ($_SESSION['type']) &&  $_SESSION['type'] === 'success' )
@@ -1114,6 +1346,10 @@ private function displaySuccess(){
      
 }
 
+
+/**
+ * Display information board
+ */
 public function displayInformationBoard(){
 
   $school_year = $this->database->getCurrentYear();
@@ -1180,165 +1416,10 @@ public function displayInformationBoard(){
   $this->displayAddEventModal();
 }
 
-public function displayProfilesSelect($selected = '') {
-
-  if (empty ($this->profiles))
-    $this->profiles = $this->database->getProfiles();
-
-
-  if (empty ($selected) )
-    echo 
-      '<option value = "" hidden selected></option>';
-
-  foreach ($this->profiles as $profile)
-      echo 
-      '<option value = '. $profile['id'] .'>'         
-           . $profile['name'] .                       
-      '</option>';
-
-
-}
-
-public function displayPersonsSelect($role_status, $selected = '') {
-
-  if (empty ($this->$role_status))
-      $this->$role_status = $this->database->getPersons($role_status);
-
-  if (empty ($selected) )
-    echo 
-      '<option value = "" hidden selected></option>';
-
-  foreach ($this->$role_status as $person) {
-    if (($person['name'] .' '.  $person['surname'] !== $selected) && ($person['id'] != $selected)) {
-      echo 
-              '<option value = "'. $person['id'] .'" >'         
-              . $person['name'] .' '.  $person['surname'].                    
-              '</option>';
-    }else {
-        echo 
-              '<option value = "'. $person['id'] .'" selected>'         
-              .   $person['name'] .' '.  $person['surname'].                    
-              '</option>';
-    }
-  }
-}
-
-public function displaySubjectsSelect($selected = '', $value = '') {
-  
-  
-  if (empty ($this->subjects))
-    $this->subjects = $this->database->getSubjects();
-    
-    if (empty ($selected) )
-      echo 
-        '<option value = "" hidden selected></option>';
-  
-    foreach ($this->subjects as $subject) {
-      
-      if (empty ($value))
-        $val = $subject['id'];
-      else 
-        $val = $subject['name'];
-
-        if ($subject['name'] !== $selected) {
-            echo 
-              '<option value = "'. $val .'" >'         
-                . $subject['name'].                    
-              '</option>';
-        }else {
-            echo 
-              '<option value = "'. $val .'" selected>'         
-                . $subject['name'].                    
-              '</option>';
-          }
-      }
-}
-
-public function displayClassesSelect($selected = '') {
-
-  $school_year = $this->database->getCurrentYear();
-
-  if (empty ($this->classes))
-    $this->classes = $this->database->getClasses($school_year);
-
-  if (empty ($selected) )
-        echo 
-          '<option value = "" hidden selected></option>';
-
-  foreach ($this->classes as $class) {
-    if ($class['id'] != $selected) {
-      echo 
-            '<option value = ' . $class['id'] .'>'         
-              .$class['name'].                    
-            '</option>';
-      }else {
-        echo 
-            '<option value = '.$class['id'].' selected>'         
-              .$class['name'].                    
-            '</option>';
-      }
-    }
-
-}
-
-public function displayYearsSelect($selected = '') {
-
-  if (empty ($this->years))
-    $this->years = $this->database->getYears();
-
-
-  if (empty ($selected) ){
-    echo 
-      '<option value = "" hidden selected></option>';
-  }
-            
-        foreach ($this->years as $year){
-            
-            if ($year['years'] !== $selected) {
-                echo 
-                  '<option value = '. $year['years'] .'>'         
-                     . $year['years'] .                       
-                  '</option>';
-            }else {        
-              echo 
-                '<option value = '. $year['years'] .' selected>'         
-                   . $year['years'] .                       
-                '</option>';
-            }         
-        }
-    
-}
-
-public function displayRoleStatusSelect($selected = '') {
-
-  if (empty ($this->role_status))
-    $this->role_status = $this->database->getRoleStatus();
-
-  if (empty ($selected) )
-        echo 
-          '<option value = "" hidden selected></option>';
-
-
-          
-  foreach ($this->role_status as $role_status){
-    if ($role_status['name'] !== $selected){
-      echo 
-        '<option value = '. $role_status['id'] .'>'         
-        . $role_status['name'] .                       
-        '</option>';
-
-    }else{
-        '<option value = '. $role_status['id'] .' selected>'         
-        . $role_status['name'] .                       
-        '</option>';
-
-      }
-
-  }
-      
-}
-
-  
+/**
+ * Display small button after search result under assign students to class
+ * @param role_status
+ */
 public function searchPersonButton($role_status) {
 
   echo '<table id = "search_person" class = "table table-sm">';
@@ -1358,6 +1439,10 @@ public function searchPersonButton($role_status) {
 
 }
 
+/**
+ * Display table with persons based on role/status
+ * @param role_status
+ */
 public function displayPersons($role_status) {
       echo '<div class="table-responsive">';
       echo '<table class="table table-sm">';
@@ -1382,7 +1467,10 @@ public function displayPersons($role_status) {
   
 }
   
-
+/**
+ * Display notes for choosed student and current year
+ * @param student_id
+ */
 public function displayNotes($student_id) {
 
   $school_year = $this->database->getCurrentYear();
@@ -1429,6 +1517,10 @@ public function displayNotes($student_id) {
 
 }
 
+/**
+ * Display subjects teacher can learn
+ * @param teacher_id
+ */
 public function displayTeacherSubjects($teacher_id) {
 
   echo '<ul class = "pt-2">';
@@ -1438,6 +1530,10 @@ public function displayTeacherSubjects($teacher_id) {
   echo '</ul>';
 }
 
+/**
+ * Display subjects teacher can learn
+ * @param teacher_id
+ */
 public function displayTeacherClasses($teacher_id) {
 
   echo '<ul class = "pt-2">';
@@ -1447,7 +1543,10 @@ public function displayTeacherClasses($teacher_id) {
   echo '</ul>';
 }
 
-
+/**
+ * Display parent children
+ * @param supervisor_id
+ */
 public function displaySupervisorStudent($supervisor_id) {
 
   echo '<ul class = "pt-2">';
@@ -1464,6 +1563,11 @@ public function displaySupervisorStudent($supervisor_id) {
   
 }
 
+/**
+ * Display marks for choosed student
+ * @param student_id
+ * @param subject - if set, then show only one subject
+ */
 public function displayStudentMarks($student_id, $subject = '') {
   
   $this->renderMarks($student_id, $subject);
@@ -1531,7 +1635,12 @@ public function displayStudentMarks($student_id, $subject = '') {
     echo '<button form = "set_marks" class="btn btn-success rounded-0 m-2 float-right" type="submit">save</button>';
 }
 
-
+/**
+ * Display attendance for choosed student
+ * @param student_id
+ * @param date_from
+ * @param date_to
+ */
 public function displayAttendance($student_id, $date_from = '', $date_to = '') {
 
   $lessons = $this->database->getLessonTimes();
@@ -1581,7 +1690,11 @@ public function displayAttendance($student_id, $date_from = '', $date_to = '') {
 
 }
 
-
+/**
+ * Display class details - profile, teacher, name, students etc
+ * @param class_id
+ * @param school_year
+ */
 public function displayClassDetails($class_id, $school_year = ''){
     
     $students = $this->database->getStudentsInClass($class_id);
@@ -1603,7 +1716,6 @@ public function displayClassDetails($class_id, $school_year = ''){
                       <td class = "nr"><button type = "submit" class="table-button">' . $i . '</button></td>
                       <td><button type = "submit" class="table-button">' . $class['student'] . '</button></td>
                       <input type = "hidden" name = "person_id" value = "'.$class['student_id'].'">
-                      <input type = "hidden" name = "tab" value = "">
                     </form>';
                   $this->displayRemoveButton($class['student_id'], 'student_id', 'remove_from_class');
             echo '</tr>';
@@ -1614,7 +1726,9 @@ public function displayClassDetails($class_id, $school_year = ''){
       } else echo 'No students';
 }
 
-
+/**
+ * Display classes based on current year
+ */
 public function displayClasses() {
 
   $school_year = $this->database->getCurrentYear();
@@ -1641,6 +1755,10 @@ public function displayClasses() {
 
 }
 
+/**
+ * Display all person info
+ * @param person_id
+ */
 public function displayPersonDetails($person_id) {
   
         echo '<table class="table table-sm">';
@@ -1717,7 +1835,10 @@ public function displayPersonDetails($person_id) {
 
 }
  
-
+/**
+ * Display person name and surname based on person id
+ * @param id
+ */
 public function displayPersonName($id) {
   
     
@@ -1727,7 +1848,16 @@ public function displayPersonName($id) {
 
 }
 
-
+/**
+ * Used in settings
+ * Display table rows as buttons and shows modal window for editing
+ * 
+ * @param source - function name
+ * @param as - 'as' foreach parameter -> i.e students as 'student'
+ * @param index - index for 'as' parameter -> i.e students as 'student[index]'
+ * @param id - modal id
+ * @param action_value - form action
+ */
 public function displayContentAsButton($source, $as, $index, $id, $action_value){
     $i = 1;
     echo '<table class="table table-sm">';
