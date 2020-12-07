@@ -1642,16 +1642,30 @@ public function displayClasses() {
 }
 
 public function displayPersonDetails($person_id) {
-
-  $this->displayEditPersonModal('editName', $this->person['id'], $this->person['name'], 'name');
-  $this->displayEditPersonModal('editSurname', $this->person['id'], $this->person['surname'], 'surname');
-  $this->displayEditPersonModal('editRoleStatus', $this->person['id'], $this->person['role_status_id'], 'role_status_id', $this->person['role_status_name'], 'displayRoleStatusSelect');
   
         echo '<table class="table table-sm">';
         echo '<tr> 
                  
                 <th class = "p-2 not-allowed">ID</th>               
                 <td class = "p-2 not-allowed">' . $this->person['id'] . '</td>';
+        echo' </tr>
+              <tr>
+      
+                <th class = "p-2">Status</th> 
+                <td><button data-toggle="modal" data-target="#editRoleStatus" type = "button" class = "table-button" >' . $this->person['role_status_name'] . '</button></td>';
+                $this->displayEditPersonModal('editRoleStatus', $this->person['id'], $this->person['role_status_id'], 'role_status_id', $this->person['role_status_name'], 'displayRoleStatusSelect');
+        echo' </tr>
+              <tr>
+            
+                <th class = "p-2">Name</th> 
+                <td><button data-toggle="modal" data-target="#editName" type = "button" class = "table-button" >' . $this->person['name'] . '</button></td>';
+                $this->displayEditPersonModal('editName', $this->person['id'], $this->person['name'], 'name');
+        echo' </tr>
+              <tr>
+            
+                <th class = "p-2">Surname</th> 
+                <td><button data-toggle="modal" data-target="#editSurname" type = "button" class = "table-button" >' . $this->person['surname'] . '</button></td>';
+                $this->displayEditPersonModal('editSurname', $this->person['id'], $this->person['surname'], 'surname');
         echo' </tr>
               <tr>
             
@@ -1709,12 +1723,7 @@ public function displayPersonName($id) {
     
     $this->person = $this->database->getPersonDetails($id);
 
-    echo '
-        <button data-toggle="modal" data-target="#editName" type = "button" class = "btn btn-link mb-1 p-0" >' 
-          . $this->person['name'] . ' </button>
-        <button data-toggle="modal" data-target="#editSurname" type = "button" class = "btn btn-link mb-1 p-0" >'
-          . $this->person['surname'] . '
-        </button>';
+    echo $this->person['name'] . ' '. $this->person['surname'];
 
 }
 

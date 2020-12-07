@@ -37,7 +37,6 @@
           <div class = "header">
             <h2 class="display-4">
               Teacher: <?php $displayer->displayPersonName($_GET['person_id']);?>
-              <button data-toggle="modal" data-target="#editRoleStatus" form = "set_person" type = "button" class="btn btn-outline-secondary border-0 fas fa-edit"></button>
             </h2>
           </div>
           <?php 

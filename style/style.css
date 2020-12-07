@@ -10,8 +10,6 @@ a{color: inherit; font-family: 'Open Sans', sans-serif;}
 a:hover{color: inherit;}
 
 .not-allowed:hover {cursor: not-allowed;}
-.display-4:hover .fa-edit{opacity:1}
-.fa-edit{opacity:0}
 .display-4{font-size:1.5rem;}
 .pointer:hover{cursor: pointer;}
 

@@ -40,9 +40,8 @@
       <div class = "row">
         <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
           <div class = "header mb-3">
-            <h2 class="display-4 pointer">
+            <h2 class="display-4">
               Student: <?php $displayer->displayPersonName($_GET['person_id']);?>
-              <button data-toggle="modal" data-target="#editRoleStatus" form = "set_person" type = "button" class="btn btn-outline-secondary border-0 fas fa-edit"></button>
             </h2>  
             <h2 class="display-4">Class: <?php echo $class[0]['name']?></h2>
           
