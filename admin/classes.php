@@ -1,13 +1,16 @@
 <?php 
   session_start();
-  require_once './functions/class.controller.php';
-  require_once './functions/class.displayer.php';
-  require_once './functions/class.database.php';
+  require_once '../functions/class.logger.php';
+  require_once '../functions/class.controller.php';
+  require_once '../functions/class.displayer.php';
+  require_once '../functions/class.database.php';
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
   $controller->htmlForm('add_class');
   $controller->redirect('class', 'class_removed');
+  $login = new Logger($database);
+  $login->isLogged('admin');
 ?>
 
 <!DOCTYPE html>
@@ -90,7 +93,7 @@
 <?php include './div/footer.html'?>
 <!-- Footer -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<?php include './js/chart_classes.php'?>
-<script src="js/delete_button.js"></script>
+<?php include '../js/chart_classes.php'?>
+<script src="../js/delete_button.js"></script>
 </body>
 </html>

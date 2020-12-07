@@ -1,13 +1,16 @@
 <?php 
   session_start();
-  require_once './functions/class.controller.php';
-  require_once './functions/class.displayer.php';
-  require_once './functions/class.database.php';
+  require_once '../functions/class.logger.php';
+  require_once '../functions/class.controller.php';
+  require_once '../functions/class.displayer.php';
+  require_once '../functions/class.database.php';
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
 
   $controller->htmlForm('set_teacher_subject');
+  $login = new Logger($database);
+  $login->isLogged('admin');
 ?>
 
 <!DOCTYPE html>

@@ -1,8 +1,9 @@
 <?php 
   session_start();
-  require_once './functions/class.controller.php';
-  require_once './functions/class.displayer.php';
-  require_once './functions/class.database.php';
+  require_once '../functions/class.logger.php';
+  require_once '../functions/class.controller.php';
+  require_once '../functions/class.displayer.php';
+  require_once '../functions/class.database.php';
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
@@ -15,6 +16,8 @@
   $controller->htmlForm('add_profile', 'old_value');
   $curr_year = $database->getCurrentYear();
   $controller->redirect('value', 'old_value');
+  $login = new Logger($database);
+  $login->isLogged('admin');
 ?>
 
 <!DOCTYPE html>
@@ -176,6 +179,6 @@
 <!-- Footer -->
 <?php include './div/footer.html'?>
 <!-- Footer -->
-<script src = "js/collapse.js"></script>
+<script src = "../js/collapse.js"></script>
 </body>
 </html>

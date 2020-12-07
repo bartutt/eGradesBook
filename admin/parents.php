@@ -1,14 +1,17 @@
 <?php 
  session_start();
- require_once './functions/class.controller.php';
- require_once './functions/class.displayer.php';
- require_once './functions/class.database.php';
+ require_once '../functions/class.logger.php';
+ require_once '../functions/class.controller.php';
+ require_once '../functions/class.displayer.php';
+ require_once '../functions/class.database.php';
  $database = new DataBase();
  $displayer = new Displayer ($database);
  $controller = new Controller ($database, $displayer);
 
  $controller->htmlForm('set_supervisor_student');
  $controller->redirect('value');
+ $login = new Logger($database);
+ $login->isLogged('admin');
  
 ?>
 
@@ -77,6 +80,6 @@
 <!-- Footer -->
 <?php include './div/footer.html'?>
 <!-- Footer -->
-<script src = "js/selectize.js"></script>
+<script src = "../js/selectize.js"></script>
 </body>
 </html>

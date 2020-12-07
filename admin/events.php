@@ -1,8 +1,9 @@
 <?php 
   session_start();
-  require_once './functions/class.controller.php';
-  require_once './functions/class.displayer.php';
-  require_once './functions/class.database.php';
+  require_once '../functions/class.logger.php';
+  require_once '../functions/class.controller.php';
+  require_once '../functions/class.displayer.php';
+  require_once '../functions/class.database.php';
 
   $database = new DataBase();
   $displayer = new Displayer ($database);
@@ -10,6 +11,8 @@
 
   $controller->htmlForm('add_event');
   $controller->redirect('value');
+  $login = new Logger($database);
+  $login->isLogged('admin');
 ?>
 
 <!DOCTYPE html>
@@ -107,7 +110,7 @@
 <!-- Footer -->
 <?php include './div/footer.html'?>
 <!-- Footer -->
-<script src = "js/datepicker.js"></script>
-<script src="js/delete_button.js"></script>
+<script src = "../js/datepicker.js"></script>
+<script src="../js/delete_button.js"></script>
 </body>
 </html>

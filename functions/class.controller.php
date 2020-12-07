@@ -105,13 +105,23 @@ class Controller {
             $_SESSION['tab'] = $tab;
         }
     }
+    /**
+     * redirect after added mark/note to prevent resubmit
+     */
+    private function redirectLesson() {
 
+        header( "Location: {$_SERVER['REQUEST_URI']}", true, 303 );
+        exit();
+
+    }
+
+
+    
     /**
      * 
      * PUBLIC METHODS
      *
-     */
-
+     */      
 
      /**
      * redirect after action to prevent resubmit forms
@@ -240,6 +250,10 @@ class Controller {
 
         switch ($action) {
 
+            case 'logout':
+                session_destroy();
+                break;
+
             case 'start_lesson':
                 $this->lesson_class = $val_1[0];
                 $this->lesson_subject = $val_1[1];
@@ -321,11 +335,13 @@ class Controller {
             case 'add_marks':
                 $this->database->addMark($val_1);
                 $this->result();
+                $this->redirectLesson();
                 break;
 
             case 'add_note':
                 $this->database->addNote($val_1);
                 $this->result();
+                $this->redirectLesson();
                 break;
 
             case 'set_marks':

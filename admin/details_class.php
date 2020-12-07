@@ -1,12 +1,15 @@
 <?php 
   session_start();
-  require_once './functions/class.controller.php';
-  require_once './functions/class.displayer.php';
-  require_once './functions/class.database.php';
+  require_once '../functions/class.logger.php';
+  require_once '../functions/class.controller.php';
+  require_once '../functions/class.displayer.php';
+  require_once '../functions/class.database.php';
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
   $controller->redirect('class_id', 'student_id');
+  $login = new Logger($database);
+  $login->isLogged('admin');
 ?>
 
 <!DOCTYPE html>
@@ -74,8 +77,8 @@
 <!-- Footer -->
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="js/filter_add_student.js"></script>
-<?php include './js/chart_class_details.php'?>
-<script src="js/delete_button.js"></script>
+<script src="../js/filter_add_student.js"></script>
+<?php include '../js/chart_class_details.php'?>
+<script src="../js/delete_button.js"></script>
 </body>
 </html>

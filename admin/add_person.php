@@ -1,15 +1,17 @@
 <?php 
   session_start();
-  require_once './functions/class.controller.php';
-  require_once './functions/class.displayer.php';
-  require_once './functions/class.database.php';
-  require_once './functions/class.random_person.php';
+  require_once '../functions/class.logger.php';
+  require_once '../functions/class.controller.php';
+  require_once '../functions/class.displayer.php';
+  require_once '../functions/class.database.php';
   
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
   $controller->htmlForm('add_person');
   $controller->redirect('person');
+  $login = new Logger($database);
+  $login->isLogged('admin');
 ?>
 
 <!DOCTYPE html>
@@ -114,7 +116,7 @@
 
 <!-- Footer -->
 <?php include './div/footer.html'?>
-<script src = "js/datepicker.js"></script>
+<script src = "../js/datepicker.js"></script>
 <!-- Footer -->
 </body>
 </html>

@@ -1,8 +1,9 @@
 <?php 
   session_start();
-  require_once './functions/class.controller.php';
-  require_once './functions/class.displayer.php';
-  require_once './functions/class.database.php';
+  require_once '../functions/class.logger.php';
+  require_once '../functions/class.controller.php';
+  require_once '../functions/class.displayer.php';
+  require_once '../functions/class.database.php';
   $database = new DataBase();
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
@@ -12,6 +13,13 @@
   $controller->htmlForm('set_marks');
   $controller->htmlForm('finish_lesson', 'lesson');
   $controller->htmlForm('add_note');
+  $login = new Logger($database);
+  $login->isLogged('admin');
+  if (!empty ($_POST['action'])) {
+
+    $action = explode('_', $_POST['action']);                              
+    $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);    
+  }   
 
 ?>
 
@@ -33,12 +41,7 @@
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
       <?php 
-        echo $controller->getForms();
-
-          if (!empty ($_POST['action'])) {
-            $action = explode('_', $_POST['action']);                              
-            $controller->handleRequest ($_POST['action'], $_POST[$action[1]]);            
-          }     
+        echo $controller->getForms();        
             $controller->addMark(); 
             $controller->addNote(); 
         ?>
@@ -61,7 +64,7 @@
 
 <!-- Footer -->
 <?php include './div/footer.html'?>
-<script src="js/tooltip.js"></script>
+<script src="../js/tooltip.js"></script>
 <!-- Footer -->
 </body>
 </html>

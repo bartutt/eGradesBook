@@ -1,47 +1,21 @@
-<?php include './functions/class.school.php' ?>
 <!DOCTYPE html>
-
 <html lang="en">
-<!-- head -->
-<?php include './div/head.html'?>
-<!-- head -->
+<title>Sinmple design</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
+<?php 
 
-
-<!-- topnav -->
-<?php include './div/admin_topnav.html'?>
-<!-- topnav -->
-
-
-
-<!-- header -->
-<div class="container" style="margin-top:30px">
-  <div class="row">
-  <!-- content -->
-  <div class = "col">
-    <div class = "header" ><h2>Dashboard</h2></div>
-  </div>
-  <!-- content -->
-  
-  </div>
-</div>
-<!-- header -->
-
-
-<!-- main content -->
-<div class="container" style="margin-top:30px">
-     
-        
-  </div>
-</div>
-<!-- main content -->
-
-
-
-<!-- Footer -->
-<?php include './div/footer.html'?>
-<!-- Footer -->
-
+if (isset ($_GET['msg']) && $_GET['msg'] === 'error' )
+    echo 'Wrong user id/password';
+?>
+  <form action="login.php" method="post"> 
+    <input type="text" name="login" /> 
+    <br/> 
+    <input type="password" name="password" /> 
+    <br/>
+    <button type="submit">log in</button>
+  </form>
 
 </body>
 </html>

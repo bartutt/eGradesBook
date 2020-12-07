@@ -1,9 +1,9 @@
 <?php 
   session_start();
-  require_once './functions/class.controller.php';
-  require_once './functions/class.displayer.php';
-  require_once './functions/class.database.php';
-  require_once './functions/class.random_person.php';
+  require_once '../functions/class.logger.php';
+  require_once '../functions/class.controller.php';
+  require_once '../functions/class.displayer.php';
+  require_once '../functions/class.database.php';
 
   $database = new DataBase();
   $displayer = new Displayer ($database);
@@ -11,6 +11,8 @@
   $controller->getTab();
   
   $controller->redirect();
+  $login = new Logger($database);
+  $login->isLogged('admin');
 ?>
 
 
@@ -97,8 +99,8 @@
 <?php include './div/footer.html'?>
 <!-- Footer -->
 
-<script src="js/tooltip.js"></script>
-<script src="js/filter_attendance.js"></script>
+<script src="../js/tooltip.js"></script>
+<script src="../js/filter_attendance.js"></script>
 </body>
 </html>
 
