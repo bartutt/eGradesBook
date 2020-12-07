@@ -1,5 +1,4 @@
 <?php 
- session_start();
  require_once '../functions/class.logger.php';
  require_once '../functions/class.controller.php';
  require_once '../functions/class.displayer.php';
