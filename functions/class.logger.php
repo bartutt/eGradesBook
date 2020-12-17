@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once $_SERVER['DOCUMENT_ROOT']."/egradesbook/functions/class.database.php";
-require_once $_SERVER['DOCUMENT_ROOT']."/egradesbook/functions/class.validator.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.database.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.validator.php";
 
 class Logger{
 
@@ -22,7 +22,7 @@ private function getUser($id) {
 }
 
 public function logIn($user, $pass) {
-
+    
     $validation = new Validator;
 
     if ($validation->isValid($user, 'id') === true) {

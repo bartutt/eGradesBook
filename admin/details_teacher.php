@@ -1,8 +1,8 @@
 <?php 
-  require_once '../functions/class.logger.php';
-  require_once '../functions/class.controller.php';
-  require_once '../functions/class.displayer.php';
-  require_once '../functions/class.database.php';
+    require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.logger.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.controller.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.displayer.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.database.php";
 
   $database = new DataBase();
   $displayer = new Displayer ($database);
@@ -94,7 +94,7 @@
 
 
 <!-- Footer -->
-<?php include './div/footer.html'?>
+<?php include './div/footer.html'; unset ($_SESSION['tab']);?>
 <!-- Footer -->
 
 <script src="../js/tooltip.js"></script>

@@ -96,10 +96,10 @@ CREATE TABLE `notes` (
 );
 
 CREATE TABLE `class_subject` (
-  `id_class` int(3) NOT NULL,
-  `id_subject` int(3) NOT NULL,
-  `id_teacher` bigint(11) NOT NULL,
-  `id_lesson_time` int(3) NOT NULL,
+  `id_class` int(3),
+  `id_subject` int(3),
+  `id_teacher` bigint(11),
+  `id_lesson_time` int(3),
   `week_day` ENUM ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL
 );
 
@@ -174,7 +174,7 @@ ALTER TABLE `supervisor_student` ADD FOREIGN KEY (`id_student`) REFERENCES `pers
 
 ALTER TABLE `supervisor_student` ADD FOREIGN KEY (`id_supervisor`) REFERENCES `person` (`id`);
 
-ALTER TABLE classes ADD CONSTRAINT student_class UNIQUE(id_student, id_class);
+ALTER TABLE student_class ADD CONSTRAINT student_class UNIQUE(id_student, id_class);
 
 ALTER TABLE classes ADD CONSTRAINT class_year UNIQUE(name, years);
 
@@ -185,3 +185,5 @@ ALTER TABLE supervisor_student ADD CONSTRAINT spr_st UNIQUE (id_student,id_super
 ALTER TABLE class_subject ADD CONSTRAINT lesson UNIQUE (id_class,id_lesson_time,week_day);
 
 ALTER TABLE attendance ADD CONSTRAINT attendance UNIQUE (id_student, id_subject, lesson_time_id, date);
+
+INSERT INTO `lesson_times` (`id`, `time`) VALUES (NULL, '8.15-9.00'), (NULL, '9.10-9.55'), (NULL, '10.05-10.50'), (NULL, '11.00-11-45'), (NULL, '12.05-12.50'), (NULL, '13.00-13-45'), (NULL, '13.55-14.40'), (NULL, '14.50-15.35'), (NULL, '15.45-16.30');

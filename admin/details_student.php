@@ -1,8 +1,8 @@
 <?php
-  require_once '../functions/class.logger.php';
-  require_once '../functions/class.controller.php';
-  require_once '../functions/class.displayer.php';
-  require_once '../functions/class.database.php';
+    require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.logger.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.controller.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.displayer.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.database.php";
 
   $database = new DataBase();
   $displayer = new Displayer ($database);
@@ -111,7 +111,7 @@
                 <div class="tab-pane fade <?php echo $controller->tab['attendance_show'] ?>" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">      
                   
                   <div class = "row px-3"> 
-                  <form id = "get_att_period" method = "get" action = "<?php $_SERVER['REQUEST_URI']?>">
+                  <form id = "get_att_period" method = "post" action = "<?php $_SERVER['REQUEST_URI']?>">
                     <input name = "person_id" type = "hidden" value = "<?php echo $_GET['person_id'] ?>">
                     <input name = "tab" type = "hidden" value = "attendance">
                   </form>      
@@ -142,8 +142,8 @@
                     </div>
                   </div>
                   <?php
-                    if (!empty ($_GET['date_from']) && !empty ($_GET['date_from'])) {
-                      $displayer->displayAttendance($_GET['person_id'], $_GET['date_from'], $_GET['date_to']);
+                    if (!empty ($_POST['date_from']) && !empty ($_POST['date_from'])) {
+                      $displayer->displayAttendance($_GET['person_id'], $_POST['date_from'], $_POST['date_to']);
                       }
                   ?> 
                 </div>  
@@ -178,7 +178,7 @@
 
 
 <!-- Footer -->
-<?php include './div/footer.html'?>
+<?php include './div/footer.html'; unset ($_SESSION['tab']);?>
 <!-- Footer -->
 
 <script src="../js/tooltip.js"></script>

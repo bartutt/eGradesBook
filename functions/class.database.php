@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT']."/egradesbook/functions/class.validator.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.validator.php";
 
 /**
 * Database for school      
@@ -1306,6 +1306,7 @@ public function setTimetable($values) {
     // row 1 = subject, row 2 = teacher
     if ( ($row['1'] !== '') && ($row['2'] !== '')) {  
 
+
         $this->setQuery("INSERT INTO 
         class_subject (id_class, id_subject, id_teacher, id_lesson_time, week_day) 
         VALUES(?, ?, ?, ?, ?) 
@@ -1317,11 +1318,11 @@ public function setTimetable($values) {
        
             if ($this->setContent($row) === true) {
                 if (empty ($this->success) )
-                $this->success[] = 'Timetable is saved'; 
+                    $this->success[] = 'Timetable is saved'; 
             
             }else {
                 if (empty ($this->errors) )
-                $this->errors[] = 'Timetable can not be save';
+                    $this->errors[] = 'Timetable can not be save';
                 }
         }
     }

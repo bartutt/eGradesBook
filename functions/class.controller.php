@@ -97,7 +97,7 @@ class Controller {
      * Set active tab
      */
     private function setTab($tab = null) {
-      
+        
         if (empty($tab)) {
             $_SESSION['tab'] = 'details';
 
@@ -184,15 +184,22 @@ class Controller {
      * Read active tab from session
      */
     public function getTab() {
-
-        if (isset ($_SESSION['tab'])) {
-            $this->tab[$_SESSION['tab']] = 'active';
-            $this->tab[$_SESSION['tab']."_show"] = 'show active';
+    
+        if (!empty ($_POST['date_from']) && !empty ($_POST['date_from'])) {
+            $this->tab['attendance'] = 'active';
+            $this->tab['attendance_show'] = 'active show';
         }else {
-            $this->tab['details'] = 'active';
-            $this->tab['details_show'] = 'active show';
 
+            if (isset ($_SESSION['tab'])) {
+                $this->tab[$_SESSION['tab']] = 'active';
+                $this->tab[$_SESSION['tab']."_show"] = 'show active';
+            }else {
+                $this->tab['details'] = 'active';
+                $this->tab['details_show'] = 'active show';
+
+            }
         }
+            
     }
 
     /**
