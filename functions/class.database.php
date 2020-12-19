@@ -109,7 +109,7 @@ class DataBase{
 public function getUser($id) {
     
     $this->setQuery("SELECT 
-    person.name as person_name, password, role_status.name
+    person.name as person_name, password, role_status.name, person.id as person_id
     FROM person
     INNER JOIN role_status ON role_status_id = role_status.id
     WHERE person.id = ?

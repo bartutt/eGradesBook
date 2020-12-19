@@ -11,6 +11,24 @@ class Logger{
       
     }
 
+private function setRole() {
+
+    switch($this->role) {
+
+        case 'admin':
+            $_SESSION['role'] = 'admin';
+            $_SESSION['person_name'] = $this->name;
+            break;
+        
+        case 'student':
+            $_SESSION['role'] = 'student';
+            $_SESSION['person_name'] = $this->name;
+            $_SESSION['person_id'] = $this->person_id;
+            break;
+
+    }
+
+}
 
 private function getUser($id) {
 
@@ -19,6 +37,7 @@ private function getUser($id) {
     $this->pass = $user['password'];
     $this->role = $user['name'];
     $this->name = $user['person_name'];
+    $this->person_id = $user['person_id'];
 }
 
 public function logIn($user, $pass) {
@@ -28,12 +47,13 @@ public function logIn($user, $pass) {
     if ($validation->isValid($user, 'id') === true) {
 
         $this->getUser($user);
-    
-        if (password_verify($pass, $this->pass) && $this->role === 'admin') {
-            $_SESSION['logged'] = '1';
-            $_SESSION['role'] = 'admin';
-            $_SESSION['person_name'] = $this->name;
-            header ("location: admin/index.php");
+
+
+        if (password_verify($pass, $this->pass)) {
+            $_SESSION['logged'] = '1';       
+            $this->setRole();
+            
+            header ("location: ".$this->role."/index.php");
             exit;
         }else{
             header ("location: index.php?msg=error");       
@@ -59,6 +79,8 @@ public function logOut() {
     unset ($_SESSION['logged']);
     unset ($_SESSION['role']);
     unset ($_SESSION['person_name']);
+    if (isset ($_SESSION['person_id']))
+        unset ($_SESSION['person_id']);
     session_destroy();
     header ("location: index.php");
     exit;

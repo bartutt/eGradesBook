@@ -25,7 +25,7 @@
 <div class="container-fluid" >
   <div class = "row">  
     <!--first main col -->
-    <?php include './div/leftbar.php'?>
+    <?php include './div/leftbar.html'?>
     <!--end of first main col -->
 
     <!--second main col -->

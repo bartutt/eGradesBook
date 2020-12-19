@@ -1,0 +1,21 @@
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+
+    <a href = "index.php" class = "navbar-brand col-lg-2 logo m-0 text-center">
+        <i class="fas fa-graduation-cap"></i>
+        eGradesBook
+    </a> 
+    <p class="navbar-brand d-lg-none m-0 ml-2 border-0 text-white">Hello, <?php $displayer->displayPersonName($_SESSION['person_id']);?></p>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link px-2 d-lg-none" href = "../login.php">logout</a>    
+        </li>
+      </ul>    
+    </div>
+  </nav>

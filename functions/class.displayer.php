@@ -217,6 +217,8 @@ class Displayer{
      */
     private function button($form, $type, $class, $value, $modal = '') {
 
+      
+
       echo '<button 
         form = "'.$form.'" 
         type = "'.$type.'"
@@ -294,7 +296,6 @@ class Displayer{
      * @param class
      */
     private function displayMarksSelect($form = '', $name = '', $value = '', $class = '') {
-
       if (empty ($class)) {
         
         $class = '';
@@ -660,7 +661,7 @@ class Displayer{
     /****************
      * MARKS AND ATTENDANCE
      ****************/
-    private function displayMarks($marks) {
+    private function displayMarks($marks, $no_access) {
       if (!empty ($marks)) {
        echo '<td class = "py-2">';
             foreach ($marks as $mark) {
@@ -678,9 +679,10 @@ class Displayer{
                     Date: '.$mark['date'].'<br>
                     Category: '.$mark['cat'].'<br>      
                     " class="badge p-0 '.$this->mark_color.'">'; 
-                      
-                    $this->displayMarksSelect('set_marks', $mark['id'], $mark['mark'], 'color');
-                      
+                    if ($no_access === 'true')
+                      echo $mark['mark'];
+                    else
+                      $this->displayMarksSelect('set_marks', $mark['id'], $mark['mark'], 'color');                   
                 '</a>';
           echo '<input 
                   name = "marks['.$mark['id'].'][]" 
@@ -708,7 +710,7 @@ class Displayer{
           '</td>';
         
     }
-    private function displayDayAttendance($student_id, $dates, $day) {   
+    private function displayDayAttendance($student_id, $dates, $day, $no_access) {   
 
       echo '
       <tr class = "d-md-none" >
@@ -746,8 +748,10 @@ class Displayer{
                 Type: '.$dates [$lesson['time']] ['type'].'<br>
                 Lesson time: '.$dates [$lesson['time']] ['time'].'<br>
                 Subject: '.$dates [$lesson['time']] ['name'].'<br>">';                  
-              
-                $this->displayAttendanceSelect($day.$i, $dates [$lesson['time']] ['type']);
+                  if ($no_access === 'true')
+                    echo $dates [$lesson['time']] ['type'];
+                  else
+                    $this->displayAttendanceSelect($day.$i, $dates [$lesson['time']] ['type']);
                 echo '
               </a>    
             </td>
@@ -805,16 +809,18 @@ class Displayer{
     /****************
      * RENDERING
      ****************/
-    private function displayTimetableFrame() {
+    private function displayTimetableFrame($no_access) {
 
       $this->lesson_times = $this->database->getLessonTimes();
 
       echo '<div class = "row">';
         echo '<div class = "col text-center">';
           echo '<h2 class="display-4">Timetable</h2>';
-          echo '<button class = "btn btn-outline-danger rounded-0 float-left" id = "editField" >Edit</button>';     
-          echo '<button class = "btn btn-success rounded-0 float-right" type = "submit" form = "set_timetable"  id = "editField" >Save</button>';
-        echo '</div>';
+          if (empty ($no_access)){
+            $this->button('', '', "btn btn-outline-danger rounded-0 float-left", "Edit", 'id = "editField"');  
+            $this->button("set_timetable", "submit", "btn btn-success rounded-0 float-right", "Save");
+          }      
+          echo '</div>';
       echo '</div>';
 
       echo '<div class = "row">';  
@@ -966,10 +972,11 @@ public function displayEvents($class = '') {
 /**
  * Display timetable for choosed class
  * @param class - class id
+ * @param no_access
  */
-public function createTimetable($class_id) {
+public function createTimetable($class_id, $no_access = '') {
 
-   $this->displayTimetableFrame();
+   $this->displayTimetableFrame($no_access);
 
    $this->renderTimetableContent($class_id);
     
@@ -1567,8 +1574,9 @@ public function displaySupervisorStudent($supervisor_id) {
  * Display marks for choosed student
  * @param student_id
  * @param subject - if set, then show only one subject
+ * @param no_access
  */
-public function displayStudentMarks($student_id, $subject = '') {
+public function displayStudentMarks($student_id, $subject = '', $no_access = '') {
   
   $this->renderMarks($student_id, $subject);
 
@@ -1585,7 +1593,7 @@ public function displayStudentMarks($student_id, $subject = '') {
             if (!empty ($this->sem_1[$subject['name']])) {
 
               echo '<td>'.$subject['name'].'</td>'; 
-              $this->displayMarks($this->sem_1[$subject['name']]);
+              $this->displayMarks($this->sem_1[$subject['name']], $no_access);
 
             }else {
               echo '<td>'.$subject['name'].'</td>'; 
@@ -1613,7 +1621,7 @@ public function displayStudentMarks($student_id, $subject = '') {
             
             if (!empty ($this->sem_2[$subject['name']])) {
               echo '<td class = "d-table-cell d-md-none">'.$subject['name'].'</td>'; 
-              $this->displayMarks($this->sem_2[$subject['name']]);
+              $this->displayMarks($this->sem_2[$subject['name']], $no_access);
 
             }else {
               echo '<td class = "d-table-cell d-md-none">'.$subject['name'].'</td>'; 
@@ -1631,7 +1639,7 @@ public function displayStudentMarks($student_id, $subject = '') {
         </div>';
   
         //show save button if marks exist
-  if (!empty ($this->sem_1))
+  if (!empty ($this->sem_1) && $_SESSION['role'] === 'admin')
     echo '<button form = "set_marks" class="btn btn-success rounded-0 m-2 float-right" type="submit">save</button>';
 }
 
@@ -1640,8 +1648,9 @@ public function displayStudentMarks($student_id, $subject = '') {
  * @param student_id
  * @param date_from
  * @param date_to
+ * @param no_access
  */
-public function displayAttendance($student_id, $date_from = '', $date_to = '') {
+public function displayAttendance($student_id, $date_from = '', $date_to = '', $no_access = '') {
 
   $lessons = $this->database->getLessonTimes();
 
@@ -1662,7 +1671,7 @@ public function displayAttendance($student_id, $date_from = '', $date_to = '') {
     $this->renderAttendance($attendance, $dates);
 
     foreach ($dates as $date)
-      $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date']);
+      $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date'], $no_access);
       
   }else {
     
@@ -1675,7 +1684,7 @@ public function displayAttendance($student_id, $date_from = '', $date_to = '') {
       $this->renderAttendance($attendance, $dates);
       
       foreach ($dates as $date)
-        $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date']);
+        $this->displayDayAttendance($student_id, $this->day_att[$date['date']], $date['date'], $no_access);
     }
 
     
@@ -1685,7 +1694,7 @@ public function displayAttendance($student_id, $date_from = '', $date_to = '') {
 
   if (empty ($attendance)) 
     echo 'Empty';
-  else
+  else if ($_SESSION['role'] === 'admin')
       echo '<button form = "set_attendance" class="btn btn-success rounded-0 m-2 float-right" type="submit">save</button>';
 
 }
@@ -1758,77 +1767,134 @@ public function displayClasses() {
 /**
  * Display all person info
  * @param person_id
+ * @param no_access
  */
-public function displayPersonDetails($person_id) {
+public function displayPersonDetails($person_id, $no_access = '') {
   
-        echo '<table class="table table-sm">';
-        echo '<tr> 
-                 
-                <th class = "p-2 not-allowed">ID</th>               
-                <td class = "p-2 not-allowed">' . $this->person['id'] . '</td>';
-        echo' </tr>
-              <tr>
+    if (empty ($this->person)) {
+      $this->person = $this->database->getPersonDetails($person_id);
+    }
+        
+    if ($no_access === 'true'){
+      $not_allowed = '';
+      $padding = 'p-2';
+    }else {
+      $not_allowed = 'not-allowed';
+      $padding = '';
+    }
       
+
+        echo '<table class="table table-sm">';
+        echo '<tr>           
+                <th class = "p-2 '.$not_allowed.' person-details">ID</th>               
+                <td class = "p-2 '.$not_allowed.'">' . $this->person['id'] . '</td>';
+        echo' </tr>
+              <tr>    
                 <th class = "p-2">Status</th> 
-                <td><button data-toggle="modal" data-target="#editRoleStatus" type = "button" class = "table-button" >' . $this->person['role_status_name'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['role_status_name'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['role_status_name'], 'data-toggle="modal" data-target="#editRoleStatus"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editRoleStatus', $this->person['id'], $this->person['role_status_id'], 'role_status_id', $this->person['role_status_name'], 'displayRoleStatusSelect');
         echo' </tr>
-              <tr>
-            
+              <tr>     
                 <th class = "p-2">Name</th> 
-                <td><button data-toggle="modal" data-target="#editName" type = "button" class = "table-button" >' . $this->person['name'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['name'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['name'], 'data-toggle="modal" data-target="#editName"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editName', $this->person['id'], $this->person['name'], 'name');
         echo' </tr>
-              <tr>
-            
+              <tr>        
                 <th class = "p-2">Surname</th> 
-                <td><button data-toggle="modal" data-target="#editSurname" type = "button" class = "table-button" >' . $this->person['surname'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['surname'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['surname'], 'data-toggle="modal" data-target="#editSurname"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editSurname', $this->person['id'], $this->person['surname'], 'surname');
         echo' </tr>
-              <tr>
-            
+              <tr>         
                 <th class = "p-2">Birth date</th> 
-                <td><button data-toggle="modal" data-target="#editBirth" type = "button" class = "table-button" >' . $this->person['birth_date'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['birth_date'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['birth_date'], 'data-toggle="modal" data-target="#editBirth"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editBirth', $this->person['id'], $this->person['birth_date'], 'birth_date');
-        echo' </tr>
-             
+        echo' </tr>        
                 <th class = "p-2">Gender</th> 
-                <td><button data-toggle="modal" data-target="#editGender" type = "button" class = "table-button" >' . $this->person['gender'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['gender'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['gender'], 'data-toggle="modal" data-target="#editGender"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editGender', $this->person['id'], $this->person['gender'], 'gender', $this->person['gender'], 'displayGenderSelect');
-        echo' </tr>
-             
+        echo' </tr>        
                 <th class = "p-2">Telephone</th> 
-                <td><button <button data-toggle="modal" data-target="#editTel" type = "button" class = "table-button" >' . $this->person['tel'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['tel'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['tel'], 'data-toggle="modal" data-target="#editTel"');   
+        echo   '</td>';
                 $this->displayEditPersonModal('editTel', $this->person['id'], $this->person['tel'], 'tel');
         echo' </tr>
-              <tr>
-             
+              <tr>        
                 <th class = "p-2">E-mail</th>   
-                <td><button data-toggle="modal" data-target="#editEmail" type = "button" class = "table-button" >' . $this->person['e_mail'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['e_mail'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['e_mail'], 'data-toggle="modal" data-target="#editEmail"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editEmail', $this->person['id'], $this->person['e_mail'], 'e_mail');
         echo' </tr>          
-              <tr>
-              
+              <tr>     
                 <th class = "p-2">City</th> 
-                <td><button data-toggle="modal" data-target="#editCity" type = "button" class = "table-button" >' . $this->person['city'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['city'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['city'], 'data-toggle="modal" data-target="#editCity"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editCity', $this->person['id'], $this->person['city'], 'city');
         echo' </tr>
-              <tr>
-            
+              <tr>    
                 <th class = "p-2">Post code</th>     
-                <td><button data-toggle="modal" data-target="#editCode" type = "button" class = "table-button" >' . $this->person['code'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['code'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['code'], 'data-toggle="modal" data-target="#editCode"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editCode', $this->person['id'], $this->person['code'], 'code');
         echo' </tr>
-              <tr>
-           
+              <tr>   
                 <th class = "p-2">Street</th> 
-                <td><button data-toggle="modal" data-target="#editStreet" type = "button" class = "table-button" >' . $this->person['street'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['street'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['street'], 'data-toggle="modal" data-target="#editStreet"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editStreet', $this->person['id'], $this->person['street'], 'street');
         echo' </tr>          
-              <tr>
-            
+              <tr> 
                 <th class = "p-2">House nr</th>
-                <td><button data-toggle="modal" data-target="#editHouse" type = "button" class = "table-button" >' . $this->person['house_nr'] . '</button></td>';
+                <td class = "'.$padding.'">';
+                  if ($no_access === 'true') 
+                    echo $this->person['house_nr'];
+                  else
+                    $this->button('', 'button', 'table-button', $this->person['house_nr'], 'data-toggle="modal" data-target="#editHouse"');   
+        echo    '</td>';
                 $this->displayEditPersonModal('editHouse', $this->person['id'], $this->person['house_nr'], 'house_nr');
         echo' </tr>';
       echo '</table>';
