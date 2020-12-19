@@ -99,7 +99,7 @@
 		            <td >House nr</td >
 		            <td ><input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "text" name = "person[]" required></td >
               </tr >
-                <input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "hidden" name = "person[]" value = "123" required>
+                <input class = "form-control form-control-sm mt-1 mb-1" form ="add_person"  type = "hidden" name = "person[]" value = "<?php echo password_hash('pass', PASSWORD_DEFAULT) ?>" required>
 	            <tr >
 		            <td colspan = 2 ><button form ="add_person" class = "button"  type = "submit" >Add</buton></td >
 	            </tr >
