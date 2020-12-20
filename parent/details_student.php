@@ -8,12 +8,15 @@
   $displayer = new Displayer ($database);
   $controller = new Controller ($database, $displayer);
  
-  $class = $database->getStudentCurrentClass($_SESSION['person_id']); 
+  $database_student = new DataBase();
+  $displayer_student = new Displayer ($database_student);
+
+  $class = $database->getStudentCurrentClass($_GET['person_id']); 
   $controller->getTab();
   
   $controller->redirect();
   $login = new Logger($database);
-  $login->isLogged('student');
+  $login->isLogged('parent');
 ?>
 
 
@@ -24,7 +27,7 @@
 <?php include './div/head.html'?>
 
 <body class="d-flex flex-column min-vh-100">
-<?php include './div/student_topnav.html'?>
+<?php include './div/parent_topnav.html'?>
 <!-- main -->
 <div class="container-fluid" >
   <div class = "row">  
@@ -36,6 +39,12 @@
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
         <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
+        <div class = "header mb-3">
+            <h2 class="display-4">
+              Student: <?php $displayer_student->displayPersonName($_GET['person_id']);?>
+            </h2>  
+            <h2 class="display-4">Class: <?php echo $class[0]['name']?></h2>          
+          </div> 
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item">
                 <a class="nav-link <?php echo $controller->tab['details'] ?>" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
@@ -92,13 +101,13 @@
       
               <div class="tab-content">
                 <div class="tab-pane fade <?php echo $controller->tab['details_show'] ?>" id="details" role="tabpanel" aria-labelledby="details-tab">
-                  <?php $displayer->displayPersonDetails($_SESSION['person_id'], 'true');?>
+                  <?php $displayer_student->displayPersonDetails($_GET['person_id'], 'true');?>
                 </div>
                 <div class="tab-pane fade <?php echo $controller->tab['attendance_show'] ?>" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">      
                   
                   <div class = "row px-3"> 
                   <form id = "get_att_period" method = "post" action = "<?php $_SERVER['REQUEST_URI']?>">
-                    <input name = "person_id" type = "hidden" value = "<?php echo $_SESSION['person_id'] ?>">
+                    <input name = "person_id" type = "hidden" value = "<?php echo $_GET['person_id'] ?>">
                     <input name = "tab" type = "hidden" value = "attendance">
                   </form>      
                     <div class = "col-md-3">    
@@ -129,27 +138,27 @@
                   </div>
                   <?php
                     if (!empty ($_POST['date_from']) && !empty ($_POST['date_from'])) {
-                      $displayer->displayAttendance($_SESSION['person_id'], $_POST['date_from'], $_POST['date_to'], 'true');
+                      $displayer_student->displayAttendance($_GET['person_id'], $_POST['date_from'], $_POST['date_to'], 'true');
                       }
                   ?> 
                 </div>  
                 <div class="tab-pane fade <?php echo $controller->tab['marks_show'] ?>" id="marks" role="tabpanel" aria-labelledby="marks-tab">           
-                  <?php $displayer->displayStudentMarks($_SESSION['person_id'],'', 'true');?>
+                  <?php $displayer_student->displayStudentMarks($_GET['person_id'],'', 'true');?>
                 </div>
                 <div class="tab-pane fade <?php echo $controller->tab['notes_show'] ?>" id="notes" role="tabpanel" aria-labelledby="notes-tab">
-                  <?php $displayer->displayNotes($_SESSION['person_id']);?>
+                  <?php $displayer_student->displayNotes($_GET['person_id']);?>
                 </div> 
                 <div class="tab-pane fade <?php echo $controller->tab['lessons_show'] ?>" id="lessons" role="tabpanel" aria-labelledby="lessons-tab">
                   <div class = "row justify-content-center"> 
                     <div class = "col mt-3 text-center">
-                      <?php $displayer->createTimetable($class[0]['id'], 'true');?> 
+                      <?php $displayer_student->createTimetable($class[0]['id'], 'true');?> 
                     </div>        
                   </div> 
                 </div> 
                 <div class="tab-pane fade <?php echo $controller->tab['events_show'] ?>" id="events" role="tabpanel" aria-labelledby="events-tab">
                   <div class = "row"> 
                     <div class = "col mt-3 p-0 p-md-3">
-                      <?php $displayer->displayEvents($class[0]['id']);?>   
+                      <?php $displayer_student->displayEvents($class[0]['id']);?>   
                     </div>
                   </div>        
                 </div>  

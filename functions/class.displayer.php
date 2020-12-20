@@ -53,6 +53,7 @@ class Displayer{
 
     private $marks_cat = array();
     
+    private $supervisor_student = array();
     /**
      * Contains rendered timetable content
      */
@@ -1556,17 +1557,17 @@ public function displayTeacherClasses($teacher_id) {
  */
 public function displaySupervisorStudent($supervisor_id) {
 
-  echo '<ul class = "pt-2">';
-    foreach ($this->database->getSupervisorStudent($supervisor_id) as $student){
+  if (empty ($this->supervisor_student))
+    $this->supervisor_student = $this->database->getSupervisorStudent($supervisor_id);
 
+    foreach ($this->supervisor_student as $student){
     echo '<form action = "details_student.php" method = "get">    
           <input type = "hidden" name = "person_id" value = "'.$student['student_id'].'">
           <input type = "hidden" name = "tab" value = "">';   
-    echo '<li><button class = "btn btn-link" type = "submit">'.$student['student'].'</button></li>';
+    echo '<button class = "btn btn-link" type = "submit">'.$student['student'].'</button>';
     echo '</form>';
       }
 
-  echo '</ul>';
   
 }
 
@@ -1907,7 +1908,6 @@ public function displayPersonDetails($person_id, $no_access = '') {
  */
 public function displayPersonName($id) {
   
-    
     $this->person = $this->database->getPersonDetails($id);
 
     echo $this->person['name'] . ' '. $this->person['surname'];
