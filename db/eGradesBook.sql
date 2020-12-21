@@ -1,8 +1,3 @@
-CREATE TABLE `admin` (
-  `login` varchar(10) UNIQUE NOT NULL,
-  `password` char(128) NOT NULL
-);
-
 CREATE TABLE `person` (
   `id` bigint(11) PRIMARY KEY,
   `name` varchar(20) NOT NULL,

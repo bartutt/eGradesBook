@@ -8,6 +8,7 @@
   $controller = new Controller ($database, $displayer);
 
   $controller->htmlForm('set_teacher_subject');
+  $controller->redirect('value');
   $login = new Logger($database);
   $login->isLogged('admin');
 ?>
@@ -31,15 +32,10 @@
     <div class = "col-lg-10 offset-lg-2 ">
       <div class = "row">
         <div class = "col-sm-7 m-1 m-md-3 modul rounded shadow-sm p-3">
-          <?php
-          echo $controller->getForms();
-
-          if (!empty ($_POST['action'])){
-            $controller->handleRequest ($_POST['action'], $_POST['value']);
-            $displayer->displayErrors();
-            $displayer->displaySuccess();
-            }
-            ?>
+         <?php 
+            echo $controller->getForms();
+            $displayer->displayResult();
+          ?> 
           <div class = "header">
             <h2 class="display-4">Assign subject</h2>
           </div>

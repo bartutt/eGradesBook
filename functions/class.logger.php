@@ -18,6 +18,7 @@ private function setRole() {
         case 'admin':
             $_SESSION['role'] = 'admin';
             $_SESSION['person_name'] = $this->name;
+            $_SESSION['person_id'] = $this->person_id;
             break;
         
         case 'student':
@@ -28,6 +29,12 @@ private function setRole() {
 
         case 'parent':
             $_SESSION['role'] = 'parent';
+            $_SESSION['person_name'] = $this->name;
+            $_SESSION['person_id'] = $this->person_id;
+            break;
+
+        case 'teacher':
+            $_SESSION['role'] = 'teacher';
             $_SESSION['person_name'] = $this->name;
             $_SESSION['person_id'] = $this->person_id;
             break;

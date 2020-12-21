@@ -1056,16 +1056,8 @@ public function addMark($class, $subject, $teacher = '') {
   echo 
             '</select>
           </div>
-          <div class="col-md-2">
-            <label for="teacher">Teacher</label>
-            <select id = "teacher" name = "marks[0][]" form = "add_marks" class="form-control" required>';
-              $this->displayPersonsSelect('teacher');
-  echo 
-            '</select>
-          </div> 
-
+          <input name = "marks[0][]" type = "hidden" form = "add_marks" value = "'.$_SESSION['person_id'].'">
           <input name = "marks[0][]" type = "hidden" form = "add_marks" value = "'. $subject .'">
-
           <div class="col-md-1">
             <label for="mark">Mark</label>';
               $this->displayMarksSelect('add_marks', '0');
@@ -1130,14 +1122,7 @@ public function addNote($class, $subject, $teacher = '') {
   echo 
             '</select>
           </div>
-          <div class="col-md-2">
-            <label for="teacher">Teacher</label>
-            <select id = "teacher" name = "note[]" form = "add_note" class="form-control" required>';
-              $this->displayPersonsSelect('teacher');
-  echo 
-            '</select>
-          </div> 
-
+          <input name = "note[]" type = "hidden" form = "add_note" value = "'.$_SESSION['person_id'].'">
           <div class="col-md-3">
             <label for="description">Description</label>
             <input name = "note[]" class="form-control" form = "add_note" type = "text" required>
@@ -1643,7 +1628,7 @@ public function displayStudentMarks($student_id, $subject = '', $no_access = '')
         </div>';
   
         //show save button if marks exist
-  if (!empty ($this->sem_1) && $_SESSION['role'] === 'admin')
+  if (!empty ($this->sem_1) && ( ($_SESSION['role'] === 'admin') || ($_SESSION['role'] === 'teacher')) )
     echo '<button form = "set_marks" class="btn btn-success rounded-0 m-2 float-right" type="submit">save</button>';
 }
 
@@ -1698,7 +1683,7 @@ public function displayAttendance($student_id, $date_from = '', $date_to = '', $
 
   if (empty ($attendance)) 
     echo 'Empty';
-  else if ($_SESSION['role'] === 'admin')
+  else if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'teacher')
       echo '<button form = "set_attendance" class="btn btn-success rounded-0 m-2 float-right" type="submit">save</button>';
 
 }
@@ -1717,10 +1702,11 @@ public function displayClassDetails($class_id, $school_year = ''){
     if (!empty($students)) {
       echo '<table class="table table-sm">';
       echo '
-      <thead class = "thead-light"><th>#</th><th>Student</th>
-      <th><button class = "btn btn-outline-danger pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
-      </thead>';
-      echo '<tbody>';
+      <thead class = "thead-light"><th>#</th><th>Student</th>';
+      if ($_SESSION['role'] === 'admin'){
+        echo '<th><button class = "btn btn-outline-danger pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>';
+      }
+      echo '</thead><tbody>';
         $i = 1;
           foreach($students as $class) {
             echo '
@@ -1748,10 +1734,11 @@ public function displayClasses() {
 
   echo '<table class="table table-sm">';
   echo '
-    <thead class = "thead-light"><th class = "nr">#</th><th>Teacher</th><th>Profile</th>
-    <th><button class = "btn btn-outline-danger pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>
-    </thead>';
-  echo '<tbody>';
+    <thead class = "thead-light"><th class = "nr">#</th><th>Teacher</th><th>Profile</th>';
+    if ($_SESSION['role'] === 'admin'){
+      echo '<th><button class = "btn btn-outline-danger pt-0 pb-0 rounded-0 float-right" id = "showRemove" >Edit</button></th>';
+    }
+  echo '</thead><tbody>';
     foreach($this->database->getClasses($school_year) as $class){
       echo '
             <tr>
