@@ -6,13 +6,12 @@ body{
   background-color: #f0f0f0;
 }
 
-a{color: inherit; font-family: 'Open Sans', sans-serif;}
+a{color: inherit; font-family: 'Open sans', sans-serif;}
 a:hover{color: inherit;}
-
 .not-allowed:hover {cursor: not-allowed;}
 .display-4{font-size:1.5rem;}
 .pointer:hover{cursor: pointer;}
-
+.att{font-size:0.8rem;color:white;font-weight: 400;}
 .leftbar-menu{background-color: whitesmoke;}
 .btn-danger, .hide{display:none;}
 
@@ -21,7 +20,6 @@ a:hover{color: inherit;}
 .person-details{width:30%}
 .font-07{font-size: 0.7rem;}
 .chart{width: 100%; height: 100%;}
-
 
 .edit-attendance, 
 .edit-marks, 

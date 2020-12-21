@@ -41,7 +41,7 @@
         <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
         <div class = "header mb-3">
             <h2 class="display-4">
-              Student: <?php $displayer_student->displayPersonName($_GET['person_id']);?>
+              Child: <?php $displayer_student->displayPersonName($_GET['person_id']);?>
             </h2>  
             <h2 class="display-4">Class: <?php echo $class[0]['name']?></h2>          
           </div> 

@@ -662,7 +662,7 @@ class Displayer{
     /****************
      * MARKS AND ATTENDANCE
      ****************/
-    private function displayMarks($marks, $no_access) {
+    private function displayMarks($marks, $no_access = '') {
       if (!empty ($marks)) {
        echo '<td class = "py-2">';
             foreach ($marks as $mark) {
@@ -681,7 +681,7 @@ class Displayer{
                     Category: '.$mark['cat'].'<br>      
                     " class="badge p-0 '.$this->mark_color.'">'; 
                     if ($no_access === 'true')
-                      echo $mark['mark'];
+                      echo '<span class = "mark px-1 py-0 rounded text-white '.$this->mark_color.' ">'.$mark['mark'].'</span>';
                     else
                       $this->displayMarksSelect('set_marks', $mark['id'], $mark['mark'], 'color');                   
                 '</a>';
@@ -712,6 +712,9 @@ class Displayer{
         
     }
     private function displayDayAttendance($student_id, $dates, $day, $no_access) {   
+      
+      if (!isset($_GET['person_id']))
+        $_GET['person_id'] = '';
 
       echo '
       <tr class = "d-md-none" >
@@ -750,7 +753,7 @@ class Displayer{
                 Lesson time: '.$dates [$lesson['time']] ['time'].'<br>
                 Subject: '.$dates [$lesson['time']] ['name'].'<br>">';                  
                   if ($no_access === 'true')
-                    echo $dates [$lesson['time']] ['type'];
+                    echo '<p class = "m-0 p-2 att">'.$dates [$lesson['time']] ['type'].'</p>';
                   else
                     $this->displayAttendanceSelect($day.$i, $dates [$lesson['time']] ['type']);
                 echo '
