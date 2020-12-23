@@ -17,6 +17,8 @@ class Controller {
 
     private $displayer;
 
+    private $login;
+
     /**
     * Contains forms
     */
@@ -28,11 +30,14 @@ class Controller {
      */
     public $tab = array();
 
-    function __construct($database, $displayer) {
+    function __construct($database, $displayer, $login = '') {
 
         $this->database = $database;
 
         $this->displayer = $displayer;
+
+        if (!empty ($login))
+            $this->login = $login;
         
     }
 
@@ -126,7 +131,7 @@ class Controller {
      /**
      * redirect after action to prevent resubmit forms
      */
-    public function redirect($index = '', $index2 = '') {
+    public function redirect($index = '', $index2 = '', $index3 = '') {
 
         if (!empty ($_POST['action'])) {
             
@@ -135,7 +140,7 @@ class Controller {
                 $index = $action[1];
          
             if (!empty ($_REQUEST[$index])) { 
-                $this->handleRequest ($_POST['action'], $_REQUEST[$index], $_REQUEST[$index2]);
+                $this->handleRequest ($_POST['action'], $_REQUEST[$index], $_REQUEST[$index2], $_REQUEST[$index3]);
                 header( "Location: {$_SERVER['REQUEST_URI']}", true, 303 );
                 exit();
             }
@@ -253,12 +258,17 @@ class Controller {
      * @param val_2 - value sent from form
      */
 
-    public function handleRequest ($action, $val_1 = null, $val_2 = null) {
+    public function handleRequest ($action, $val_1 = null, $val_2 = null, $val_3 = null) {
 
         switch ($action) {
 
             case 'logout':
                 session_destroy();
+                break;
+
+            case 'change_pass':
+                $this->login->changePassword($val_1, $val_2, $val_3);
+                $this->result();
                 break;
 
             case 'start_lesson':

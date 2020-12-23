@@ -1293,6 +1293,9 @@ public function startLesson(){
 /*************
  * RESULTS
  **************/
+
+
+
 public function displayResult(){
  
     $this->displayErrors();

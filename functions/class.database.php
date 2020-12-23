@@ -100,7 +100,24 @@ class DataBase{
 
 
 
-//PUBLIC METHODS
+//PUBLIC METHODDS
+
+/** 
+* set custom message
+* @param result = containt information
+* @param type = error / success
+*/
+
+public function setMsg($result, $type) {
+
+    if ($type === 'error') 
+        $this->errors[] = $result;
+
+    if ($type === 'success') 
+        $this->success[] = $result;
+
+}
+
 
 /** 
 * Get user info
@@ -1224,8 +1241,10 @@ public function addMark($values) {
 /**
 * Update person info
 * @param values - array new value, person id, row in DB which be updated
+* @param msg_succ - contain message to display after success
+* @param msg_err - contain message to display after error
 */
-public function updatePerson($values) {
+public function updatePerson($values, $msg_succ = '', $msg_err = '') {
 
     $validation = new Validator;
     // check which column will be updated
@@ -1257,12 +1276,18 @@ public function updatePerson($values) {
         //row name, unset because to many parameter
         unset ($values[2]);
              if ($this->setContent($values) === true) {
-                
-                $this->success[] = 'Person is updated'; 
+                if (empty ($msg_succ))
+                    $this->success[] = 'Person is updated'; 
+                else
+                $this->success[] = $msg_succ; 
                            
              }else {
+                if (empty ($msg_err))
                     $this->errors[] = 'Person can not be updated';
-                 }
+                else
+                $this->errors[] = $msg_err; 
+
+                }
     }
   
 } 

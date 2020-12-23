@@ -5,9 +5,12 @@ require_once $_SERVER['DOCUMENT_ROOT']."/php/egradesbook/functions/class.validat
 
 class Logger{
 
-    function __construct($database) {
+    private $displayer;
+
+    function __construct($database, $displayer = '') {
 
         $this->database = $database;
+        $this->displayer = $displayer;
       
     }
 
@@ -80,13 +83,36 @@ public function logIn($user, $pass) {
 
 }
 
-public function isLogged($role) {
+public function isLogged($role, $url = "../index.php") {
 
     if ($_SESSION['logged'] !== '1' || $_SESSION['role'] !== $role) {
-        header ("location: ../index.php");
+        header ("location: ".$url."");
         exit;
     }
 }
+
+public function changePassword($old_pass, $new_pass, $new_pass2) {
+
+    $this->getUser($_SESSION['person_id']);
+
+        if (password_verify($old_pass, $this->pass)) {
+                 
+            if ( ($new_pass === $new_pass2) && (!empty($new_pass))  && (!empty($new_pass2)) ) {
+                
+                $values[] = password_hash($new_pass, PASSWORD_DEFAULT);
+                $values[] = $_SESSION['person_id'];
+                $values[] = 'password';
+                
+                $this->database->updatePerson($values, 'Password updated', 'Something went wrong, try again');
+            } else {              
+                $this->database->setMsg('Something went wrong', 'error');
+            }
+        
+        } else {
+            $this->logOut();
+        }
+}
+
 
 public function logOut() {
     unset ($_SESSION['logged']);
