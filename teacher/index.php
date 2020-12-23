@@ -32,6 +32,14 @@
 
     <!--second main col -->
     <div class = "col-lg-10 offset-lg-2 ">
+    <div class = "row">
+        <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
+          <div class = "header">
+            <h2 class="display-4">Information board</h2>
+          </div>
+        <?php $displayer->displayInformationBoard();?> 
+        </div>        
+      </div> 
       <div class = "row">
         <div class = "col m-1 m-md-3 modul rounded shadow-sm p-3">
           <?php 

@@ -1354,7 +1354,6 @@ public function displayInformationBoard(){
   $school_year = $this->database->getCurrentYear();
 
   $informations = $this->database->getInformationBoard($school_year);
-
     echo '
       <table class="table table-sm mt-3">
         <thead class = "thead-light">
