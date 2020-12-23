@@ -181,4 +181,10 @@ ALTER TABLE class_subject ADD CONSTRAINT lesson UNIQUE (id_class,id_lesson_time,
 
 ALTER TABLE attendance ADD CONSTRAINT attendance UNIQUE (id_student, id_subject, lesson_time_id, date);
 
-INSERT INTO `lesson_times` (`id`, `time`) VALUES (NULL, '8.15-9.00'), (NULL, '9.10-9.55'), (NULL, '10.05-10.50'), (NULL, '11.00-11-45'), (NULL, '12.05-12.50'), (NULL, '13.00-13-45'), (NULL, '13.55-14.40'), (NULL, '14.50-15.35'), (NULL, '15.45-16.30');
+INSERT INTO `lesson_times` (`id`, `time`) VALUES (NULL, '08.15-9.00'), (NULL, '09.10-9.55'), (NULL, '10.05-10.50'), (NULL, '11.00-11-45'), (NULL, '12.05-12.50'), (NULL, '13.00-13-45'), (NULL, '13.55-14.40'), (NULL, '14.50-15.35'), (NULL, '15.45-16.30');
+INSERT INTO `role_status` (`id`, `name`) VALUES (NULL, 'admin'), (NULL, 'parent'), (NULL, 'teacher'), (NULL, 'student'), (NULL, 'graduated');
+INSERT INTO `person` (`id`, `name`, `surname`, `role_status_id`, `gender`, `tel`, `birth_date`, `e_mail`, `city`, `code`, `street`, `house_nr`, `password`, `added_date`) VALUES ('11111111111', 'Admin', 'Admin', '1', 'male', '', '2020-12-24', 'bw@gm.com', 'London', '1234', 'Long', '2', '$2y$10$Tvd5t0ZSa5pDd/hy7.o2ouyadWvO6xUP8WzWuKikqYtiRN.YgF/1G', current_timestamp());
+INSERT INTO `years` (`years`, `current_year`) VALUES ('2020/2021', '2020/2021');
+INSERT INTO `marks_cat` (`id`, `name`) VALUES (NULL, 'exam'), (NULL, 'group project');
+INSERT INTO `subjects` (`id`, `name`) VALUES (NULL, 'biology'), (NULL, 'maths'), (NULL, 'art'), (NULL, 'chemistry'), (NULL, 'english');
+INSERT INTO `profiles` (`id`, `name`) VALUES (NULL, 'sport'), (NULL, 'maths and physics');

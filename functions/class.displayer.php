@@ -1443,11 +1443,14 @@ public function searchPersonButton($role_status) {
  * @param role_status
  */
 public function displayPersons($role_status) {
+      $persons = $this->database->getPersons($role_status);
+
       echo '<div class="table-responsive">';
       echo '<table class="table table-sm">';
       echo '<thead class = "thead-light"><th>name</th><th>surname</th><th class="d-none d-lg-table-cell">birth date</th><th>ID</th></thead>';
       echo '<tbody>';
-      foreach ($this->database->getPersons($role_status) as $person){
+      if (!empty ($persons))
+      foreach ($persons as $person){
         echo '<tr>
                 <form action = "details_'.$role_status.'.php" method = "get">
                 <td><button type = "submit" class="table-button">' . $person['name'] . '</button></td>
@@ -1459,6 +1462,8 @@ public function displayPersons($role_status) {
 
 
         echo '</tr>';
+      } else {
+        echo '<tr><td>No '.$role_status.'s</td></tr>';
       }
       echo '</tbody>';
       echo '</table>';

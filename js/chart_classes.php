@@ -5,9 +5,12 @@
     function drawClasses() {
     var data = google.visualization.arrayToDataTable([
       ['Year', 'quantity', { role: 'style' }],
-      <?php
-        foreach ($database->getClassesQty() as $year_qty)
-          echo "['".$year_qty['years']."', ".$year_qty['qty'].", 'color: orange; stroke-width: 4; opacity: 0.5'],";
+      <?php      
+        if (!empty ($years)){
+          foreach ($years as $year)
+          echo "['".$year['years']."', ".$year['qty'].", 'color: orange; stroke-width: 4; opacity: 0.5'],";
+
+        }else echo "['Empty', 0, 'color: orange; stroke-width: 4; opacity: 0.5']";
       ?>
       ]);
  
@@ -25,6 +28,4 @@
         drawClasses();
         });
 }
-
-
 </script>

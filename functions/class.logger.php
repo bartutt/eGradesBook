@@ -7,6 +7,8 @@ class Logger{
 
     private $displayer;
 
+    private $database;
+
     function __construct($database, $displayer = '') {
 
         $this->database = $database;
@@ -14,6 +16,10 @@ class Logger{
       
     }
 
+
+/**
+ * This function set session on logged person
+ */
 private function setRole() {
 
     switch($this->role) {
@@ -45,7 +51,9 @@ private function setRole() {
     }
 
 }
-
+/**
+ * This function get info about user
+ */
 private function getUser($id) {
 
     $user = $this->database->getUser($id);
@@ -56,6 +64,9 @@ private function getUser($id) {
     $this->person_id = $user['person_id'];
 }
 
+/**
+ * This function control password etc
+ */
 public function logIn($user, $pass) {
     
     $validation = new Validator;
@@ -83,6 +94,10 @@ public function logIn($user, $pass) {
 
 }
 
+/**
+ * 
+ */
+
 public function isLogged($role, $url = "../index.php") {
 
     if ($_SESSION['logged'] !== '1' || $_SESSION['role'] !== $role) {
@@ -91,6 +106,10 @@ public function isLogged($role, $url = "../index.php") {
     }
 }
 
+
+/**
+ *
+ */
 public function changePassword($old_pass, $new_pass, $new_pass2) {
 
     $this->getUser($_SESSION['person_id']);
@@ -113,7 +132,9 @@ public function changePassword($old_pass, $new_pass, $new_pass2) {
         }
 }
 
-
+/**
+ * 
+ */
 public function logOut() {
     unset ($_SESSION['logged']);
     unset ($_SESSION['role']);

@@ -857,8 +857,9 @@ public function getPersons($role_status){
         $values[] = $role_status;
 
         $this->getContent($values, $role_status);
-
-        return $this->$role_status;
+        
+        if (!empty($this->$role_status))
+            return $this->$role_status;
 }
 
 /** 
@@ -882,7 +883,8 @@ public function getMarksCat(){
 
     $this->readTable('marks_cat', '*');
     
-    return $this->marks_cat;
+    if (!empty($this->marks_cat))
+        return $this->marks_cat;
 }
 
 /** 
