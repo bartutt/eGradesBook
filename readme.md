@@ -1,5 +1,4 @@
-### NEW VERSION BASED ON MySQL DB
-### ->BRANCH BASED ON MySQL
+### BASED ON MySQL DB
 # eGradesBook
 
 eGradesBook projected and created by BW.
@@ -21,5 +20,5 @@ Features:
 - attendance 
 - marks with weight and managable categories
 - managable lessons times
-- message box
-- notes aobut students
+- information board
+- notes about students
